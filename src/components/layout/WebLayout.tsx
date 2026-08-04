@@ -3,15 +3,16 @@ import { AppShell } from "@mantine/core";
 
 import { useTheme } from "../../context/ThemeContext";
 
-import Header from "./Header";
-import SideBar from "./SideBar";
-import Main from "./Main";
+import Header from "./weblayout/Header";
+import SideBar from "./weblayout/SideBar";
+import Main from "./weblayout/Main";
 
-export default function MainLayout() {
+export default function WebLayout() {
   const [opened, { toggle }] = useDisclosure(false);
   const { colors,} = useTheme();
   return (
     <AppShell
+    withBorder={true}
       header={{ height: 60,}}
       navbar={{
         width: 350,
