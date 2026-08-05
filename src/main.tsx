@@ -1,4 +1,3 @@
-import "../src/assets/fonts.css"
 import "@mantine/core/styles.css";
 
 import { StrictMode } from "react";
@@ -17,9 +16,7 @@ createRoot(document.getElementById("root")!).render(
   <AppProvider>
     <BrowserRouter>
       <StrictMode>
-        <MantineProvider theme={{
-          fontFamily: "Poppins",
-        }}>
+        <MantineProvider>
           <ReactQueryDevtools />
           <App />
         </MantineProvider>
