@@ -6,7 +6,13 @@ import WebLayout from "../components/layout/WebLayout";
 import MobLayout from "../components/layout/MobLayout";
 
 //Pages
-import Student from "../pages/student/index";
+
+//Student
+import LoginPage from "../pages/student/loginPage/index";
+import RegisterPage from "../pages/student/registerPage";
+import FormPage from "../pages/student/formPage";
+
+//Admin
 import Admin from "../pages/admin/index";
 
 export const routes = [
@@ -16,21 +22,25 @@ export const routes = [
     children: [
       {
         index: true,
-        element: <Student />,
-      },
-       {
-        path: "register",
-        element: <Student />,
+        element: <LoginPage />,
       },
       {
-        element: <ProtectedRoute layoutType="student" requiredRole="student"/>,
-        children: [
-          {
-            path: "edit",
-            element: <Student />,
-          },
-        ],
+        path: "register",
+        element: <RegisterPage />,
       },
+      {
+        path: "register/form", 
+        element: <FormPage />,
+      },
+      // {
+      //   element: <ProtectedRoute layoutType="student" requiredRole="student" />,
+      //   children: [
+      //     {
+      //       path: "edit",
+      //       element: <LoginPage />,
+      //     },
+      //   ],
+      // },
     ],
   },
   {
@@ -42,28 +52,30 @@ export const routes = [
         element: <Admin />,
       },
       {
-        element: <ProtectedRoute layoutType="admin" requiredRole="admin"/>,
+        element: <ProtectedRoute layoutType="admin" requiredRole="admin" />,
         children: [
           {
             path: "register",
-            element: <Student />,
+            element: <Admin />,
           },
           {
             path: "edit",
-            element: <Student />,
+            element: <Admin />,
           },
         ],
       },
       {
-        element: <ProtectedRoute layoutType="admin" requiredRole="SuperAdmin"/>,
+        element: (
+          <ProtectedRoute layoutType="admin" requiredRole="SuperAdmin" />
+        ),
         children: [
           {
             path: "register",
-            element: <Student />,
+            element: <Admin />,
           },
           {
             path: "edit",
-            element: <Student />,
+            element: <Admin />,
           },
         ],
       },
