@@ -1,5 +1,5 @@
 //Protected Route - modify till to meet the client preference
-import ProtectedRoute from "./protectedRoute";
+import ProtectedRoute from "./ProtectedRoute";
 
 // Layout
 import WebLayout from "../components/layout/WebLayout";
