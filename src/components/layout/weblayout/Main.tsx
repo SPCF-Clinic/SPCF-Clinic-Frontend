@@ -1,10 +1,9 @@
 import { Outlet } from "react-router-dom";
 import { AppShell } from "@mantine/core";
 
-import { useTheme } from "../../../context/ThemeContext";
 
 export default function Main() {
-  const {colors } = useTheme();
+
 
 
 
@@ -13,7 +12,7 @@ export default function Main() {
       style={{
         minHeight: "100vh",
 
-        backgroundColor: colors.bgBase,
+        backgroundColor: "#ffffff",
 
         backgroundSize: "60px 64px",
 

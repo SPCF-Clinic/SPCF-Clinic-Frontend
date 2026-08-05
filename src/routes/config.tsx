@@ -19,14 +19,14 @@ export const routes = [
         element: <Student />,
       },
        {
-        path: "/register",
+        path: "register",
         element: <Student />,
       },
       {
         element: <ProtectedRoute layoutType="student" requiredRole="student"/>,
         children: [
           {
-            path: "/edit",
+            path: "edit",
             element: <Student />,
           },
         ],
@@ -45,11 +45,11 @@ export const routes = [
         element: <ProtectedRoute layoutType="admin" requiredRole="admin"/>,
         children: [
           {
-            path: "/register",
+            path: "register",
             element: <Student />,
           },
           {
-            path: "/edit",
+            path: "edit",
             element: <Student />,
           },
         ],
@@ -58,11 +58,11 @@ export const routes = [
         element: <ProtectedRoute layoutType="admin" requiredRole="SuperAdmin"/>,
         children: [
           {
-            path: "/register",
+            path: "register",
             element: <Student />,
           },
           {
-            path: "/edit",
+            path: "edit",
             element: <Student />,
           },
         ],

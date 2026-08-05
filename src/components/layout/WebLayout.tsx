@@ -1,15 +1,12 @@
 import { useDisclosure } from "@mantine/hooks";
 import { AppShell } from "@mantine/core";
 
-import { useTheme } from "../../context/ThemeContext";
-
 import Header from "./weblayout/Header";
 import SideBar from "./weblayout/SideBar";
 import Main from "./weblayout/Main";
 
 export default function WebLayout() {
   const [opened, { toggle }] = useDisclosure(false);
-  const { colors,} = useTheme();
   return (
     <AppShell
     withBorder={true}
@@ -22,13 +19,13 @@ export default function WebLayout() {
       }}
       styles={{
         main: {
-          backgroundColor: colors.bgBase,
+          backgroundColor: "#ffffff",
         },
          header: {
-          backgroundColor: colors.bgBase,
+          backgroundColor: "#ffffff",
         },
         navbar: {
-          backgroundColor: colors.bgBase,
+          backgroundColor: "#ffffff",
         },
       }}
     >
