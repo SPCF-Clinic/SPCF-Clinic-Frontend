@@ -7,7 +7,12 @@ import MobLayout from "../components/layout/MobLayout";
 
 //Pages
 import Student from "../pages/student/index";
-import Admin from "../pages/admin/index";
+
+import Dashboard from "../pages/admin/index";
+import StudentList from "@/pages/admin/student-list";
+import Medicines from "@/pages/admin/medicines";
+import Records from "@/pages/admin/records";
+import ContentManager from "@/pages/admin/content-manager";
 
 export const routes = [
   {
@@ -18,12 +23,12 @@ export const routes = [
         index: true,
         element: <Student />,
       },
-       {
+      {
         path: "register",
         element: <Student />,
       },
       {
-        element: <ProtectedRoute layoutType="student" requiredRole="student"/>,
+        element: <ProtectedRoute layoutType="student" requiredRole="student" />,
         children: [
           {
             path: "edit",
@@ -39,10 +44,10 @@ export const routes = [
     children: [
       {
         index: true,
-        element: <Admin />,
+        element: <Dashboard />,
       },
       {
-        element: <ProtectedRoute layoutType="admin" requiredRole="admin"/>,
+        element: <ProtectedRoute layoutType="admin" requiredRole="admin" />,
         children: [
           {
             path: "register",
@@ -55,7 +60,9 @@ export const routes = [
         ],
       },
       {
-        element: <ProtectedRoute layoutType="admin" requiredRole="SuperAdmin"/>,
+        element: (
+          <ProtectedRoute layoutType="admin" requiredRole="SuperAdmin" />
+        ),
         children: [
           {
             path: "register",
@@ -66,6 +73,22 @@ export const routes = [
             element: <Student />,
           },
         ],
+      },
+      {
+        path: "students",
+        element: <StudentList />,
+      },
+      {
+        path: "medicines",
+        element: <Medicines />,
+      },
+      {
+        path: "records",
+        element: <Records />,
+      },
+      {
+        path: "content-manager",
+        element: <ContentManager />,
       },
     ],
   },
