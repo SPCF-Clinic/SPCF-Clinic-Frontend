@@ -4,7 +4,7 @@ import { AppShell } from "@mantine/core";
 import Header from "./weblayout/Header";
 import Navbar from "./weblayout/Navbar";
 import Main from "./weblayout/Main";
-// import Aside from "./weblayout/Aside";
+import Aside from "./weblayout/Aside";
 
 export const NAVBAR_OPENED_WIDTH = 250;
 export const NAVBAR_CLOSED_WIDTH = 80;
@@ -27,11 +27,11 @@ export default function WebLayout() {
       }}
       transitionDuration={150}
       transitionTimingFunction="cubic-bezier(0.4, 0, 0.2, 1)"
-      // aside={{
-      //   width: 300,
-      //   breakpoint: "md",
-      //   collapsed: { desktop: false, mobile: true },
-      // }}
+      aside={{
+        width: 400,
+        breakpoint: "md",
+        collapsed: { desktop: false, mobile: true },
+      }}
     >
       <Header
         mobile={{ opened: mobileOpened, toggle: toggleMobile }}
@@ -40,7 +40,7 @@ export default function WebLayout() {
       />
       <Navbar ref={navRef} />
       <Main />
-      {/* <Aside /> */}
+      <Aside />
     </AppShell>
   );
 }

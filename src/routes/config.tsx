@@ -2,13 +2,13 @@
 import ProtectedRoute from "./ProtectedRoute";
 
 // Layout
-import WebLayout from "../components/layout/WebLayout";
-import MobLayout from "../components/layout/MobLayout";
+import WebLayout from "@/components/layout/WebLayout";
+import MobLayout from "@/components/layout/MobLayout";
 
 //Pages
-import Student from "../pages/student/index";
+import Student from "@/pages/student/index";
 
-import Dashboard from "../pages/admin/index";
+import Dashboard from "@/pages/admin/dashboard";
 import StudentList from "@/pages/admin/student-list";
 import Medicines from "@/pages/admin/medicines";
 import Records from "@/pages/admin/records";
