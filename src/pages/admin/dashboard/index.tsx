@@ -1,10 +1,13 @@
-import { Box } from "@mantine/core";
+import { Stack } from "@mantine/core";
+
 import DashboardCards from "./components/DashboardCards";
+import DashboardBeds from "./components/dashboard-beds/DashboardBeds";
 
 export default function Dashboard() {
   return (
-    <Box>
+    <Stack>
       <DashboardCards />
-    </Box>
+      <DashboardBeds />
+    </Stack>
   );
 }

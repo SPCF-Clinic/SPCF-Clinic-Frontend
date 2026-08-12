@@ -1,0 +1,35 @@
+.bed {
+  cursor: pointer;
+
+  &[data-status="empty"] {
+    --bed-color: var(--mantine-color-gray-text);
+    --bed-icon-color: var(--mantine-color-gray-6);
+    background-color: var(--mantine-color-gray-2);
+    border-bottom: 1px solid var(--mantine-color-gray-4);
+  }
+
+  &[data-status="occupied"] {
+    --bed-color: var(--mantine-color-primary-text);
+    --bed-icon-color: var(--mantine-color-primary-6);
+    background-color: rgba(223, 224, 255, 1);
+    border-bottom: 1px solid var(--mantine-color-primary-6);
+  }
+}
+
+.text {
+  color: var(--bed-color);
+}
+
+.icon {
+  color: var(--bed-icon-color);
+}
+
+.skeleton {
+  &[data-visible]::before {
+    background-color: var(--mantine-color-gray-1);
+  }
+
+  &[data-visible]::after {
+    background-color: var(--mantine-color-gray-4);
+  }
+}
