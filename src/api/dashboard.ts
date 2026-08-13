@@ -11,7 +11,7 @@ interface CurrentlyInClinic {
   id: number;
   student_id: string;
   name: string;
-  bed_id: string;
+  bed_id?: string | null;
   check_in_time: string;
 }
 
