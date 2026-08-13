@@ -24,8 +24,8 @@ export default function DashboardInClinic() {
 const COLUMNS: ColumnDef[] = [
   { title: "Student Number", w: "20%" },
   { title: "Name" },
-  { title: "Bed Assignment", w: "15%" },
-  { title: "Time", w: "10%" },
+  { title: "Bed Assignment", w: "20%" },
+  { title: "Time", w: "15%" },
 ];
 
 function ClinicTable() {
@@ -50,7 +50,9 @@ function ClinicTable() {
           <Table.Td fw={600}>{student.student_id}</Table.Td>
           <Table.Td>{student.name}</Table.Td>
           <Table.Td>{student.bed_id || "--"}</Table.Td>
-          <Table.Td>{dayjs(student.check_in_time).format("LT")}</Table.Td>
+          <Table.Td c="dimmed">
+            {dayjs(student.check_in_time).format("LT")}
+          </Table.Td>
         </Table.Tr>
       ))}
     </AppTable>
