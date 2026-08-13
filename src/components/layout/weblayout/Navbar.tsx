@@ -64,7 +64,7 @@ export default function Navbar({ ref }: NavbarProps) {
       p="md"
       style={{
         transition: isAboveBreakpoint
-          ? "width 150ms cubic-bezier(0.4, 0, 0.2, 1)"
+          ? "width var(--mantine-layout-transition-duration) var(--mantine-layout-transition-timing)"
           : undefined,
       }}
     >

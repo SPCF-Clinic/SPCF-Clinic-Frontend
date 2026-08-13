@@ -2,10 +2,12 @@ import {
   EmptyState,
   Skeleton,
   Table,
+  useMantineTheme,
   type SkeletonProps,
   type TableProps,
   type TableThProps,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { IconZoom } from "@tabler/icons-react";
 import type { ReactNode } from "react";
 
@@ -32,16 +34,31 @@ export function AppTable<T>({
   ...rest
 }: AppTableProps<T>) {
   const isEmpty = !isPending && data?.length === 0;
+  const theme = useMantineTheme();
+  const isAboveBreakpoint = useMediaQuery(
+    `(min-width: ${theme.breakpoints.sm})`,
+  );
 
   return (
-    <Table layout="fixed" verticalSpacing="sm" horizontalSpacing="sm" {...rest}>
+    <Table
+      layout={isAboveBreakpoint ? "fixed" : "auto"}
+      verticalSpacing="sm"
+      horizontalSpacing="sm"
+      {...rest}
+    >
       <Table.Thead>
         <Table.Tr>
-          {columns.map(({ title, key, ...rest }, i) => {
+          {columns.map(({ title, key, w, ...rest }, i) => {
             const headerKey = key ?? (typeof title === "string" ? title : i);
 
             return (
-              <Table.Th key={headerKey} c="primary" bg="gray.2" {...rest}>
+              <Table.Th
+                key={headerKey}
+                c="primary"
+                bg="gray.2"
+                {...rest}
+                w={isAboveBreakpoint ? w : undefined}
+              >
                 {title}
               </Table.Th>
             );

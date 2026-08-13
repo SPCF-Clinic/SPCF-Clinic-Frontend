@@ -11,8 +11,8 @@
   width: calc(var(--nav-w) - var(--mantine-spacing-md));
   /* flex-shrink: 0; */
   transition-property: width, transform;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+  transition-timing-function: var(--mantine-layout-transition-timing);
+  transition-duration: var(--mantine-layout-transition-duration);
 }
 
 .logoRail[data-opened="true"] {
@@ -27,7 +27,8 @@
   overflow: hidden;
   white-space: nowrap;
   transition:
-    width 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    width var(--mantine-layout-transition-duration)
+      var(--mantine-layout-transition-timing),
     opacity 100ms ease-out;
 }
 
@@ -35,7 +36,8 @@
   width: 140px;
   opacity: 1;
   transition:
-    width 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    width var(--mantine-layout-transition-duration)
+      var(--mantine-layout-transition-timing),
     opacity 150ms ease-in 60ms;
 }
 

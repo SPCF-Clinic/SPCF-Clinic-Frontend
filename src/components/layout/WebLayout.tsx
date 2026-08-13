@@ -5,15 +5,21 @@ import Header from "./weblayout/Header";
 import Navbar from "./weblayout/Navbar";
 import Main from "./weblayout/Main";
 import Aside from "./weblayout/Aside";
+import { useLocation } from "react-router-dom";
 
 export const NAVBAR_OPENED_WIDTH = 250;
 export const NAVBAR_CLOSED_WIDTH = 80;
 
+export const ASIDE_OPENED_WIDTH = 400;
+export const ASIDE_CLOSED_WIDTH = 40;
+
 export default function WebLayout() {
+  const location = useLocation();
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const { hovered: navHovered, ref: navRef } = useHover<HTMLDivElement>();
   const { hovered: logoHovered, ref: logoRef } = useHover<HTMLDivElement>();
   const desktopOpened = navHovered || logoHovered;
+  const isDashboardPage = location.pathname === "/admin";
 
   return (
     <AppShell
@@ -25,10 +31,10 @@ export default function WebLayout() {
         breakpoint: "sm",
         collapsed: { mobile: !mobileOpened },
       }}
-      transitionDuration={150}
-      transitionTimingFunction="cubic-bezier(0.4, 0, 0.2, 1)"
+      transitionDuration={300}
+      transitionTimingFunction="var(--mantine-layout-transition-timing)"
       aside={{
-        width: 400,
+        width: isDashboardPage ? ASIDE_OPENED_WIDTH : ASIDE_CLOSED_WIDTH,
         breakpoint: "md",
         collapsed: { desktop: false, mobile: true },
       }}
@@ -40,7 +46,7 @@ export default function WebLayout() {
       />
       <Navbar ref={navRef} />
       <Main />
-      <Aside />
+      <Aside show={isDashboardPage} />
     </AppShell>
   );
 }

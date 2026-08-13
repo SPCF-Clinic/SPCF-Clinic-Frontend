@@ -1,6 +1,7 @@
 import {
   createTheme,
   DEFAULT_THEME,
+  type CSSVariablesResolver,
   type MantineColorsTuple,
 } from "@mantine/core";
 
@@ -24,4 +25,13 @@ export const theme = createTheme({
   primaryColor: "primary",
   primaryShade: 9,
   fontFamily: `Inter, ${DEFAULT_THEME.fontFamily}`,
+});
+
+export const resolver: CSSVariablesResolver = () => ({
+  variables: {
+    "--mantine-layout-transition-duration": "300ms",
+    "--mantine-layout-transition-timing": "cubic-bezier(0.4, 0, 0.2, 1)",
+  },
+  light: {},
+  dark: {},
 });
