@@ -1,9 +1,10 @@
-import { useState } from "react";
 import {useNavigate} from "react-router-dom"
 
 import { useForm } from "@mantine/form";
-import { IconLock } from "@tabler/icons-react";
-import { Box, Flex, Text, TextInput, Button, Divider } from "@mantine/core";
+import { Box, Flex, Text, TextInput, Button, } from "@mantine/core";
+
+import Footer from "../components/Footer";
+import Layout from "../components/Layout"
 
 export default function RegisterPage() {
 
@@ -15,15 +16,7 @@ export default function RegisterPage() {
 
  const isFormEmpty = form.getValues().studentNumber.trim() === ""
   return (
-    <Flex h={"91.1vh"} align={"flex-end"}>
-      <Box
-        component="form"
-        // onSubmit={form.onSubmit(handleSubmit)}
-        w={"100vw"}
-        bg={"#EDF0F6"}
-        bdrs={"40px 40px 0px 0px"}
-        p={"40px"}
-      >
+    <Layout>
         <Flex direction={"column"} gap={20}>
           <div>
             <Text fz={29} fw={700}>
@@ -52,23 +45,14 @@ export default function RegisterPage() {
               size="md"
               gradient={{ from: "#29315B", to: "#294FAF", deg: 90 }}
                 opacity={isFormEmpty ? 0.7: 1}
-                onClick={() => {navigate("form")}}
+                onClick={() => {navigate("privacy-policy")}}
             >
               Continue
             </Button>
           </Flex>
 
-          <Divider />
-
-          <Flex align={"center"} gap={10}>
-            <IconLock color="#737373" size={15} />
-            <Text fz={12} c={"#737373"}>
-              Your information is kept confidential and used only for clinic
-              records.
-            </Text>
-          </Flex>
+         <Footer/>
         </Flex>
-      </Box>
-    </Flex>
+      </Layout>
   );
 }

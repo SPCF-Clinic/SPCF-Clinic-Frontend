@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import useAuthStore from "../stores/zustand";
+import useAuthStore from "../stores/auth";
 
 interface ProtectedRouteProps {
     layoutType: string,

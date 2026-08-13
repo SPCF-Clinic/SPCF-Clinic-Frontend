@@ -10,7 +10,7 @@ export default function MobLayout() {
       
        <Flex direction="column" h="100%" w="100%">
         <Flex justify="center" align="center" pt="md" style={{ flexShrink: 0 }}>
-          <Image src={SPCF_1} h="65px" w="60px" fit="contain" />
+          <Image src={SPCF_1} h="100px" w="80px" fit="contain" mb={40}/>
         </Flex>
 
         <Flex direction="column" flex={1} >

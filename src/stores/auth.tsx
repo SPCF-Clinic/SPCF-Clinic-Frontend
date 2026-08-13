@@ -2,9 +2,9 @@ import { create } from "zustand";
 
 interface AuthState {
   isAuthenticated: boolean;
-  role?: "admin" | "superadmin" | "student";
+  role?: string;
 
-  login: (role: "admin" | "superadmin" | "student") => void;
+  login: (role: string) => void;
   logout: () => void;
 //   setUser: () => void;
 }

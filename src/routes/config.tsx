@@ -10,7 +10,7 @@ import MobLayout from "../components/layout/MobLayout";
 //Student
 import LoginPage from "../pages/student/loginPage/index";
 import RegisterPage from "../pages/student/registerPage";
-import FormPage from "../pages/student/formPage";
+import FormPage from "../pages/student/registerPage/registerForm";
 
 //Admin
 import Admin from "../pages/admin/index";
@@ -32,6 +32,9 @@ export const routes = [
         path: "register/form", 
         element: <FormPage />,
       },
+      {
+        
+      }
       // {
       //   element: <ProtectedRoute layoutType="student" requiredRole="student" />,
       //   children: [
