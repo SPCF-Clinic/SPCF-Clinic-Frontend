@@ -1,4 +1,4 @@
-.table tbody tr:hover {
+.table tbody tr:not([data-empty]):hover {
   outline: 3px solid var(--mantine-color-primary-6);
   outline-offset: -3px;
   cursor: pointer;

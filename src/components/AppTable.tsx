@@ -1,10 +1,12 @@
 import {
+  EmptyState,
   Skeleton,
   Table,
   type SkeletonProps,
   type TableProps,
   type TableThProps,
 } from "@mantine/core";
+import { IconZoom } from "@tabler/icons-react";
 import type { ReactNode } from "react";
 
 export interface ColumnDef extends Omit<TableThProps, "title"> {
@@ -59,9 +61,9 @@ export function AppTable<T>({
           ))
         ) : isEmpty ? (
           // Empty component here
-          <Table.Tr>
+          <Table.Tr data-empty>
             <Table.Td colSpan={columns.length} p="xl">
-              No records found
+              <EmptyState icon={<IconZoom />} title="No results found" />
             </Table.Td>
           </Table.Tr>
         ) : (
