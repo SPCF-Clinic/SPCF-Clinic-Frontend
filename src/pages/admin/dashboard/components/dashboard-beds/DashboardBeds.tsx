@@ -56,7 +56,7 @@ export default function DashboardBeds() {
           </Button>
         </Flex>
 
-        <Box>
+        <Stack>
           <Scroller>
             <Group wrap="nowrap" py="xs">
               {isPending ? (
@@ -92,7 +92,7 @@ export default function DashboardBeds() {
             </Group>
           </Scroller>
           <ColorSwatchLegend />
-        </Box>
+        </Stack>
       </Stack>
     </Paper>
   );

@@ -1,10 +1,11 @@
-import { Paper, Skeleton, Stack, Table, Text } from "@mantine/core";
+import { Paper, Stack, Table, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
 import QueryError from "@/components/QueryError";
 import { dashboardQueries } from "@/query/dashboard";
 import { dayjs } from "@/services/dayjs";
 import { AppTable, type ColumnDef } from "@/components/AppTable";
+import classes from "./DashboardInClinic.module.css";
 
 export default function DashboardInClinic() {
   return (
@@ -36,31 +37,22 @@ function ClinicTable() {
     return <QueryError error={error} onRetry={refetch} />;
   }
 
-  const rows = isPending
-    ? Array.from({ length: 5 }).map((_, index) => (
-        <Table.Tr key={index}>
-          <Table.Td>
-            <Skeleton height={16} width="80%" radius="md" />
-          </Table.Td>
-          <Table.Td>
-            <Skeleton height={16} width="70%" radius="md" />
-          </Table.Td>
-          <Table.Td>
-            <Skeleton height={16} width="50%" radius="md" />
-          </Table.Td>
-          <Table.Td>
-            <Skeleton height={16} width="80%" radius="md" />
-          </Table.Td>
-        </Table.Tr>
-      ))
-    : data.data.currently_in_clinic.map((student) => (
+  return (
+    <AppTable
+      data={data?.data.currently_in_clinic}
+      isPending={isPending}
+      columns={COLUMNS}
+      highlightOnHover
+      classNames={{ table: classes.table }}
+    >
+      {data?.data.currently_in_clinic.map((student) => (
         <Table.Tr key={student.student_id}>
           <Table.Td fw={600}>{student.student_id}</Table.Td>
           <Table.Td>{student.name}</Table.Td>
           <Table.Td>{student.bed_id || "--"}</Table.Td>
           <Table.Td>{dayjs(student.check_in_time).format("LT")}</Table.Td>
         </Table.Tr>
-      ));
-
-  return <AppTable columns={COLUMNS}>{rows}</AppTable>;
+      ))}
+    </AppTable>
+  );
 }
