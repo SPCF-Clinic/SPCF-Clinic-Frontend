@@ -1,10 +1,10 @@
 import { Paper, Stack, Text } from "@mantine/core";
 import { IconBedFilled, IconBedOff } from "@tabler/icons-react";
 
-import type { Bed } from "@/types/beds";
+import type { BedIndex } from "@/types/beds";
 import classes from "./Bed.module.css";
 
-export default function Bed(bed: Bed) {
+export default function Bed(bed: BedIndex) {
   return (
     <Paper
       miw={110}
