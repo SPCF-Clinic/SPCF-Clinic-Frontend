@@ -2,8 +2,8 @@
 import ProtectedRoute from "./ProtectedRoute";
 
 // Layout
-import WebLayout from "../components/layout/WebLayout";
-import MobLayout from "../components/layout/MobLayout";
+import WebLayout from "@/components/layout/WebLayout";
+import MobLayout from "@/components/layout/MobLayout";
 
 //Pages
 
@@ -13,7 +13,11 @@ import RegisterPage from "../pages/student/registerPage";
 import FormPage from "../pages/student/registerPage/registerForm";
 
 //Admin
-import Admin from "../pages/admin/index";
+import Dashboard from "@/pages/admin/dashboard";
+import StudentList from "@/pages/admin/student-list";
+import Medicines from "@/pages/admin/medicines";
+import Records from "@/pages/admin/records";
+import ContentManager from "@/pages/admin/content-manager";
 
 export const routes = [
   {
@@ -52,35 +56,51 @@ export const routes = [
     children: [
       {
         index: true,
-        element: <Admin />,
+        element: <Dashboard />,
+      },
+      // {
+      //   element: <ProtectedRoute layoutType="admin" requiredRole="admin" />,
+      //   children: [
+      //     {
+      //       path: "register",
+      //       element: <Admin />,
+      //     },
+      //     {
+      //       path: "edit",
+      //       element: <Admin />,
+      //     },
+      //   ],
+      // },
+      // {
+      //   element: (
+      //     <ProtectedRoute layoutType="admin" requiredRole="SuperAdmin" />
+      //   ),
+      //   children: [
+      //     {
+      //       path: "register",
+      //       element: <Admin />,
+      //     },
+      //     {
+      //       path: "edit",
+      //       element: <Admin />,
+      //     },
+      //   ],
+      // },
+      {
+        path: "students",
+        element: <StudentList />,
       },
       {
-        element: <ProtectedRoute layoutType="admin" requiredRole="admin" />,
-        children: [
-          {
-            path: "register",
-            element: <Admin />,
-          },
-          {
-            path: "edit",
-            element: <Admin />,
-          },
-        ],
+        path: "medicines",
+        element: <Medicines />,
       },
       {
-        element: (
-          <ProtectedRoute layoutType="admin" requiredRole="SuperAdmin" />
-        ),
-        children: [
-          {
-            path: "register",
-            element: <Admin />,
-          },
-          {
-            path: "edit",
-            element: <Admin />,
-          },
-        ],
+        path: "records",
+        element: <Records />,
+      },
+      {
+        path: "content-manager",
+        element: <ContentManager />,
       },
     ],
   },

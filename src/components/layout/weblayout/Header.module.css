@@ -1,0 +1,61 @@
+.logoHitArea {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 16px 20px 32px 20px;
+  margin: -16px -20px -32px -20px;
+}
+
+.logoRail {
+  --nav-w: 80px; /* fallback before the inline value applies */
+  width: calc(var(--nav-w) - var(--mantine-spacing-md));
+  /* flex-shrink: 0; */
+  transition-property: width, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.logoRail[data-opened="true"] {
+  transform: translateX(var(--mantine-spacing-sm));
+}
+
+.logoText {
+  min-width: 0; /* overrides flexbox's auto min-width so width:0 can collapse it */
+  flex-shrink: 0;
+  width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    width 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 100ms ease-out;
+}
+
+.logoText[data-opened="true"] {
+  width: 140px;
+  opacity: 1;
+  transition:
+    width 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 150ms ease-in 60ms;
+}
+
+.logoText::before {
+  content: "Systems Plus";
+  font-family: "Cinzel", serif;
+  font-size: var(--mantine-font-size-lg);
+  line-height: 1;
+}
+
+.logoText::after {
+  content: "College Foundation";
+  font-family: "Cinzel", serif;
+  font-size: var(--mantine-font-size-xs);
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logoRail,
+  .logoText {
+    transition: none;
+  }
+}

@@ -1,25 +1,12 @@
 import { Outlet } from "react-router-dom";
-import { AppShell } from "@mantine/core";
-
+import { AppShell, Box } from "@mantine/core";
 
 export default function Main() {
-
-
-
-
   return (
-    <AppShell.Main
-      style={{
-        minHeight: "100vh",
-
-        backgroundColor: "#ffffff",
-
-        backgroundSize: "60px 64px",
-
-        backgroundRepeat: "repeat",
-      }}
-    >
-      <Outlet />
+    <AppShell.Main display="flex" style={{ flexDirection: "column" }}>
+      <Box bg="#edf0f6" bdrs="lg" p="md" flex={1} mt="md" mb="lg">
+        <Outlet />
+      </Box>
     </AppShell.Main>
   );
 }

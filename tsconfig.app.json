@@ -20,7 +20,11 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": false,
     "jsx": "react-jsx",
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src"]
 }
