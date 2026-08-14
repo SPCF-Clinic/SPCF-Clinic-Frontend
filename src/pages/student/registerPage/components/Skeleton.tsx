@@ -6,15 +6,6 @@ export default function SectionSkeleton(){return (
         {/* Header Title / Badge */}
         <Skeleton height={12} width="40%" radius="xl" />
 
-        {/* Stepper Progress Bar */}
-        <Grid columns={5} gutter={6}>
-          {Array.from({ length: 5 }).map((_, index) => (
-            <Grid.Col span={1} key={index}>
-              <Skeleton height={6} radius="xl" />
-            </Grid.Col>
-          ))}
-        </Grid>
-
         {/* Step Indicator Subtitle */}
         <Skeleton height={10} width="20%" radius="xl" mt={-4} />
 

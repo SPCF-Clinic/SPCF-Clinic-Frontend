@@ -1,6 +1,6 @@
-import { Stack } from "@mantine/core";
+import { Stack , Text} from "@mantine/core";
 
-import type { PersonalInfoApiResponse } from "../../../../types/register.form.field";
+import type { PersonalInfoField,  } from "../../../../types/register.form.field";
 import { data_type } from "../../utils/register.form";
 
 import TextInput1 from "../components/TextInput";
@@ -10,12 +10,13 @@ import DropdownInput from "../components/DropdownInput";
 import SectionDivider from "../components/Divider";
 
 interface Step_1Props {
-  data: PersonalInfoApiResponse;
+  data: PersonalInfoField[];
 }
 
-export default function Step_1({ data}: Step_1Props) {
+export default function Step_1({ data }: Step_1Props) {
+  console.log(data)
   const Map_Data = () => {
-    return data.data.map((items) => {
+    return data.map((items) => {
       const typeLabel = data_type(items.type.name);
 
       return (
@@ -34,5 +35,11 @@ export default function Step_1({ data}: Step_1Props) {
     });
   };
 
-  return <>{Map_Data()}</>;
+  console.log(data)
+  return( 
+  <>
+  <Text fz={33} fw={700}>Personal Information</Text>
+  <Text>Please provide the student's basic personal details.</Text>
+  {Map_Data()}
+  </>);
 }

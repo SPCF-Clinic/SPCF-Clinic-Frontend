@@ -14,7 +14,7 @@ interface AdditionalField {
   required_with_field_value: string;
 }
 
-interface PersonalInfoField {
+export interface PersonalInfoField {
   id: number;
   name: string;
   type: FieldType;
@@ -50,7 +50,7 @@ export interface AdditionalField {
   required_with_field_value: string;
 }
 
-interface MedicalHistoryField {
+export interface MedicalHistoryField {
   id: number;
   name: string;
   type: FieldType;
@@ -68,4 +68,31 @@ export interface MedicalHistoryResponse {
   code: number;
   error: boolean;
   form_version: string;
+}
+
+export interface RegisterReqBody {
+  name: string;
+  student_id: string;
+  password: string;
+  personal_info: Record<number, string>;
+}
+
+interface RegisterPersonalInfo {
+  id: number;
+  user_id: number;
+  personal_info_field_id: number;
+  value: string;
+}
+
+interface RegisterResponseData {
+  username: string;
+  id: number;
+  personal_infos: RegisterPersonalInfo[];
+}
+
+export interface RegisterResBody {
+  message: string;
+  data: RegisterResponseData;
+  code: number;
+  error: boolean;
 }

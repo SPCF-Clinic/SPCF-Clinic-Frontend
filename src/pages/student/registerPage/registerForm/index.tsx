@@ -1,9 +1,11 @@
 import { useState } from "react";
+import {useForm} from "@mantine/form"
 import { Stepper, Button, Group, Stack, Paper, Text } from "@mantine/core";
 
 import {
   usePersonalInfo,
   useMedicalInfo,
+  useRegisterUser
 } from "../../../../query/register.form.field";
 
 import Footer from "../../components/Footer";
@@ -22,6 +24,15 @@ export default function Form() {
 
   const { data: step1_data, isFetching: step1_isFetching } = usePersonalInfo();
   const { data: step2_data, isFetching: step2_isFetching } = useMedicalInfo();
+
+  const form = useForm({
+  initialValues: {
+    name: "",
+    student_id: "",
+    password: "",
+    personal_info: {} as Record<number, string>,
+  },
+});
 
   return (
     <Layout>
@@ -87,7 +98,7 @@ export default function Form() {
           </Stepper.Completed>
         </Stepper>
         {active !== 0 && (
-          <Group justify="space-between" mt="md">
+          <Group justify="space-between" my="md">
             <Button
               variant="default"
               disabled={active === 0}

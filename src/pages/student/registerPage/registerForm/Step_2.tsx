@@ -1,7 +1,7 @@
 import { Stack, Text } from "@mantine/core";
 
 import type {
-  MedicalHistoryResponse,
+  MedicalHistoryField,
   AdditionalField,
 } from "../../../../types/register.form.field";
 import { data_type } from "../../utils/register.form";
@@ -14,7 +14,7 @@ import SectionDivider from "../components/Divider";
 import CheckboxInput from "../components/CheckboxInput";
 
 interface Step_2Props {
-  data: MedicalHistoryResponse;
+  data: MedicalHistoryField[];
 }
 
 export default function Step_2({ data }: Step_2Props) {
@@ -38,7 +38,7 @@ export default function Step_2({ data }: Step_2Props) {
   };
 
   const Map_Data = () => {
-    return data.data.map((items) => {
+    return data.map((items) => {
       const typeLabel = data_type(items.type.name);
 
       return (
@@ -67,5 +67,9 @@ export default function Step_2({ data }: Step_2Props) {
     });
   };
 
-  return <>{Map_Data()}</>;
+  return( 
+  <><Text fz={32} fw={700}>Medical & Vaccination History</Text>
+  <Text>Please provide the student's basic personal details.</Text>
+  {Map_Data()}
+  </>);
 }
