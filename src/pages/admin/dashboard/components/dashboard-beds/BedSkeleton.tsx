@@ -10,6 +10,7 @@ export default function BedSkeleton() {
       mih={110}
       data-status="empty"
       className={classes.bed}
+      data-loading
     >
       <Stack align="center" gap={0}>
         <Skeleton height={32} circle mb={4} className={classes.skeleton} />
