@@ -22,3 +22,17 @@ export interface CursorPaginationResponse<T> extends ApiResponse<T[]> {
   prev_cursor: string | null;
   prev_page_url: string | null;
 }
+
+export interface PaginationMeta {
+  current_page: number;
+  total_pages: number;
+  count: number;
+  per_page: number;
+  total: number;
+}
+
+export type PaginationResponse<T, K extends string> = {
+  [P in K]: T[];
+} & {
+  pagination: PaginationMeta;
+};
