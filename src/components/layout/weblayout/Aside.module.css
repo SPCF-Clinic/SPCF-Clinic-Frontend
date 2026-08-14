@@ -1,0 +1,23 @@
+.aside {
+  overflow: hidden;
+  transition-property: width, opacity;
+  transition-timing-function: var(--mantine-layout-transition-timing);
+  transition-duration: var(--mantine-layout-transition-duration);
+
+  opacity: 0;
+  pointer-events: none;
+
+  &[data-visible="true"] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.content {
+  width: calc(
+    var(--aside-opened-width) - 2 * var(--mantine-spacing-md)
+  );
+  min-width: calc(
+    var(--aside-opened-width) - 2 * var(--mantine-spacing-md)
+  );
+}

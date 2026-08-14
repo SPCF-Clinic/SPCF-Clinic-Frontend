@@ -1,6 +1,8 @@
-import { AppShell } from "@mantine/core";
+import { AppShell, Box } from "@mantine/core";
 
 import DashboardAside from "@/pages/admin/dashboard/components/dashboard-aside/DashboardAside";
+import { ASIDE_OPENED_WIDTH } from "../WebLayout";
+import classes from "./Aside.module.css";
 
 interface AsideProps {
   show?: boolean;
@@ -10,15 +12,15 @@ export default function Aside({ show }: AsideProps) {
   return (
     <AppShell.Aside
       p="md"
+      className={classes.aside}
+      data-visible={show}
       style={{
-        transitionProperty: "width, opacity",
-        transitionTimingFunction: "var(--mantine-layout-transition-timing)",
-        transitionDuration: "var(--mantine-layout-transition-duration)",
-        opacity: show ? 1 : 0,
-        pointerEvents: show ? "auto" : "none",
+        "--aside-opened-width": `${ASIDE_OPENED_WIDTH}px`,
       }}
     >
-      <DashboardAside />
+      <Box className={classes.content}>
+        <DashboardAside />
+      </Box>
     </AppShell.Aside>
   );
 }
