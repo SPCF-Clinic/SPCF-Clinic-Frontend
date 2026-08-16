@@ -1,5 +1,10 @@
-import { getStudents, type GetStudentsFilters } from "@/api/students";
 import { queryOptions } from "@tanstack/react-query";
+
+import {
+  getStudent,
+  getStudents,
+  type GetStudentsFilters,
+} from "@/api/students";
 
 export const studentQueries = {
   all: () => ["students"],
@@ -13,6 +18,6 @@ export const studentQueries = {
   detail: (id: number) =>
     queryOptions({
       queryKey: [...studentQueries.details(), id],
-      // queryFn: () => getStudent(id),
+      queryFn: () => getStudent(id),
     }),
 };

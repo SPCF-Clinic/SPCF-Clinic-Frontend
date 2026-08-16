@@ -12,8 +12,8 @@ export default function StudentList() {
   const { data } = useQuery(studentQueries.list({ student_id }));
 
   return (
-    <Paper className="printable-area" p="lg" radius="lg" withBorder>
-      <Stack>
+    <Paper flex={1} p="lg" radius="lg" withBorder>
+      <Stack className="printable-area">
         <Text component="h2" fw="bold" size="xl">
           List of Students {data ? `(${data.data.pagination.total})` : ""}
         </Text>

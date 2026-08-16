@@ -38,6 +38,9 @@ export default function StudentTable() {
       isPending={isPending}
       data={data?.data.students}
       highlightOnHover
+      style={{
+        borderBottom: "1px solid var(--table-border-color)",
+      }}
     >
       {data?.data.students.map((student) => (
         <Table.Tr
@@ -49,7 +52,7 @@ export default function StudentTable() {
               return;
             }
 
-            navigate(`/admin/students/${student.username}`);
+            navigate(`/admin/students/${student.id}`);
           }}
         >
           <Table.Td fw={600}>{student.username}</Table.Td>

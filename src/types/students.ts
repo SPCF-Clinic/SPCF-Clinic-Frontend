@@ -9,3 +9,24 @@ export interface StudentIndex {
   sex: "MALE" | "FEMALE";
   status: string;
 }
+
+export interface StudentShow {
+  id: number;
+  username: string;
+  personal_info: Fields[];
+  medical_history: Fields[];
+}
+
+export interface Fields {
+  id: number;
+  name: string;
+  form_order: number;
+  value: string[] | string;
+  additional_fields: AdditionalField[];
+}
+
+export interface AdditionalField {
+  id: number;
+  name: string;
+  value: null | string;
+}
