@@ -1,4 +1,4 @@
-import { Table } from "@mantine/core";
+import { Center, Table } from "@mantine/core";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
 import { useNavigate } from "react-router-dom";
@@ -64,7 +64,9 @@ export default function StudentTable() {
           </Table.Td>
           <Table.Td>{student.status || ""}</Table.Td>
           <Table.Td>
-            <RowActions />
+            <Center>
+              <RowActions />
+            </Center>
           </Table.Td>
         </Table.Tr>
       ))}
