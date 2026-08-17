@@ -3,9 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
 
 import { PrintButton } from "@/components/PrintButton";
+import { SearchFilter } from "@/components/SearchFilter";
 import { studentQueries } from "@/query/students";
 import StudentTable from "./components/student-table/StudentTable";
-import TableFilters from "./components/student-table/TableFilters";
 
 export default function StudentList() {
   const [student_id] = useQueryState("student_id", { defaultValue: "" });
@@ -18,7 +18,13 @@ export default function StudentList() {
           List of Students {data ? `(${data.data.pagination.total})` : ""}
         </Text>
         <Group justify="space-between">
-          <TableFilters />
+          <SearchFilter
+            numeric
+            queryKey="student_id"
+            textInputProps={{
+              placeholder: "Search Student Number",
+            }}
+          />
           <PrintButton className="no-print" />
         </Group>
         <StudentTable />
