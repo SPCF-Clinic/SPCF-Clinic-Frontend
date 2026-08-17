@@ -1,5 +1,5 @@
 import { Table } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useQueryState } from "nuqs";
 import { useNavigate } from "react-router-dom";
 
@@ -24,9 +24,10 @@ export default function StudentTable() {
 
   const [student_id] = useQueryState("student_id", { defaultValue: "" });
 
-  const { data, isPending, error, refetch } = useQuery(
-    studentQueries.list({ student_id }),
-  );
+  const { data, isPending, error, refetch } = useQuery({
+    ...studentQueries.list({ student_id }),
+    placeholderData: keepPreviousData,
+  });
 
   if (error) {
     return <QueryError error={error} onRetry={refetch} />;
@@ -38,9 +39,6 @@ export default function StudentTable() {
       isPending={isPending}
       data={data?.data.students}
       highlightOnHover
-      style={{
-        borderBottom: "1px solid var(--table-border-color)",
-      }}
     >
       {data?.data.students.map((student) => (
         <Table.Tr

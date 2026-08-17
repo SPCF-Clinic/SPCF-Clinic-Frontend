@@ -2,7 +2,9 @@ import { queryOptions } from "@tanstack/react-query";
 
 import {
   getStudent,
+  getStudentCheckIns,
   getStudents,
+  type GetStudentCheckInsFilters,
   type GetStudentsFilters,
 } from "@/api/students";
 
@@ -19,5 +21,15 @@ export const studentQueries = {
     queryOptions({
       queryKey: [...studentQueries.details(), id],
       queryFn: () => getStudent(id),
+    }),
+  checkIns: (studentId: number) => [
+    ...studentQueries.details(),
+    studentId,
+    "check-ins",
+  ],
+  checkInsList: (studentId: number, filters?: GetStudentCheckInsFilters) =>
+    queryOptions({
+      queryKey: [...studentQueries.checkIns(studentId), filters],
+      queryFn: () => getStudentCheckIns(studentId, filters),
     }),
 };

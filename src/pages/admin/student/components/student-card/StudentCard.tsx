@@ -1,4 +1,4 @@
-import { Card, Center, Loader, Stack } from "@mantine/core";
+import { Card, Stack } from "@mantine/core";
 
 import QueryError from "@/components/QueryError";
 import { useStudentDetail } from "@/hooks/students/useStudentDetail";
@@ -9,13 +9,7 @@ import StudentCardTabs from "./StudentCardTabs";
 export default function StudentCard() {
   const { data, isPending, error, refetch } = useStudentDetail();
 
-  if (isPending) {
-    return (
-      <Center flex={1}>
-        <Loader />
-      </Center>
-    );
-  }
+  if (isPending) return;
 
   if (error) {
     return <QueryError error={error} onRetry={refetch} />;

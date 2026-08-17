@@ -9,7 +9,7 @@ import StudentTable from "./components/student-table/StudentTable";
 
 export default function StudentList() {
   const [student_id] = useQueryState("student_id", { defaultValue: "" });
-  const { data } = useQuery(studentQueries.list({ student_id }));
+  const { data, isFetching } = useQuery(studentQueries.list({ student_id }));
 
   return (
     <Paper flex={1} p="lg" radius="lg" withBorder>
@@ -23,6 +23,7 @@ export default function StudentList() {
             queryKey="student_id"
             textInputProps={{
               placeholder: "Search Student Number",
+              loading: isFetching,
             }}
           />
           <PrintButton className="no-print" />

@@ -30,3 +30,26 @@ export interface AdditionalField {
   name: string;
   value: null | string;
 }
+
+export interface StudentCheckInIndex {
+  id: number;
+  user: CheckInStudent;
+  reason_for_visit: string;
+  check_in_time: string;
+  items_dispensed: ItemsDispensed[];
+  remarks: string | null;
+}
+
+export interface CheckInStudent {
+  id: number;
+  name: string;
+  age: number;
+  grade_level: string | null;
+  year_level: string | null;
+  course: string | null;
+}
+
+export interface ItemsDispensed {
+  name: string;
+  quantity: number;
+}
