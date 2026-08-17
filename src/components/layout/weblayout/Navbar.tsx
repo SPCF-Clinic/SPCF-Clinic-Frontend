@@ -90,20 +90,25 @@ export default function Navbar({ ref }: NavbarProps) {
     >
       <AppShell.Section grow>
         <Stack gap="xs">
-          {filteredLinks.map(({ label, ...link }) => (
-            <NavLink
-              key={label as string}
-              {...link}
-              component={Link}
-              to={`${URL_PREFIX}${link.to}`}
-              variant="filled"
-              bdrs="xl"
-              fz="lg"
-              label={label}
-              style={{ whiteSpace: "nowrap" }}
-              fw={500}
-            />
-          ))}
+          {filteredLinks.map((item) => {
+            const { label, ...link } = item;
+            delete link.superAdminOnly;
+
+            return (
+              <NavLink
+                key={label as string}
+                {...link}
+                component={Link}
+                to={`${URL_PREFIX}${link.to}`}
+                variant="filled"
+                bdrs="xl"
+                fz="lg"
+                label={label}
+                style={{ whiteSpace: "nowrap" }}
+                fw={500}
+              />
+            );
+          })}
         </Stack>
       </AppShell.Section>
 
