@@ -3,24 +3,31 @@ import { IconPlus } from "@tabler/icons-react";
 
 import { SearchFilter } from "@/components/SearchFilter";
 import { useItems } from "@/hooks/items/useItems";
-import MedicineTable from "./MedicineTable";
+import type { ItemType } from "@/types/items";
+import { SEARCH_KEYS } from "../../searchKeys";
+import MedicineSupplyTable from "./MedicineSupplyTable";
 
-export default function Medicines() {
-	const { isFetching } = useItems({ type: "Medicine" });
+interface MedicineSupplyProps {
+	type: ItemType;
+}
+
+export default function MedicineSupply({ type }: MedicineSupplyProps) {
+	const { isFetching } = useItems({ type });
+	const searchKey = SEARCH_KEYS[type];
 
 	return (
 		<Box>
 			<Stack>
 				<Group justify="space-between">
 					<SearchFilter
-						queryKey="search"
+						queryKey={searchKey}
 						textInputProps={{ loading: isFetching }}
 					/>
 					<Button size="md" fz="sm" leftSection={<IconPlus size={20} />}>
-						Add Medicine
+						Add {type}
 					</Button>
 				</Group>
-				<MedicineTable />
+				<MedicineSupplyTable type={type} />
 			</Stack>
 		</Box>
 	);

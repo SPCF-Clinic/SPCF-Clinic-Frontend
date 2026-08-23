@@ -1,9 +1,11 @@
 import { Center, Table } from "@mantine/core";
 
+import type { GetItemsFilters } from "@/api/items";
 import ActionMenu from "@/components/ActionMenu";
 import { AppTable, type ColumnDef } from "@/components/AppTable";
 import QueryError from "@/components/QueryError";
 import { useItems } from "@/hooks/items/useItems";
+import type { ItemType } from "@/types/items";
 
 const COLUMNS: ColumnDef[] = [
 	{ title: "Name" },
@@ -15,8 +17,10 @@ const COLUMNS: ColumnDef[] = [
 	{ id: "actions", w: 48 },
 ];
 
-export default function MedicineTable() {
-	const { data, isPending, error, refetch } = useItems({ type: "Medicine" });
+export default function MedicineSupplyTable<T extends ItemType>(
+	props: GetItemsFilters<T>,
+) {
+	const { data, isPending, error, refetch } = useItems(props);
 
 	if (error) {
 		return <QueryError error={error} onRetry={refetch} />;

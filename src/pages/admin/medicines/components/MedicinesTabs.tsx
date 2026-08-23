@@ -2,7 +2,7 @@ import { Card, Tabs } from "@mantine/core";
 import { parseAsStringLiteral, useQueryState } from "nuqs";
 
 import classes from "@/styles/Tabs.module.css";
-import Medicines from "./tab-panels/medicines/Medicines";
+import MedicineSupply from "./tab-panels/MedicineSupply";
 
 const TAB_VALUES = ["medicines", "supplies", "history"] as const;
 type TabValue = (typeof TAB_VALUES)[number];
@@ -38,9 +38,11 @@ export default function MedicinesTabs() {
 
 			<Card>
 				<Tabs.Panel value="medicines">
-					<Medicines />
+					<MedicineSupply type="Medicine" />
 				</Tabs.Panel>
-				<Tabs.Panel value="supplies">Supplies</Tabs.Panel>
+				<Tabs.Panel value="supplies">
+					<MedicineSupply type="Supply" />
+				</Tabs.Panel>
 				<Tabs.Panel value="history">History</Tabs.Panel>
 			</Card>
 		</Tabs>
