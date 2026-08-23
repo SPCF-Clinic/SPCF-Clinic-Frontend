@@ -3,6 +3,7 @@ import { IconPlus } from "@tabler/icons-react";
 
 import { SearchFilter } from "@/components/SearchFilter";
 import { useItems } from "@/hooks/items/useItems";
+import { useAuthStore } from "@/stores/useAuthStore";
 import type { ItemType } from "@/types/items";
 import { SEARCH_KEYS } from "../../searchKeys";
 import MedicineSupplyTable from "./MedicineSupplyTable";
@@ -15,6 +16,9 @@ export default function MedicineSupply({ type }: MedicineSupplyProps) {
 	const { isFetching } = useItems({ type });
 	const searchKey = SEARCH_KEYS[type];
 
+	const role = useAuthStore((state) => state.user)?.role;
+	const isSuperAdmin = role === "Super Admin";
+
 	return (
 		<Box>
 			<Stack>
@@ -23,9 +27,12 @@ export default function MedicineSupply({ type }: MedicineSupplyProps) {
 						queryKey={searchKey}
 						textInputProps={{ loading: isFetching }}
 					/>
-					<Button size="md" fz="sm" leftSection={<IconPlus size={20} />}>
-						Add {type}
-					</Button>
+
+					{isSuperAdmin && (
+						<Button size="md" fz="sm" leftSection={<IconPlus size={20} />}>
+							Add {type}
+						</Button>
+					)}
 				</Group>
 				<MedicineSupplyTable type={type} />
 			</Stack>
