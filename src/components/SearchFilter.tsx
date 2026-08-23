@@ -22,7 +22,6 @@ interface SearchFilterProps {
 	menuItems?: FilterMenuItem[];
 	debounceMs?: number;
 	textInputProps?: TextInputProps;
-
 	sanitize?: (value: string) => string;
 }
 
