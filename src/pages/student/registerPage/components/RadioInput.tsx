@@ -4,11 +4,16 @@ import { SegmentedControl, Input, Radio } from "@mantine/core";
 interface RadioInputProps {
   label: string;
   data: string[];
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-export default function RadioInput({ label, data }: RadioInputProps) {
-  const [value, setValue] = useState("");
-
+export default function RadioInput({
+  label,
+  data,
+  value,
+  onChange,
+}: RadioInputProps) {
   return (
     <Input.Wrapper
       label={label}
@@ -25,7 +30,9 @@ export default function RadioInput({ label, data }: RadioInputProps) {
       <SegmentedControl
         fullWidth
         value={value}
-        onChange={setValue}
+        onChange={(value) => {
+          onChange?.(value);
+        }}
         data={data ?? []}
         styles={{
           root: {

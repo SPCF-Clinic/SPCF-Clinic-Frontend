@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import {useForm} from "@mantine/form"
 import { Stepper, Button, Group, Stack, Paper, Text } from "@mantine/core";
 
@@ -20,6 +21,8 @@ import Step_4 from "./Step_4";
 import Step_5 from "./Step_5";
 
 export default function Form() {
+const { studentId } = useParams();
+
   const [active, setActive] = useState(0);
 
   const { data: step1_data, isFetching: step1_isFetching } = usePersonalInfo();
@@ -27,13 +30,14 @@ export default function Form() {
 
   const form = useForm({
   initialValues: {
-    name: "",
-    student_id: "",
+    student_id: studentId,
     password: "",
+    personal_info_form_version: step1_data?.data.form_version,
+    medical_history_form_version: step2_data?.data.form_version,
     personal_info: {} as Record<number, string>,
   },
 });
-
+console.log(form.values.student_id)
   return (
     <Layout>
       <Stack>
@@ -70,7 +74,7 @@ export default function Form() {
             {step1_isFetching ? (
               <SectionSkeleton />
             ) : (
-              <Step_1 data={step1_data?.data} />
+              <Step_1 data={step1_data?.data} form={form} />
             )}
           </Stepper.Step>
 

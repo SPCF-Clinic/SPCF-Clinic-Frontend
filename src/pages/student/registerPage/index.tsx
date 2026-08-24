@@ -45,7 +45,7 @@ export default function RegisterPage() {
               size="md"
               gradient={{ from: "#29315B", to: "#294FAF", deg: 90 }}
                 opacity={isFormEmpty ? 0.7: 1}
-                onClick={() => {navigate("form")}}
+                onClick={() => {navigate(`form/${form.values.studentNumber}`)}}
             >
               Continue
             </Button>

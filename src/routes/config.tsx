@@ -33,7 +33,7 @@ export const routes = [
         element: <RegisterPage />,
       },
       {
-        path: "register/form", 
+        path: "register/form/:studentId", 
         element: <FormPage />,
       },
       {

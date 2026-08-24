@@ -2,9 +2,11 @@ import { TextInput } from "@mantine/core";
 
 interface TextInputProps {
   label: string;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-export default function TextInput1({ label }: TextInputProps) {
+export default function TextInput1({ label, value, onChange }: TextInputProps) {
   return (
     <>
       <TextInput
@@ -17,6 +19,10 @@ export default function TextInput1({ label }: TextInputProps) {
             fontSize: "13px",
             marginBottom: 4,
           },
+        }}
+        value={value}
+        onChange={(event) => {
+          onChange?.(event.currentTarget.value);
         }}
       />
     </>

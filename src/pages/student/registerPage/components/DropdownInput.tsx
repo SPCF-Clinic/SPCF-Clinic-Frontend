@@ -3,10 +3,16 @@ import { Select, Input } from "@mantine/core";
 interface DropdownInputProps {
   label: string;
   data: string[];
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-export default function DropdownInput({ label, data }: DropdownInputProps) {
+export default function DropdownInput({ label, data, value, onChange }: DropdownInputProps) {
   console.log(data);
+
+  const handleOnChange = () => {
+
+  }
   return (
     <Input.Wrapper
       label={label}
@@ -20,7 +26,9 @@ export default function DropdownInput({ label, data }: DropdownInputProps) {
         },
       }}
     >
-      <Select data={data} />
+      <Select data={data} value={value} onChange={(value : any) => {
+          onChange?.(value);
+        }}/>
     </Input.Wrapper>
   );
 }

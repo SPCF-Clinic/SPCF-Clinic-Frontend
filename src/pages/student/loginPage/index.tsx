@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useForm } from "@mantine/form";
@@ -46,6 +45,7 @@ export default function LoginPage() {
     loginMutation.mutate(form.values, {
       onSuccess: (data) => {
         login(data.user.role);
+        navigate(``)
       },
     });
   };

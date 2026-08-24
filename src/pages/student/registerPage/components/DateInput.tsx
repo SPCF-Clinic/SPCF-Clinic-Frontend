@@ -3,29 +3,76 @@ import { Group, Select, Input } from "@mantine/core";
 
 interface DateInputProps {
   label: string;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-export default function DateInput({ label }: DateInputProps) {
-  const [month, setMonth] = useState<string | null>(null);
-  const [day, setDay] = useState<string | null>(null);
-  const [year, setYear] = useState<string | null>(null);
+export default function DateInput({
+  label,
+  value,
+  onChange,
+}: DateInputProps) {
+  const [month, setMonth] = useState<string | null>(
+    value ? value.split("-")[1] : null
+  );
+
+  const [day, setDay] = useState<string | null>(
+    value ? value.split("-")[2] : null
+  );
+
+  const [year, setYear] = useState<string | null>(
+    value ? value.split("-")[0] : null
+  );
 
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    { value: "01", label: "January" },
+    { value: "02", label: "February" },
+    { value: "03", label: "March" },
+    { value: "04", label: "April" },
+    { value: "05", label: "May" },
+    { value: "06", label: "June" },
+    { value: "07", label: "July" },
+    { value: "08", label: "August" },
+    { value: "09", label: "September" },
+    { value: "10", label: "October" },
+    { value: "11", label: "November" },
+    { value: "12", label: "December" },
   ];
-  const days = Array.from({ length: 31 }, (_, i) => String(i + 1));
-  const years = Array.from({ length: 100 }, (_, i) => String(2026 - i));
+
+  const days = Array.from(
+    { length: 31 },
+    (_, i) => String(i + 1).padStart(2, "0")
+  );
+
+  const years = Array.from(
+    { length: 100 },
+    (_, i) => String(2026 - i)
+  );
+
+  const updateDate = (
+    newMonth: string | null,
+    newDay: string | null,
+    newYear: string | null
+  ) => {
+    if (newMonth && newDay && newYear) {
+      onChange?.(`${newYear}-${newMonth}-${newDay}`);
+    }
+  };
+
+  const handleMonthChange = (newMonth: string | null) => {
+    setMonth(newMonth);
+    updateDate(newMonth, day, year);
+  };
+
+  const handleDayChange = (newDay: string | null) => {
+    setDay(newDay);
+    updateDate(month, newDay, year);
+  };
+
+  const handleYearChange = (newYear: string | null) => {
+    setYear(newYear);
+    updateDate(month, day, newYear);
+  };
 
   return (
     <Input.Wrapper
@@ -45,30 +92,25 @@ export default function DateInput({ label }: DateInputProps) {
           placeholder="Month"
           data={months}
           value={month}
-          onChange={setMonth}
+          onChange={handleMonthChange}
           styles={{
             input: {
               borderTopRightRadius: 0,
               borderBottomRightRadius: 0,
               borderRight: "none",
-              "&:focus": {
-                zIndex: 1,
-              },
             },
           }}
         />
+
         <Select
           placeholder="Day"
           data={days}
           value={day}
-          onChange={setDay}
+          onChange={handleDayChange}
           styles={{
             input: {
               borderRadius: 0,
               borderRight: "none",
-              "&:focus": {
-                zIndex: 1,
-              },
             },
           }}
         />
@@ -77,14 +119,11 @@ export default function DateInput({ label }: DateInputProps) {
           placeholder="Year"
           data={years}
           value={year}
-          onChange={setYear}
+          onChange={handleYearChange}
           styles={{
             input: {
               borderTopLeftRadius: 0,
               borderBottomLeftRadius: 0,
-              "&:focus": {
-                zIndex: 1,
-              },
             },
           }}
         />
