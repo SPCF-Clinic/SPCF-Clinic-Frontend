@@ -1,10 +1,7 @@
 import { apiClient } from "@/services/axios";
 import type { PaginationQueryParams, PaginationResponse } from "@/types/api";
-import type {
-	StudentCheckInIndex,
-	StudentIndex,
-	StudentShow,
-} from "@/types/students";
+import type { StudentIndex, StudentShow } from "@/types/students";
+import type { GetCheckInsResponse } from "./check-ins";
 
 export type GetStudentsFilters = PaginationQueryParams<{
 	student_id?: string;
@@ -22,16 +19,10 @@ export type GetStudentCheckInsFilters = PaginationQueryParams<{
 	search?: string;
 }>;
 
-type GetStudentCheckInsResponse = PaginationResponse<
-	StudentCheckInIndex,
-	"check_ins"
->;
-
 export const getStudentCheckIns = (
 	studentId: number,
 	filters?: GetStudentCheckInsFilters,
 ) =>
-	apiClient.get<GetStudentCheckInsResponse>(
-		`/students/${studentId}/check-ins`,
-		{ params: filters },
-	);
+	apiClient.get<GetCheckInsResponse>(`/students/${studentId}/check-ins`, {
+		params: filters,
+	});
