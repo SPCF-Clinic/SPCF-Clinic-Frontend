@@ -42,7 +42,7 @@ export default function Header({
 	};
 
 	return (
-		<AppShell.Header pt="md">
+		<AppShell.Header pt="md" pb="sm">
 			<Group h="100%" px="md" gap="0" wrap="nowrap">
 				<Box ref={ref} className={classes.logoHitArea}>
 					<Group

@@ -14,40 +14,40 @@ export const ASIDE_OPENED_WIDTH = 400;
 export const ASIDE_CLOSED_WIDTH = 40;
 
 export default function WebLayout() {
-  const location = useLocation();
-  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-  const { hovered: navHovered, ref: navRef } = useHover<HTMLDivElement>();
-  const { hovered: logoHovered, ref: logoRef } = useHover<HTMLDivElement>();
-  const isDesktop = useMediaQuery("(min-width: 48em)");
-  const desktopOpened = isDesktop && (navHovered || logoHovered);
-  const isDashboardPage = location.pathname === "/admin";
+	const location = useLocation();
+	const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+	const { hovered: navHovered, ref: navRef } = useHover<HTMLDivElement>();
+	const { hovered: logoHovered, ref: logoRef } = useHover<HTMLDivElement>();
+	const isDesktop = useMediaQuery("(min-width: 48em)");
+	const desktopOpened = isDesktop && (navHovered || logoHovered);
+	const isDashboardPage = location.pathname === "/admin";
 
-  return (
-    <AppShell
-      withBorder={false}
-      layout="default"
-      header={{ height: 76 }}
-      navbar={{
-        width: desktopOpened ? NAVBAR_OPENED_WIDTH : NAVBAR_CLOSED_WIDTH,
-        breakpoint: "sm",
-        collapsed: { mobile: !mobileOpened },
-      }}
-      transitionDuration={300}
-      transitionTimingFunction="var(--mantine-layout-transition-timing)"
-      aside={{
-        width: isDashboardPage ? ASIDE_OPENED_WIDTH : ASIDE_CLOSED_WIDTH,
-        breakpoint: "md",
-        collapsed: { desktop: false, mobile: true },
-      }}
-    >
-      <Header
-        mobile={{ opened: mobileOpened, toggle: toggleMobile }}
-        desktop={{ opened: desktopOpened }}
-        ref={logoRef}
-      />
-      <Navbar ref={navRef} />
-      <Main />
-      <Aside show={isDashboardPage} />
-    </AppShell>
-  );
+	return (
+		<AppShell
+			withBorder={false}
+			layout="default"
+			header={{ height: 84 }}
+			navbar={{
+				width: desktopOpened ? NAVBAR_OPENED_WIDTH : NAVBAR_CLOSED_WIDTH,
+				breakpoint: "sm",
+				collapsed: { mobile: !mobileOpened },
+			}}
+			transitionDuration={300}
+			transitionTimingFunction="var(--mantine-layout-transition-timing)"
+			aside={{
+				width: isDashboardPage ? ASIDE_OPENED_WIDTH : ASIDE_CLOSED_WIDTH,
+				breakpoint: "md",
+				collapsed: { desktop: false, mobile: true },
+			}}
+		>
+			<Header
+				mobile={{ opened: mobileOpened, toggle: toggleMobile }}
+				desktop={{ opened: desktopOpened }}
+				ref={logoRef}
+			/>
+			<Navbar ref={navRef} />
+			<Main />
+			<Aside show={isDashboardPage} />
+		</AppShell>
+	);
 }
