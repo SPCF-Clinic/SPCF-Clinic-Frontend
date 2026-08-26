@@ -45,7 +45,7 @@ export default function LoginPage() {
     loginMutation.mutate(form.values, {
       onSuccess: (data) => {
         login(data.user.role);
-        navigate(``)
+        navigate(`student-dashboard`)
       },
     });
   };

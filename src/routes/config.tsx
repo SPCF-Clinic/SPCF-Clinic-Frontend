@@ -11,6 +11,7 @@ import MobLayout from "@/components/layout/MobLayout";
 import LoginPage from "../pages/student/loginPage/index";
 import RegisterPage from "../pages/student/registerPage";
 import FormPage from "../pages/student/registerPage/registerForm";
+import StudentDashboard from "@/pages/student/dashboardPage"
 
 //Admin
 import Dashboard from "@/pages/admin/dashboard";
@@ -37,17 +38,14 @@ export const routes = [
         element: <FormPage />,
       },
       {
-        
-      }
-      // {
-      //   element: <ProtectedRoute layoutType="student" requiredRole="student" />,
-      //   children: [
-      //     {
-      //       path: "edit",
-      //       element: <LoginPage />,
-      //     },
-      //   ],
-      // },
+        element: <ProtectedRoute layoutType="student" requiredRole="Student" />,
+        children: [
+          {
+            path: "student-dashboard",
+            element: <StudentDashboard />
+          },
+        ],
+      },
     ],
   },
   {
