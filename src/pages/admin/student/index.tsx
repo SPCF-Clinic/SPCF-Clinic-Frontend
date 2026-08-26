@@ -4,6 +4,7 @@ import { useStudentCheckIns } from "@/hooks/students/useStudentCheckIns";
 import { useStudentDetail } from "@/hooks/students/useStudentDetail";
 import Breadcrumbs from "./components/Breadcrumbs";
 import ContactPerson from "./components/ContactPerson";
+import Illnesses from "./components/Illnesses";
 import StudentCard from "./components/student-card/StudentCard";
 import VisitLog from "./components/visit-log/VisitLog";
 
@@ -36,6 +37,7 @@ export default function StudentProfile() {
 				<Grid.Col span={3.5}>
 					<Stack>
 						<ContactPerson />
+						<Illnesses />
 					</Stack>
 				</Grid.Col>
 			</Grid>

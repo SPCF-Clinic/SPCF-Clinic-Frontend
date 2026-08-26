@@ -15,6 +15,11 @@ export interface StudentShow {
 	username: string;
 	personal_info: Fields[];
 	medical_history: Fields[];
+	contact_person: {
+		name: string;
+		number: string;
+	};
+	illnesses: string[];
 }
 
 export interface Fields {
