@@ -47,7 +47,7 @@ export default function ActivityLog() {
 					))
 				: groupedLogs.map((day) => <ActivityLogItem key={day.date} {...day} />)}
 
-			{isFetchingNextPage && <ActivityLogSkeleton />}
+			{(hasNextPage || isFetchingNextPage) && <ActivityLogSkeleton />}
 			{hasNextPage && !isFetchingNextPage && <div ref={ref}></div>}
 		</Stack>
 	);
