@@ -1,11 +1,10 @@
 import { Paper, Stack, Table, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-
+import { AppTable, type ColumnDef } from "@/components/AppTable";
 import QueryError from "@/components/QueryError";
 import { dashboardQueries } from "@/query/dashboard";
 import { dayjs } from "@/services/dayjs";
-import { AppTable, type ColumnDef } from "@/components/AppTable";
-import classes from "./DashboardInClinic.module.css";
+import classes from "@/styles/OutlineTableRow.module.css";
 
 export default function DashboardInClinic() {
   return (
@@ -24,8 +23,8 @@ export default function DashboardInClinic() {
 const COLUMNS: ColumnDef[] = [
   { title: "Student Number", w: "20%" },
   { title: "Name" },
-  { title: "Bed Assignment", w: "15%" },
-  { title: "Time", w: "10%" },
+  { title: "Bed Assignment", w: "20%" },
+  { title: "Time", w: "15%" },
 ];
 
 function ClinicTable() {
@@ -43,14 +42,15 @@ function ClinicTable() {
       isPending={isPending}
       columns={COLUMNS}
       highlightOnHover
-      classNames={{ table: classes.table }}
     >
       {data?.data.currently_in_clinic.map((student) => (
-        <Table.Tr key={student.student_id}>
+        <Table.Tr className={classes.tr} key={student.student_id}>
           <Table.Td fw={600}>{student.student_id}</Table.Td>
           <Table.Td>{student.name}</Table.Td>
           <Table.Td>{student.bed_id || "--"}</Table.Td>
-          <Table.Td>{dayjs(student.check_in_time).format("LT")}</Table.Td>
+          <Table.Td c="dimmed">
+            {dayjs(student.check_in_time).format("LT")}
+          </Table.Td>
         </Table.Tr>
       ))}
     </AppTable>

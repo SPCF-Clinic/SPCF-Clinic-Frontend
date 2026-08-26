@@ -1,11 +1,14 @@
-import { useMutation } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 
-import useAuthStore from "../stores/auth";
-import type { LoginReqBody, LoginResBody } from "../types/auth";
-import { login } from "../services/auth"
+import { validateToken } from "@/api/auth";
 
-export function useLogin(){
-    return useMutation<LoginResBody, Error, LoginReqBody>({
-        mutationFn: login
-    })
-}
+export const authQueries = {
+	all: () => ["auth"],
+	me: () =>
+		queryOptions({
+			queryKey: [...authQueries.all(), "me"],
+			queryFn: validateToken,
+			retry: false,
+			staleTime: Infinity,
+		}),
+};

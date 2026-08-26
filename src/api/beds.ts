@@ -1,19 +1,13 @@
+import type {
+  CursorPaginationQueryParams,
+  CursorPaginationResponse,
+} from "@/types/api";
 import { apiClient } from "@/services/axios";
-import type { Bed } from "@/types/beds";
+import type { BedIndex } from "@/types/beds";
 
-export interface GetBedsFilters {
-  cursor: string;
-}
+export type GetBedsFilters = CursorPaginationQueryParams;
 
-interface GetBedsResponse {
-  data: Bed[];
-  path: string;
-  per_page: number;
-  next_cursor: string | null;
-  next_page_url: string | null;
-  prev_cursor: string | null;
-  prev_page_url: string | null;
-}
+type GetBedsResponse = CursorPaginationResponse<BedIndex>;
 
 export const getBeds = (filters?: GetBedsFilters) =>
   apiClient.get<GetBedsResponse>("/beds", { params: filters });

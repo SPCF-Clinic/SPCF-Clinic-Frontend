@@ -1,4 +1,4 @@
-export type Bed =
+export type BedIndex =
   | {
       id: number;
       bed_number: string;

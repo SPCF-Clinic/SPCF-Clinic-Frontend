@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure, useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import QueryError from "@/components/QueryError";
 import { bedQueries } from "@/query/beds";
@@ -31,10 +31,15 @@ export default function DashboardBeds() {
     isFetchingNextPage,
     fetchNextPage,
   } = useInfiniteQuery(bedQueries.list());
-  const { ref, entry } = useIntersection({ threshold: 0.1 });
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+  const { ref, entry } = useIntersection({
+    root: container,
+    scrollMargin: "250px",
+  });
 
   useEffect(() => {
     if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+      console.log("fetching");
       fetchNextPage();
     }
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
@@ -57,7 +62,7 @@ export default function DashboardBeds() {
         </Flex>
 
         <Stack>
-          <Scroller>
+          <Scroller ref={setContainer}>
             <Group wrap="nowrap" py="xs">
               {isPending ? (
                 Array.from({ length: 8 }, (_, i) => (
@@ -84,9 +89,7 @@ export default function DashboardBeds() {
                       </Box>
                     ))}
 
-                  {hasNextPage && (
-                    <Box ref={ref} w={20} style={{ flexShrink: 0 }} />
-                  )}
+                  {hasNextPage && <Box ref={ref} />}
                 </>
               )}
             </Group>

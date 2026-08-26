@@ -1,11 +1,32 @@
 import axios from "axios";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { queryClient } from "./query-client";
 
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
+	baseURL: import.meta.env.VITE_API_URL,
+	headers: {
+		"Content-Type": "application/json",
+	},
 });
 
-apiClient.interceptors.response.use((response) => response.data);
+apiClient.interceptors.request.use(
+	(config) => {
+		const token = useAuthStore.getState().token;
+		if (token) {
+			config.headers.Authorization = `Bearer ${token}`;
+		}
+		return config;
+	},
+	(error) => Promise.reject(error),
+);
+
+apiClient.interceptors.response.use(
+	(response) => response.data,
+	(error) => {
+		if (error.response?.status === 401) {
+			useAuthStore.getState().logout();
+			queryClient.clear();
+		}
+		return Promise.reject(error);
+	},
+);

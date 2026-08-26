@@ -1,17 +1,19 @@
 import {
   EmptyState,
   Skeleton,
-  Table,
   type SkeletonProps,
+  Table,
   type TableProps,
   type TableThProps,
+  useMantineTheme,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { IconZoom } from "@tabler/icons-react";
 import type { ReactNode } from "react";
 
 export interface ColumnDef extends Omit<TableThProps, "title"> {
   key?: string;
-  title: ReactNode;
+  title?: ReactNode;
   skeletonProps?: SkeletonProps;
 }
 
@@ -29,19 +31,39 @@ export function AppTable<T>({
   isPending,
   skeletonRows = 5,
   children,
+  style,
   ...rest
 }: AppTableProps<T>) {
   const isEmpty = !isPending && data?.length === 0;
+  const theme = useMantineTheme();
+  const isAboveBreakpoint = useMediaQuery(
+    `(min-width: ${theme.breakpoints.sm})`,
+  );
 
   return (
-    <Table layout="fixed" verticalSpacing="sm" horizontalSpacing="sm" {...rest}>
+    <Table
+      layout={isAboveBreakpoint ? "fixed" : "auto"}
+      verticalSpacing="sm"
+      horizontalSpacing="sm"
+      style={{
+        borderBottom: "1px solid var(--table-border-color)",
+        ...style,
+      }}
+      {...rest}
+    >
       <Table.Thead>
         <Table.Tr>
-          {columns.map(({ title, key, ...rest }, i) => {
+          {columns.map(({ title, key, w, ...rest }, i) => {
             const headerKey = key ?? (typeof title === "string" ? title : i);
 
             return (
-              <Table.Th key={headerKey} c="primary" bg="gray.2" {...rest}>
+              <Table.Th
+                key={headerKey}
+                c="primary"
+                bg="gray.2"
+                {...rest}
+                w={isAboveBreakpoint ? w : undefined}
+              >
                 {title}
               </Table.Th>
             );
@@ -51,9 +73,9 @@ export function AppTable<T>({
       <Table.Tbody>
         {isPending ? (
           Array.from({ length: skeletonRows }).map((_, rowIndex) => (
-            <Table.Tr key={rowIndex}>
-              {columns.map(({ skeletonProps }, columnIndex) => (
-                <Table.Td key={columnIndex}>
+            <Table.Tr style={{ cursor: "wait" }} key={rowIndex}>
+              {columns.map(({ title, id, skeletonProps }, columnIndex) => (
+                <Table.Td key={(title as string) || id || columnIndex}>
                   <Skeleton height={21} radius="md" {...skeletonProps} />
                 </Table.Td>
               ))}

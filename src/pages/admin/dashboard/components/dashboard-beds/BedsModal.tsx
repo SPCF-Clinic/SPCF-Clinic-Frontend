@@ -1,7 +1,7 @@
 import { Box, Divider, Grid, Modal, type ModalProps } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import QueryError from "@/components/QueryError";
 import { bedQueries } from "@/query/beds";
@@ -11,6 +11,7 @@ import ColorSwatchLegend from "./ColorSwatchLegend";
 import { useIntersection } from "@mantine/hooks";
 
 export default function BedsModal(props: ModalProps) {
+  const { opened } = props;
   const {
     data,
     isPending,
@@ -19,18 +20,25 @@ export default function BedsModal(props: ModalProps) {
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-  } = useInfiniteQuery(bedQueries.list());
+  } = useInfiniteQuery({ ...bedQueries.list(), enabled: opened });
 
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const { ref, entry } = useIntersection({
-    threshold: 0.1,
+    root: container,
+    rootMargin: "200px",
   });
 
   useEffect(() => {
-    if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+    if (opened && entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
-      console.log("fetching next page");
     }
-  }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [
+    opened,
+    entry?.isIntersecting,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  ]);
 
   if (error) {
     return <QueryError error={error} onRetry={refetch} />;
@@ -39,7 +47,7 @@ export default function BedsModal(props: ModalProps) {
   return (
     <Modal.Root size="xl" centered {...props}>
       <Modal.Overlay />
-      <Modal.Content>
+      <Modal.Content h="60vh" ref={setContainer}>
         <Modal.Header>
           <Modal.Title fz={20} fw={600}>
             Bed Status
@@ -77,7 +85,8 @@ export default function BedsModal(props: ModalProps) {
                 </Grid.Col>
               ))}
           </Grid>
-          <Box ref={ref} />
+
+          {hasNextPage && <Box ref={ref} />}
         </Modal.Body>
         <Box
           py="sm"

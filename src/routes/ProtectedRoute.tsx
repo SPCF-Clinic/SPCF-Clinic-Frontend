@@ -1,30 +1,39 @@
+import { useAuthStore } from "@/stores/useAuthStore";
+import type { UserRole } from "@/types/auth";
 import { Navigate, Outlet } from "react-router-dom";
-import useAuthStore from "../stores/auth";
+import { useShallow } from "zustand/shallow";
+// import useAuthStore from "../stores/zustand";
 
 interface ProtectedRouteProps {
-    layoutType: string,
-    requiredRole?: string
+  layoutType: "student" | "admin";
+  requiredRole?: UserRole;
 }
 
-export default function ProtectedRoute({layoutType, requiredRole}:ProtectedRouteProps){
+export default function ProtectedRoute({
+  layoutType,
+  requiredRole,
+}: ProtectedRouteProps) {
+  // Temporary auth
+  const { isAuthenticated, role } = useAuthStore(
+    useShallow((state) => ({
+      isAuthenticated: state.isAuthenticated,
+      role: state.user?.role,
+    })),
+  );
+  // const { isAuthenticated, role } = useAuthStore();
 
-    const {isAuthenticated, role} = useAuthStore()
+  if (!isAuthenticated) {
+    const loginPath = layoutType === "admin" ? "/admin/login" : "/login";
+    return <Navigate to={loginPath} replace />;
+  }
 
-   if(!isAuthenticated){
-    return <Navigate to={layoutType === "admin"? "/admin": "/"} replace/>
-   }
-// change yung navigate to dashboard
-  if (requiredRole && role !== "superadmin" && role !== requiredRole) {
-  return <Navigate to="/admin" replace />;
-}
-  if (
-    requiredRole === "admin" &&
-    role !== "admin" &&
-    role !== "superadmin"
-  ) {
+  if (requiredRole && role !== "Super Admin" && role !== requiredRole) {
+    return <Navigate to="/admin" replace />;
+  }
+
+  if (requiredRole === "Admin" && role !== "Admin" && role !== "Super Admin") {
     return <Navigate to="/" replace />;
   }
 
-
- return <Outlet/>
+  return <Outlet />;
 }
