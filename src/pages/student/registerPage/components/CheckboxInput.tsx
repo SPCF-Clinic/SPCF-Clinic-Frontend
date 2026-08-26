@@ -8,8 +8,8 @@ interface CheckboxInputProps {
   description?: string;
   error?: string;
   options?: CheckboxOption[];
-  data?: string[];
-  onChange?: (selectedValues: string[]) => void;
+  data?: string;
+  onChange?:  (value: string) => void;
 }
 
 
@@ -20,11 +20,13 @@ export default function CheckboxInput({label,
   data,
   onChange,}: CheckboxInputProps){
  const [internalSelected, setInternalSelected] = useState<string[]>([]);
+
+ console.log(internalSelected)
   const selectedValues = data !== undefined ? data : internalSelected;
 
   const handleToggle = (optionValue: string) => {
     const nextValues = selectedValues.includes(optionValue)
-      ? selectedValues.filter((v) => v !== optionValue)
+      ? selectedValues.filter((v: any) => v !== optionValue)
       : [...selectedValues, optionValue];
 
     if (data === undefined) {
@@ -71,7 +73,7 @@ export default function CheckboxInput({label,
                 cursor: 'pointer',
               }}
             >
-              {/* Left Box with Circle Indicator */}
+
               <Box
                 style={{
                   width: 42,
@@ -96,7 +98,6 @@ export default function CheckboxInput({label,
                 />
               </Box>
 
-              {/* Right Label Area */}
               <Box
                 style={{
                   flex: 1,

@@ -15,6 +15,7 @@ interface RegisterFormValues {
   student_id: string;
   password: string;
   personal_info: Record<number, string>;
+  medical_hsitory: Record<number, string>;
 }
 interface Step_1Props {
   data: PersonalInfoField[];
@@ -22,7 +23,6 @@ interface Step_1Props {
 }
 
 export default function Step_1({ data, form }: Step_1Props) {
-  console.log("form", form.values);
   const Map_Data = () => {
     return data.map((items) => {
       const typeLabel = data_type(items.type.name);

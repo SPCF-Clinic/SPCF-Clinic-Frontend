@@ -29,7 +29,7 @@ export default function RadioInput({
     >
       <SegmentedControl
         fullWidth
-        value={value}
+        value={value ?? ""}
         onChange={(value) => {
           onChange?.(value);
         }}
@@ -44,7 +44,7 @@ export default function RadioInput({
           },
           label: {
             fontWeight: 500,
-            "&[data-active]": {
+            "&[dataActive]": {
               color: "var(--mantine-color-blue-7)",
             },
           },

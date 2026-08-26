@@ -27,6 +27,8 @@ export function fetchMedicalHistoryField() {
 }
 
 export function registerStudent(request: RegisterReqBody) {
+
+  
   const response = apiClient.post(`auth/register`, request);
 
   console.log(response);

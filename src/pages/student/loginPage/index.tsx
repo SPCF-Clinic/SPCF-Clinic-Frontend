@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
 import { useForm } from "@mantine/form";
-import { IconLock } from "@tabler/icons-react";
 import {
   Box,
   Flex,
@@ -12,8 +11,7 @@ import {
   Divider,
 } from "@mantine/core";
 
-import useAuthStore from "../../../stores/auth";
-import { useLogin } from "../../../query/auth";
+import { useAuth } from "@/hooks/useAuth";
 
 import Footer from "../components/Footer";
 import Layout from "../components/Layout";
@@ -21,9 +19,7 @@ import Layout from "../components/Layout";
 export default function LoginPage() {
   const navigate = useNavigate();
 
-  const { login } = useAuthStore();
-
-  const loginMutation = useLogin();
+  const {loginMutation} = useAuth();
 
   const form = useForm({
     mode: "uncontrolled",
@@ -42,12 +38,8 @@ export default function LoginPage() {
     !form.getValues().username.trim() || !form.getValues().password.trim();
 
   const handleSubmit = () => {
-    loginMutation.mutate(form.values, {
-      onSuccess: (data) => {
-        login(data.user.role);
-        navigate(`student-dashboard`)
-      },
-    });
+    loginMutation.mutate(form.values);
+if (loginMutation.data?.data.user.role === "Student"){  navigate(`student-dashboard`) }
   };
 
   return (
