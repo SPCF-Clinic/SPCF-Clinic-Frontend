@@ -1,4 +1,5 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
+
 import { type GetBedsFilters, getBeds } from "@/api/beds";
 
 export const bedQueries = {
