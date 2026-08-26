@@ -2,6 +2,7 @@ import { Card, Tabs } from "@mantine/core";
 import { parseAsStringLiteral, useQueryState } from "nuqs";
 
 import classes from "@/styles/Tabs.module.css";
+import ActivityLog from "./tab-panels/activity-log/ActivityLog";
 import VisitHistory from "./tab-panels/visit-history/VisitHistory";
 
 const TAB_VALUES = ["visit", "activity"] as const;
@@ -37,7 +38,9 @@ export default function RecordsTabs() {
 				<Tabs.Panel value="visit">
 					<VisitHistory />
 				</Tabs.Panel>
-				<Tabs.Panel value="activity">Activity</Tabs.Panel>
+				<Tabs.Panel value="activity">
+					<ActivityLog />
+				</Tabs.Panel>
 			</Card>
 		</Tabs>
 	);
