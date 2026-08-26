@@ -1,8 +1,9 @@
-import { Box, Center, Loader, Stack } from "@mantine/core";
+import { Box, Center, Grid, Loader, Stack } from "@mantine/core";
 
 import { useStudentCheckIns } from "@/hooks/students/useStudentCheckIns";
 import { useStudentDetail } from "@/hooks/students/useStudentDetail";
 import Breadcrumbs from "./components/Breadcrumbs";
+import ContactPerson from "./components/ContactPerson";
 import StudentCard from "./components/student-card/StudentCard";
 import VisitLog from "./components/visit-log/VisitLog";
 
@@ -25,10 +26,19 @@ export default function StudentProfile() {
 			<Box ms={2}>
 				<Breadcrumbs />
 			</Box>
-			<Stack flex={1}>
-				<StudentCard />
-				<VisitLog />
-			</Stack>
+			<Grid gap="xs">
+				<Grid.Col span={8.5}>
+					<Stack>
+						<StudentCard />
+						<VisitLog />
+					</Stack>
+				</Grid.Col>
+				<Grid.Col span={3.5}>
+					<Stack>
+						<ContactPerson />
+					</Stack>
+				</Grid.Col>
+			</Grid>
 		</Stack>
 	);
 }
