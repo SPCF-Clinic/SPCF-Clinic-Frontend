@@ -1,7 +1,7 @@
 export interface UserIndex {
 	id: number;
 	username: string;
-	name: string;
+	name: string | null;
 	contact_number: string | null;
 	access: UserAccess;
 }
