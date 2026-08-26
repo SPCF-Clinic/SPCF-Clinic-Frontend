@@ -3,11 +3,11 @@ import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 
+import Activity from "@/components/activities/Activity";
+import ActivitySkeleton from "@/components/activities/ActivitySkeleton";
 import QueryError from "@/components/QueryError";
 import { activityLogQueries } from "@/query/activity-logs";
 import classes from "@/styles/ScrollFade.module.css";
-import Activity from "./Activity";
-import ActivitySkeleton from "./ActivitySkeleton";
 
 export default function ActivityLogs() {
 	const [container, setContainer] = useState<HTMLDivElement | null>(null);

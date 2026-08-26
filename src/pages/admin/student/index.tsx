@@ -1,18 +1,24 @@
 import { Box, Center, Grid, Loader, Stack } from "@mantine/core";
 
+import { useStudentActivityLogs } from "@/hooks/students/useStudentActivityLogs";
 import { useStudentCheckIns } from "@/hooks/students/useStudentCheckIns";
 import { useStudentDetail } from "@/hooks/students/useStudentDetail";
 import Breadcrumbs from "./components/Breadcrumbs";
 import ContactPerson from "./components/ContactPerson";
 import Illnesses from "./components/Illnesses";
+import StudentActivityLogs from "./components/StudentActivityLogs";
 import StudentCard from "./components/student-card/StudentCard";
 import VisitLog from "./components/visit-log/VisitLog";
 
 export default function StudentProfile() {
 	const studentQuery = useStudentDetail();
 	const visitLogQuery = useStudentCheckIns();
+	const studentActivityLogsQuery = useStudentActivityLogs();
 
-	const isLoading = studentQuery.isLoading || visitLogQuery.isLoading;
+	const isLoading =
+		studentQuery.isLoading ||
+		visitLogQuery.isLoading ||
+		studentActivityLogsQuery.isLoading;
 
 	if (isLoading) {
 		return (
@@ -38,6 +44,7 @@ export default function StudentProfile() {
 					<Stack>
 						<ContactPerson />
 						<Illnesses />
+						<StudentActivityLogs />
 					</Stack>
 				</Grid.Col>
 			</Grid>
