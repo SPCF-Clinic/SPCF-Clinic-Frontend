@@ -58,7 +58,7 @@ export const routes = [
 				element: <ProtectedRoute layoutType="student" requiredRole="Student" />,
 				children: [
 					{
-            path: "student-dashboard",
+            path: "student-dashboard/:student_number",
             element: <StudentDashboard />
           },
 				],

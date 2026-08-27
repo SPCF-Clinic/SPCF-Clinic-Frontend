@@ -19,10 +19,10 @@ import Layout from "../components/Layout";
 export default function LoginPage() {
   const navigate = useNavigate();
 
-  const {loginMutation} = useAuth();
+  const { loginMutation } = useAuth();
 
   const form = useForm({
-    mode: "uncontrolled",
+    mode: "controlled",
     initialValues: {
       username: "",
       password: "",
@@ -39,7 +39,10 @@ export default function LoginPage() {
 
   const handleSubmit = () => {
     loginMutation.mutate(form.values);
-if (loginMutation.data?.data.user.role === "Student"){  navigate(`student-dashboard`) }
+    if (loginMutation.data?.data.user.role === "Student") {
+      loginMutation.data?.data.user.role
+      navigate(`student-dashboard/${loginMutation.data?.data.user.id}`);
+    }
   };
 
   return (

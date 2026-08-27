@@ -4,18 +4,24 @@ interface DropdownInputProps {
   label: string;
   data: string[];
   value?: string;
+  error?: React.ReactNode;
+  withAsterisk?: boolean;
   onChange?: (value: string) => void;
 }
 
-export default function DropdownInput({ label, data, value, onChange }: DropdownInputProps) {
-  console.log(data);
-
-  const handleOnChange = () => {
-
-  }
+export default function DropdownInput({
+  label,
+  data,
+  value,
+  error,
+  withAsterisk,
+  onChange,
+}: DropdownInputProps) {
   return (
     <Input.Wrapper
       label={label}
+      error={error}
+      withAsterisk={withAsterisk}
       mb={5}
       styles={{
         label: {
@@ -26,9 +32,17 @@ export default function DropdownInput({ label, data, value, onChange }: Dropdown
         },
       }}
     >
-      <Select data={data} value={value} onChange={(value : any) => {
-          onChange?.(value);
-        }}/>
+      <Select
+        data={data ?? []}
+        value={value ?? ""}
+        error={!!error}
+        onChange={(val) => {
+          if (val !== null) {
+            onChange?.(val);
+          }
+        }}
+        clearable
+      />
     </Input.Wrapper>
   );
 }

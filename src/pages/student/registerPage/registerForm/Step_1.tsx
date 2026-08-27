@@ -27,12 +27,18 @@ export default function Step_1({ data, form }: Step_1Props) {
     return data.map((items) => {
       const typeLabel = data_type(items.type.name);
 
+      // Extract error for this specific dynamic field ID
+      const fieldError = form.errors[`personal_info.${items.id}`];
+
       return (
         <Stack key={items.id} gap="md">
           {typeLabel === "Divider" && <SectionDivider label={items.name} />}
+
           {typeLabel === "Text" && (
             <TextInput1
               label={items.name}
+              withAsterisk={items.is_required}
+              error={fieldError}
               value={form.values.personal_info[items.id] ?? ""}
               onChange={(value) => {
                 form.setFieldValue("personal_info", {
@@ -42,9 +48,12 @@ export default function Step_1({ data, form }: Step_1Props) {
               }}
             />
           )}
+
           {typeLabel === "Date" && (
             <DateInput
               label={items.name}
+              withAsterisk={items.is_required}
+              error={fieldError}
               value={form.values.personal_info[items.id] ?? ""}
               onChange={(value) => {
                 form.setFieldValue("personal_info", {
@@ -54,9 +63,12 @@ export default function Step_1({ data, form }: Step_1Props) {
               }}
             />
           )}
+
           {typeLabel === "Radio" && (
             <RadioInput
               label={items.name}
+              withAsterisk={items.is_required}
+              error={fieldError}
               data={items.options}
               value={form.values.personal_info[items.id]}
               onChange={(value) => {
@@ -67,9 +79,12 @@ export default function Step_1({ data, form }: Step_1Props) {
               }}
             />
           )}
+
           {typeLabel === "Dropdown" && (
             <DropdownInput
               label={items.name}
+              withAsterisk={items.is_required}
+              error={fieldError}
               data={items.options}
               value={form.values.personal_info[items.id]}
               onChange={(value) => {
@@ -85,7 +100,6 @@ export default function Step_1({ data, form }: Step_1Props) {
     });
   };
 
-  console.log(data);
   return (
     <>
       <Text fz={33} fw={700}>

@@ -5,15 +5,29 @@ interface TextInputProps {
   placeholder?: string;
   value?: string;
   onChange?: (value: string) => void;
+  withAsterisk?: boolean;
   error?: string;
 }
 
-export default function TextInput1({ label, value, placeholder, onChange, error }: TextInputProps) {
+export default function TextInput1({
+  label,
+  value,
+  placeholder,
+  onChange,
+  error,
+  withAsterisk,
+}: TextInputProps) {
   return (
     <>
       <TextInput
         label={label}
         placeholder={placeholder}
+        withAsterisk={withAsterisk}
+        value={value}
+        onChange={(event) => {
+          onChange?.(event.currentTarget.value);
+        }}
+        error={error}
         mb={5}
         styles={{
           label: {
@@ -23,11 +37,6 @@ export default function TextInput1({ label, value, placeholder, onChange, error 
             marginBottom: 4,
           },
         }}
-        value={value}
-        onChange={(event) => {
-          onChange?.(event.currentTarget.value);
-        }}
-        error={error}
       />
     </>
   );

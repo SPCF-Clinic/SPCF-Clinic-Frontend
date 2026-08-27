@@ -4,12 +4,16 @@ import { Group, Select, Input } from "@mantine/core";
 interface DateInputProps {
   label: string;
   value?: string;
+  error?: React.ReactNode;
+  withAsterisk?: boolean;
   onChange?: (value: string) => void;
 }
 
 export default function DateInput({
   label,
   value,
+  error,
+  withAsterisk,
   onChange,
 }: DateInputProps) {
   const [month, setMonth] = useState<string | null>(
@@ -77,6 +81,8 @@ export default function DateInput({
   return (
     <Input.Wrapper
       label={label}
+      error={error}
+      withAsterisk={withAsterisk}
       mb={5}
       styles={{
         label: {
@@ -93,6 +99,7 @@ export default function DateInput({
           data={months}
           value={month}
           onChange={handleMonthChange}
+          error={!!error}
           styles={{
             input: {
               borderTopRightRadius: 0,
@@ -107,6 +114,7 @@ export default function DateInput({
           data={days}
           value={day}
           onChange={handleDayChange}
+          error={!!error}
           styles={{
             input: {
               borderRadius: 0,
@@ -120,6 +128,7 @@ export default function DateInput({
           data={years}
           value={year}
           onChange={handleYearChange}
+          error={!!error}
           styles={{
             input: {
               borderTopLeftRadius: 0,

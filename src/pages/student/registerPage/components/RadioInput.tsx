@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { SegmentedControl, Input, Radio } from "@mantine/core";
+import { SegmentedControl, Input } from "@mantine/core";
 
 interface RadioInputProps {
   label: string;
   data: string[];
   value?: string;
+  error?: React.ReactNode;
+  withAsterisk?: boolean;
   onChange?: (value: string) => void;
 }
 
@@ -12,11 +13,15 @@ export default function RadioInput({
   label,
   data,
   value,
+  error,
+  withAsterisk,
   onChange,
 }: RadioInputProps) {
   return (
     <Input.Wrapper
       label={label}
+      error={error}
+      withAsterisk={withAsterisk}
       mb={5}
       styles={{
         label: {
@@ -30,13 +35,15 @@ export default function RadioInput({
       <SegmentedControl
         fullWidth
         value={value ?? ""}
-        onChange={(value) => {
-          onChange?.(value);
+        onChange={(val) => {
+          onChange?.(val);
         }}
         data={data ?? []}
         styles={{
           root: {
-            border: "1px solid var(--mantine-color-gray-4)",
+            border: error
+              ? "1px solid var(--mantine-color-red-6)"
+              : "1px solid var(--mantine-color-gray-4)",
             backgroundColor: "var(--mantine-color-white)",
           },
           indicator: {

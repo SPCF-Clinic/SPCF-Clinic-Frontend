@@ -6,27 +6,35 @@ export type CheckboxOption = string | { value: string; label: string };
 interface CheckboxInputProps {
   label?: string;
   description?: string;
-  error?: string;
+  error?: React.ReactNode;
+  withAsterisk?: boolean;
   options?: CheckboxOption[];
-  data?: string;
-  onChange?:  (value: string) => void;
+  data?: string[] | string;
+  onChange?: (value: string[]) => void;
 }
 
-
-export default function CheckboxInput({label,
+export default function CheckboxInput({
+  label,
   description,
   error,
+  withAsterisk,
   options,
   data,
-  onChange,}: CheckboxInputProps){
- const [internalSelected, setInternalSelected] = useState<string[]>([]);
+  onChange,
+}: CheckboxInputProps) {
+  const [internalSelected, setInternalSelected] = useState<string[]>([]);
 
- console.log(internalSelected)
-  const selectedValues = data !== undefined ? data : internalSelected;
+  const normalizeData = (val: string[] | string | undefined): string[] => {
+    if (Array.isArray(val)) return val;
+    if (typeof val === 'string' && val.trim() !== '') return [val];
+    return [];
+  };
+
+  const selectedValues = data !== undefined ? normalizeData(data) : internalSelected;
 
   const handleToggle = (optionValue: string) => {
     const nextValues = selectedValues.includes(optionValue)
-      ? selectedValues.filter((v: any) => v !== optionValue)
+      ? selectedValues.filter((v) => v !== optionValue)
       : [...selectedValues, optionValue];
 
     if (data === undefined) {
@@ -42,6 +50,7 @@ export default function CheckboxInput({label,
       label={label}
       description={description}
       error={error}
+      withAsterisk={withAsterisk}
       styles={{
         label: {
           fontWeight: 600,
@@ -73,7 +82,6 @@ export default function CheckboxInput({label,
                 cursor: 'pointer',
               }}
             >
-
               <Box
                 style={{
                   width: 42,

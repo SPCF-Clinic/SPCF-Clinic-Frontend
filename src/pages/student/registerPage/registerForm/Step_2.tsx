@@ -19,20 +19,20 @@ interface RegisterFormValues {
   student_id: string;
   password: string;
   personal_info: Record<number, string>;
-  medical_history: Record<number, string>;
+  medical_history: Record<number, string | string[]>;
 }
+
 interface Step_2Props {
   data: MedicalHistoryField[];
   form: UseFormReturnType<RegisterFormValues>;
 }
-export default function Step_2({ data, form }: Step_2Props) {
-  console.log(data);
-  console.log("form", form.values);
 
-  const Map_Additional_Fields = (data: AdditionalField[]) => {
-    return data.map((additional) => {
+export default function Step_2({ data, form }: Step_2Props) {
+  const Map_Additional_Fields = (additionalFields: AdditionalField[]) => {
+    return additionalFields.map((additional) => {
       const additional_fields_type = data_type(additional.type.name);
-      console.log(additional);
+      const fieldError = form.errors[`medical_history.${additional.id}`];
+
       return (
         <div key={additional.id}>
           {additional.name === "Vaccine Name" && (
@@ -45,7 +45,9 @@ export default function Step_2({ data, form }: Step_2Props) {
           {additional_fields_type === "Text" && (
             <TextInput1
               label={additional.name}
-              value={form.values.medical_history[additional.id] ?? ""}
+              withAsterisk={additional.is_required}
+              error={fieldError}
+              value={(form.values.medical_history[additional.id] as string) ?? ""}
               onChange={(value) => {
                 form.setFieldValue("medical_history", {
                   ...form.values.medical_history,
@@ -62,6 +64,7 @@ export default function Step_2({ data, form }: Step_2Props) {
   const Map_Data = () => {
     return data.map((items) => {
       const typeLabel = data_type(items.type.name);
+      const fieldError = form.errors[`medical_history.${items.id}`];
 
       return (
         <Stack key={items.id} gap="md">
@@ -71,10 +74,13 @@ export default function Step_2({ data, form }: Step_2Props) {
               descriptionLabel={items.description_text ?? ""}
             />
           )}
+
           {typeLabel === "Text" && (
             <TextInput1
               label={items.name}
-              value={form.values.medical_history[items.id] ?? ""}
+              withAsterisk={items.is_required}
+              error={fieldError}
+              value={(form.values.medical_history[items.id] as string) ?? ""}
               onChange={(value) => {
                 form.setFieldValue("medical_history", {
                   ...form.values.medical_history,
@@ -83,10 +89,13 @@ export default function Step_2({ data, form }: Step_2Props) {
               }}
             />
           )}
+
           {typeLabel === "Date" && (
             <DateInput
               label={items.name}
-              value={form.values.medical_history[items.id] ?? ""}
+              withAsterisk={items.is_required}
+              error={fieldError}
+              value={(form.values.medical_history[items.id] as string) ?? ""}
               onChange={(value) => {
                 form.setFieldValue("medical_history", {
                   ...form.values.medical_history,
@@ -95,11 +104,14 @@ export default function Step_2({ data, form }: Step_2Props) {
               }}
             />
           )}
+
           {typeLabel === "Radio" && (
             <RadioInput
               label={items.name}
+              withAsterisk={items.is_required}
+              error={fieldError}
               data={items.options}
-              value={form.values.medical_history[items.id]}
+              value={(form.values.medical_history[items.id] as string) ?? ""}
               onChange={(value) => {
                 form.setFieldValue("medical_history", {
                   ...form.values.medical_history,
@@ -108,11 +120,14 @@ export default function Step_2({ data, form }: Step_2Props) {
               }}
             />
           )}
+
           {typeLabel === "Dropdown" && (
             <DropdownInput
               label={items.name}
+              withAsterisk={items.is_required}
+              error={fieldError}
               data={items.options}
-              value={form.values.medical_history[items.id] ?? ""}
+              value={(form.values.medical_history[items.id] as string) ?? ""}
               onChange={(value) => {
                 form.setFieldValue("medical_history", {
                   ...form.values.medical_history,
@@ -121,11 +136,14 @@ export default function Step_2({ data, form }: Step_2Props) {
               }}
             />
           )}
+
           {typeLabel === "Checkbox" && (
             <CheckboxInput
               label={items.name}
+              withAsterisk={items.is_required}
+              error={fieldError}
               options={items.options}
-              data={form.values.medical_history[items.id] ??""}
+              data={form.values.medical_history[items.id]}
               onChange={(values) => {
                 form.setFieldValue("medical_history", {
                   ...form.values.medical_history,
@@ -134,9 +152,9 @@ export default function Step_2({ data, form }: Step_2Props) {
               }}
             />
           )}
-          {items.additional_fields.length === 0
-            ? ""
-            : Map_Additional_Fields(items.additional_fields)}
+
+          {items.additional_fields?.length > 0 &&
+            Map_Additional_Fields(items.additional_fields)}
         </Stack>
       );
     });
@@ -147,7 +165,7 @@ export default function Step_2({ data, form }: Step_2Props) {
       <Text fz={32} fw={700}>
         Medical & Vaccination History
       </Text>
-      <Text>Please provide the student's basic personal details.</Text>
+      <Text>Please provide the student's medical and vaccination history.</Text>
       {Map_Data()}
     </>
   );

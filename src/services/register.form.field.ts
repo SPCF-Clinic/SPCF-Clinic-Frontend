@@ -11,8 +11,6 @@ export function fetchPersonalInfoField() {
     `/personal-info-fields`,
   );
 
-  console.log(response);
-
   return response;
 }
 
@@ -21,17 +19,12 @@ export function fetchMedicalHistoryField() {
     `/medical-history-fields`,
   );
 
-  console.log(response);
-
   return response;
 }
 
-export function registerStudent(request: RegisterReqBody) {
-
-  
-  const response = apiClient.post(`auth/register`, request);
-
-  console.log(response);
-
-  return response;
+export async function registerStudent(request: RegisterReqBody) {
+  const response = await apiClient.post(`auth/register`, null, {
+    params: request,
+  });
+  return response.data;
 }

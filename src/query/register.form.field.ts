@@ -20,7 +20,7 @@ export function usePersonalInfo() {
 
 export function useMedicalInfo() {
   return useQuery({
-    queryKey: ["medical-hostory-field"],
+    queryKey: ["medical-history-field"],
     queryFn: fetchMedicalHistoryField,
   });
 }
@@ -28,5 +28,6 @@ export function useMedicalInfo() {
 export function useRegisterUser() {
   return useMutation<RegisterResBody, Error, RegisterReqBody>({
     mutationFn: registerStudent,
+    onSuccess: ({ data }) => console.log(data),
   });
 }

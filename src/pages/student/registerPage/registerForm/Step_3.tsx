@@ -36,7 +36,7 @@ export default function Step_3({ form }: Step_3Props) {
         onChange={(value) =>
           form.setFieldValue("password", value)
         }
-        error={form.errors.confirm_password}
+        error={form.errors.password}
       />
 
       <TextInput1

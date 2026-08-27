@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import {
   Stepper,
@@ -15,6 +15,14 @@ import {
   useMedicalInfo,
   useRegisterUser,
 } from "../../../../query/register.form.field";
+import { useAuthStore } from "@/stores/useAuthStore";
+import {
+  isStepDisabled,
+  createRegisterPayload,
+  handleStepNext,
+  extractApiErrorMessage,
+} from "../../utils/register.form";
+import type { FormValues } from "../../utils/register.form";
 
 import Footer from "../../components/Footer";
 import Layout from "../../components/Layout";
@@ -29,112 +37,120 @@ import Step_5 from "./Step_5";
 
 export default function Form() {
   const { studentId } = useParams();
-
+  const navigate = useNavigate();
   const [active, setActive] = useState(0);
 
   const { data: step1_data, isFetching: step1_isFetching } = usePersonalInfo();
   const { data: step2_data, isFetching: step2_isFetching } = useMedicalInfo();
+  const { mutate: registerUser, isPending: isSubmitting } = useRegisterUser();
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     initialValues: {
       student_id: studentId,
       password: "",
       confirm_password: "",
       personal_info_form_version: step1_data?.form_version,
       medical_history_form_version: step2_data?.form_version,
-      personal_info: {} as Record<number, string>,
-      medical_history: {} as Record<number, string>,
+      personal_info: {},
+      medical_history: {},
       full_name: "",
     },
 
     validate: {
-      confirm_password: (value, values) =>
-        value === values.password && value.trim()
-          ? null
-            : "Password and confirm password are invalid.",
+      personal_info: (value) => {
+        if (!step1_data?.data) return null;
+        const errors: Record<number, string> = {};
 
-      full_name: (value) =>
-        value.trim() ? null : "Full name is required",
+        step1_data.data.forEach((field) => {
+          if (field.is_required && field.type?.name !== "Divider") {
+            const val = value[field.id];
+            if (!val || !val.toString().trim()) {
+              errors[field.id] = `${field.name} is required`;
+            }
+          }
+        });
+
+        return Object.keys(errors).length > 0 ? errors : null;
+      },
+
+      medical_history: (value) => {
+        if (!step2_data?.data) return null;
+        const errors: Record<number, string> = {};
+
+        step2_data.data.forEach((field) => {
+          if (field.is_required && field.type?.name !== "Divider") {
+            const val = value[field.id];
+            if (!val || !val.toString().trim()) {
+              errors[field.id] = `${field.name} is required`;
+            }
+          }
+        });
+
+        return Object.keys(errors).length > 0 ? errors : null;
+      },
+
+      password: (value) => {
+        if (!value || !value.trim()) return "Password is required";
+        if (value.trim().length < 8)
+          return "Password must be at least 8 characters long";
+        return null;
+      },
+
+      confirm_password: (value, values) => {
+        if (!value || !value.trim()) return "Please confirm your password";
+        if (value !== values.password) return "Passwords do not match";
+        return null;
+      },
+
+      full_name: (value) => (value.trim() ? null : "Full name is required"),
     },
   });
 
-
-useEffect(() => {
-  if (step1_data?.form_version) {
-    form.setFieldValue('personal_info_form_version', step1_data.form_version);
-  }
-  if (step2_data?.form_version) {
-    form.setFieldValue('medical_history_form_version', step2_data.form_version);
-  }
-}, [step1_data, step2_data]); 
-
-
-  const handleNext = () => {
-    if (active === 3) {
-      const result = form.validateField("confirm_password");
-
-      if (result.hasError) {
-        return;
-      }
-    } else if (active === 5) {
-      const result = form.validateField("full_name");
-      if (result.hasError) {
-        return;
-      }
+  useEffect(() => {
+    if (step1_data?.form_version) {
+      form.setFieldValue("personal_info_form_version", step1_data.form_version);
     }
-    setActive((current) => (current < 6 ? current + 1 : current));
-  };
-
-  const createRegisterPayload = (values: typeof form.values) => {
-  return {
-    student_id: values.student_id,
-    password: values.password,
-    personal_info_form_version: values.personal_info_form_version,
-    medical_history_form_version: values.medical_history_form_version,
-
-    ...Object.fromEntries(
-      Object.entries(values.personal_info).map(([id, value]) => [
-        `personal_info[${id}]`,
-        value,
-      ])
-    ),
-
-    ...Object.fromEntries(
-      Object.entries(values.medical_history).map(([id, value]) => [
-        `medical_history[${id}]`,
-        value,
-      ])
-    ),
-  };
-};
+    if (step2_data?.form_version) {
+      form.setFieldValue(
+        "medical_history_form_version",
+        step2_data.form_version,
+      );
+    }
+  }, [step1_data, step2_data]);
 
   const handleSubmit = () => {
-const payload = createRegisterPayload(form.values)
-console.log(payload)
-  }
+    const payload = createRegisterPayload(form.values);
 
-  const underStepper = () => {
-    return (
-      <Group justify="space-between" align="center" mt={2} mb="xs">
-        <Text fz={12} fs="italic" c="dimmed">
-          Step {active} of 5
-        </Text>
-        <UnstyledButton
-          onClick={() => setActive((current) => current - 1)}
-          style={{
-            fontSize: 12,
-            fontStyle: "italic",
-            color: "#2B4C7E",
-            fontWeight: 500,
-          }}
-        >
-          &larr; Back
-        </UnstyledButton>
-      </Group>
-    );
+    registerUser(payload, {
+      onSuccess: (data) => {
+        navigate(`/`);
+      },
+      onError: (error: any) => {
+        const studentIdError = extractApiErrorMessage(error);
+        navigate("/register", { state: { studentIdError } });
+      },
+    });
   };
 
-  console.log(form.values.student_id);
+  const renderUnderStepper = () => (
+    <Group justify="space-between" align="center" mt={2} mb="xs">
+      <Text fz={12} fs="italic" c="dimmed">
+        Step {active} of 5
+      </Text>
+      <UnstyledButton
+        onClick={() => setActive((current) => current - 1)}
+        style={{
+          fontSize: 12,
+          fontStyle: "italic",
+          color: "#2B4C7E",
+          fontWeight: 500,
+        }}
+      >
+        &larr; Back
+      </UnstyledButton>
+    </Group>
+  );
+
   return (
     <Layout>
       <Stack>
@@ -179,7 +195,7 @@ console.log(payload)
           </Stepper.Step>
 
           <Stepper.Step>
-            {underStepper()}
+            {renderUnderStepper()}
             {step2_isFetching ? (
               <SectionSkeleton />
             ) : (
@@ -188,12 +204,12 @@ console.log(payload)
           </Stepper.Step>
 
           <Stepper.Step>
-            {underStepper()}
+            {renderUnderStepper()}
             <Step_3 form={form} />
           </Stepper.Step>
 
           <Stepper.Step>
-            {underStepper()}
+            {renderUnderStepper()}
             <Step_4
               step1_data={step1_data}
               step2_data={step2_data}
@@ -201,13 +217,30 @@ console.log(payload)
               medical_history={form.values.medical_history}
             />
           </Stepper.Step>
+
           <Stepper.Step>
-            {underStepper()}
+            {renderUnderStepper()}
             <Step_5 form={form} />
           </Stepper.Step>
         </Stepper>
+
         {active !== 0 && (
-          <Button onClick={active >= 5 ? handleSubmit:handleNext} bdrs={20} mb={10}>
+          <Button
+            onClick={
+              active >= 5
+                ? handleSubmit
+                : () => handleStepNext(active, form, setActive)
+            }
+            bdrs={20}
+            mb={10}
+            loading={isSubmitting}
+            disabled={isStepDisabled(
+              active,
+              form.values,
+              step1_data,
+              step2_data,
+            )}
+          >
             {active >= 5 ? "Submit" : "Continue"}
           </Button>
         )}

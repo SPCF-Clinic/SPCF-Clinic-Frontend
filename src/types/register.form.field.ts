@@ -34,8 +34,8 @@ export interface PersonalInfoApiResponse {
   form_version: string;
 }
 // Field input type configuration
- interface FieldType {
-  name: 'Divider' | 'Radio' | 'Checkbox' | 'Short Text' | string;
+interface FieldType {
+  name: "Divider" | "Radio" | "Checkbox" | "Short Text" | string;
   is_answerable: boolean;
   has_options: boolean;
   can_select_multiple: boolean;
@@ -71,10 +71,11 @@ export interface MedicalHistoryResponse {
 }
 
 export interface RegisterReqBody {
-  name: string;
   student_id: string;
   password: string;
-  personal_info: Record<number, string>;
+  personal_info_form_version: string;
+  medical_history_form_version: string;
+  [key: `personal_info[${number}]` | `medical_history[${number}]` | string]: string | undefined;
 }
 
 interface RegisterPersonalInfo {
