@@ -6,6 +6,8 @@ import { AppTable, type ColumnDef } from "@/components/AppTable";
 import QueryError from "@/components/QueryError";
 import { useItems } from "@/hooks/items/useItems";
 import type { ItemType } from "@/types/items";
+import { getStockStatus } from "@/utils/items/getStockStatus";
+import StockBadge from "../StockBadge";
 
 const COLUMNS: ColumnDef[] = [
 	{ title: "Name" },
@@ -33,9 +35,11 @@ export default function MedicineSupplyTable<T extends ItemType>(
 					<Table.Td fw={600}>{item.name}</Table.Td>
 					<Table.Td>{item.category}</Table.Td>
 					<Table.Td>{item.unit}</Table.Td>
-					<Table.Td></Table.Td>
+					<Table.Td>{item.dispensed}</Table.Td>
 					<Table.Td>{item.quantity}</Table.Td>
-					<Table.Td></Table.Td>
+					<Table.Td>
+						<StockBadge status={getStockStatus(item)} />
+					</Table.Td>
 					<Table.Td>
 						<Center>
 							<ActionMenu items={[]} />
