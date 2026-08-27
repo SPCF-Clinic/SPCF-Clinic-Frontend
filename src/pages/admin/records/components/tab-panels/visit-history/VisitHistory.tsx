@@ -11,10 +11,7 @@ export default function VisitHistory() {
 	return (
 		<Stack>
 			<Group justify="space-between">
-				<SearchFilter
-					queryKey="search"
-					textInputProps={{ loading: isFetching }}
-				/>
+				<SearchFilter textInputProps={{ loading: isFetching }} />
 				<PrintButton />
 			</Group>
 			<VisitHistoryTable />

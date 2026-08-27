@@ -1,4 +1,4 @@
-import { Box, Button, Group, Stack } from "@mantine/core";
+import { Button, Group, Stack } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 
 import { SearchFilter } from "@/components/SearchFilter";
@@ -20,22 +20,20 @@ export default function MedicineSupply({ type }: MedicineSupplyProps) {
 	const isSuperAdmin = role === "Super Admin";
 
 	return (
-		<Box>
-			<Stack>
-				<Group justify="space-between">
-					<SearchFilter
-						queryKey={searchKey}
-						textInputProps={{ loading: isFetching }}
-					/>
+		<Stack>
+			<Group justify="space-between">
+				<SearchFilter
+					queryKey={searchKey}
+					textInputProps={{ loading: isFetching }}
+				/>
 
-					{isSuperAdmin && (
-						<Button size="md" fz="sm" leftSection={<IconPlus size={20} />}>
-							Add {type}
-						</Button>
-					)}
-				</Group>
-				<MedicineSupplyTable type={type} />
-			</Stack>
-		</Box>
+				{isSuperAdmin && (
+					<Button size="md" fz="sm" leftSection={<IconPlus size={20} />}>
+						Add {type}
+					</Button>
+				)}
+			</Group>
+			<MedicineSupplyTable type={type} />
+		</Stack>
 	);
 }

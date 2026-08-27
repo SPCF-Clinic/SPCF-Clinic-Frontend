@@ -9,10 +9,7 @@ export default function AccountManager() {
 
 	return (
 		<Stack>
-			<SearchFilter
-				queryKey="search"
-				textInputProps={{ loading: isFetching }}
-			/>
+			<SearchFilter textInputProps={{ loading: isFetching }} />
 			<AccountsTable />
 		</Stack>
 	);

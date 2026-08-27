@@ -16,7 +16,7 @@ interface FilterMenuItem {
 }
 
 interface SearchFilterProps {
-	queryKey: string;
+	queryKey?: string;
 	defaultValue?: string;
 	numeric?: boolean;
 	menuItems?: FilterMenuItem[];
@@ -26,7 +26,7 @@ interface SearchFilterProps {
 }
 
 export function SearchFilter({
-	queryKey,
+	queryKey = "search",
 	menuItems,
 	numeric = false,
 	defaultValue = "",
