@@ -29,7 +29,12 @@ export default function MedicineSupplyTable<T extends ItemType>(
 	}
 
 	return (
-		<AppTable columns={COLUMNS} isPending={isPending} data={data?.data.items}>
+		<AppTable
+			columns={COLUMNS}
+			isPending={isPending}
+			data={data?.data.items}
+			skeletonRowHeight={57}
+		>
 			{data?.data.items.map((item) => (
 				<Table.Tr key={item.id}>
 					<Table.Td fw={600}>{item.name}</Table.Td>
