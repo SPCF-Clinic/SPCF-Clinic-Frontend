@@ -32,3 +32,26 @@ export interface StudentResponse {
   code: number;
   error: boolean;
 }
+
+export interface BaseStudentUpdateRequest {
+  form_version: string;
+}
+export interface UpdatePersonalInfoPayload extends BaseStudentUpdateRequest {
+  personal_info: Record<number, string>;
+}
+
+export interface UpdateMedicalHistoryPayload extends BaseStudentUpdateRequest {
+  medical_history: Record<number, string | string[]>;
+}
+
+export type PersonalInfoQueryParams = {
+  form_version: string;
+  [key: `personal_info[${number}]`]: string;
+};
+
+export type MedicalHistoryQueryParams = {
+  form_version: string;
+  [
+    key: `medical_history[${number}]` | `medical_history[${number}][${number}]`
+  ]: string;
+};

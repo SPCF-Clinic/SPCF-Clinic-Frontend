@@ -12,6 +12,7 @@ import RegisterPage from "../pages/student/registerPage";
 import FormPage from "../pages/student/registerPage/registerForm";
 import StudentDashboard from "@/pages/student/dashboardPage";
 import Updatedetails from "@/pages/student/dashboardPage/UpdateDetails";
+import ReviewDetails from "@/pages/student/dashboardPage/ReviewDeatils";
 
 //Admin
 import ContentManager from "@/pages/admin/content-manager";
@@ -66,6 +67,8 @@ export const routes = [
             path: "student-dashboard/:student_number/update-details",
             element: <Updatedetails />,
           },
+          { path: "student-dashboard/:student_number/review-details",
+            element: <ReviewDetails />,}
         ],
       },
     ],
