@@ -18,14 +18,10 @@ export default function ContentManagerTabs() {
 			variant="outline"
 			value={tab}
 			onChange={(value) => setTab(value as TabValue)}
-			classNames={{ tab: classes.tab }}
+			classNames={{ tab: classes.tab, list: classes.list }}
 		>
-			<Tabs.List
-				style={{
-					"--tab-border-color": "var(--mantine-color-primary-outline)",
-				}}
-			>
-				<Tabs.Tab ms="xl" value="account" tt="uppercase" fw={600}>
+			<Tabs.List>
+				<Tabs.Tab value="account" tt="uppercase" fw={600}>
 					Account Manager
 				</Tabs.Tab>
 				<Tabs.Tab value="form" tt="uppercase" fw={600}>

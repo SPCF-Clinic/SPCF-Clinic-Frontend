@@ -19,14 +19,10 @@ export default function MedicinesTabs() {
 			variant="outline"
 			value={tab}
 			onChange={(value) => setTab(value as TabValue)}
-			classNames={{ tab: classes.tab }}
+			classNames={{ tab: classes.tab, list: classes.list }}
 		>
-			<Tabs.List
-				style={{
-					"--tab-border-color": "var(--mantine-color-primary-outline)",
-				}}
-			>
-				<Tabs.Tab ms="xl" value="medicines" tt="uppercase" fw={600}>
+			<Tabs.List>
+				<Tabs.Tab value="medicines" tt="uppercase" fw={600}>
 					Medicines
 				</Tabs.Tab>
 				<Tabs.Tab value="supplies" tt="uppercase" fw={600}>

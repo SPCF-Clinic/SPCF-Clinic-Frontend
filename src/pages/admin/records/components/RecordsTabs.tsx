@@ -19,14 +19,10 @@ export default function RecordsTabs() {
 			variant="outline"
 			value={tab}
 			onChange={(value) => setTab(value as TabValue)}
-			classNames={{ tab: classes.tab }}
+			classNames={{ tab: classes.tab, list: classes.list }}
 		>
-			<Tabs.List
-				style={{
-					"--tab-border-color": "var(--mantine-color-primary-outline)",
-				}}
-			>
-				<Tabs.Tab ms="xl" value="visit" tt="uppercase" fw={600}>
+			<Tabs.List>
+				<Tabs.Tab value="visit" tt="uppercase" fw={600}>
 					Visit History
 				</Tabs.Tab>
 				<Tabs.Tab value="activity" tt="uppercase" fw={600}>
