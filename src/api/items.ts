@@ -1,6 +1,11 @@
 import { apiClient } from "@/services/axios";
 import type { PaginationQueryParams, PaginationResponse } from "@/types/api";
-import type { ItemType, MedicineItem, SupplyItem } from "@/types/items";
+import type {
+	DispensedItemIndex,
+	ItemType,
+	MedicineItem,
+	SupplyItem,
+} from "@/types/items";
 
 type ItemByType = {
 	Medicine: MedicineItem;
@@ -19,3 +24,17 @@ type GetItemsResponse<T extends ItemType> = PaginationResponse<
 
 export const getItems = <T extends ItemType>(filters: GetItemsFilters<T>) =>
 	apiClient.get<GetItemsResponse<T>>("/items", { params: filters });
+
+export type GetDispensedItemsFilters = PaginationQueryParams<{
+	search?: string;
+}>;
+
+type GetDispensedItemsResponse = PaginationResponse<
+	DispensedItemIndex,
+	"dispensed_items"
+>;
+
+export const getDispensedItems = (filters?: GetDispensedItemsFilters) =>
+	apiClient.get<GetDispensedItemsResponse>("/dispensed-items", {
+		params: filters,
+	});

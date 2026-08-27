@@ -1,6 +1,11 @@
 import { queryOptions } from "@tanstack/react-query";
 
-import { type GetItemsFilters, getItems } from "@/api/items";
+import {
+	type GetDispensedItemsFilters,
+	type GetItemsFilters,
+	getDispensedItems,
+	getItems,
+} from "@/api/items";
 import type { ItemType } from "@/types/items";
 
 export const itemQueries = {
@@ -16,5 +21,10 @@ export const itemQueries = {
 		queryOptions({
 			queryKey: [...itemQueries.details(), id],
 			// queryFn: () => getItem(id),
+		}),
+	dispensed: (filters?: GetDispensedItemsFilters) =>
+		queryOptions({
+			queryKey: [...itemQueries.all(), "dispensed", filters],
+			queryFn: () => getDispensedItems(filters),
 		}),
 };

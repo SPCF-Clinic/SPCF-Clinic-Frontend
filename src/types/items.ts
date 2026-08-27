@@ -17,3 +17,18 @@ interface ItemContent {
 
 export type MedicineItem = ItemIndex<"Medicine">;
 export type SupplyItem = ItemIndex<"Supply">;
+
+export interface DispensedItemIndex {
+	id: number;
+	item: {
+		id: number;
+		name: string;
+		unit: string;
+		quantity: number;
+	};
+	dispensed_to: {
+		id: number;
+		name: string;
+	};
+	created_at: string;
+}
