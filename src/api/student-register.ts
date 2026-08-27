@@ -1,10 +1,10 @@
-import { apiClient } from "./axios";
+import { apiClient } from "../services/axios";
 
 import type {
   PersonalInfoApiResponse,
   MedicalHistoryResponse,
   RegisterReqBody,
-} from "../types/register.form.field";
+} from "../types/student-register";
 
 export function fetchPersonalInfoField() {
   const response = apiClient.get<PersonalInfoApiResponse>(

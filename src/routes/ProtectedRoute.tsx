@@ -23,7 +23,7 @@ export default function ProtectedRoute({
   // const { isAuthenticated, role } = useAuthStore();
 
   if (!isAuthenticated) {
-    const loginPath = layoutType === "admin" ? "/admin/login" : "/login";
+    const loginPath = layoutType === "admin" ? "/admin/login" : "/";
     return <Navigate to={loginPath} replace />;
   }
 

@@ -14,7 +14,7 @@ import {
   usePersonalInfo,
   useMedicalInfo,
   useRegisterUser,
-} from "../../../../query/register.form.field";
+} from "../../../../query/student-register";
 import { useAuthStore } from "@/stores/useAuthStore";
 import {
   isStepDisabled,
@@ -26,7 +26,7 @@ import type { FormValues } from "../../utils/register.form";
 
 import Footer from "../../components/Footer";
 import Layout from "../../components/Layout";
-import SectionSkeleton from "../components/Skeleton";
+import SectionSkeleton from "../../components/Skeleton";
 
 import PrivacyPolicyPage from "../registerForm/PrivacyPolicy";
 import Step_1 from "./Step_1";

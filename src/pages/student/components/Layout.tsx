@@ -3,12 +3,13 @@ import { Flex, Box } from "@mantine/core";
 
 interface LayoutProps {
   children: React.ReactNode;
-  onSubmit?: () => void
+  onSubmit?: () => void;
+  height?: string
 }
-export default function Layout({children,onSubmit }:LayoutProps){
+export default function Layout({children,onSubmit, height }:LayoutProps){
     return (
-       <Flex mih={"83vh"} align={"flex-end"}>
-          <Box
+       <Flex mih={"83vh"}  align={"flex-end"}>
+          <Box h={height}
             component="form"
             onSubmit={onSubmit}
             w={"100vw"}

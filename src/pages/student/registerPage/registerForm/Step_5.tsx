@@ -1,7 +1,7 @@
 import type { UseFormReturnType } from "@mantine/form";
 import { Title, Text, Checkbox, TextInput, Stack, Box } from '@mantine/core';
 
-import TextInput1 from "../components/TextInput"
+import TextInput1 from "../../components/TextInput"
 
 interface RegisterFormValues {
   full_name: string;

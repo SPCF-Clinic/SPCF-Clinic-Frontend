@@ -3,9 +3,9 @@ import { Text, Group } from "@mantine/core";
 import type {
   PersonalInfoField,
   MedicalHistoryField,
-} from "../../../../types/register.form.field";
+} from "../../../../types/student-register";
 
-import SectionDivider from "../components/Divider";
+import SectionDivider from "../../components/Divider";
 
 interface Step_4Props {
   step1_data: PersonalInfoField[];

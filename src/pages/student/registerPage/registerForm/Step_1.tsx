@@ -1,99 +1,120 @@
 import { Stack, Text } from "@mantine/core";
 import type { UseFormReturnType } from "@mantine/form";
 
-import type { PersonalInfoField } from "../../../../types/register.form.field";
+import type { PersonalInfoField } from "../../../../types/student-register";
 import { data_type } from "../../utils/register.form";
 
-import TextInput1 from "../components/TextInput";
-import DateInput from "../components/DateInput";
-import RadioInput from "../components/RadioInput";
-import DropdownInput from "../components/DropdownInput";
-import SectionDivider from "../components/Divider";
+import TextInput1 from "../../components/TextInput";
+import DateInput from "../../components/DateInput";
+import RadioInput from "../../components/RadioInput";
+import DropdownInput from "../../components/DropdownInput";
+import SectionDivider from "../../components/Divider";
 
 interface RegisterFormValues {
   name: string;
   student_id: string;
   password: string;
   personal_info: Record<number, string>;
-  medical_hsitory: Record<number, string>;
+  medical_history: Record<number, string>;
 }
+
 interface Step_1Props {
   data: PersonalInfoField[];
   form: UseFormReturnType<RegisterFormValues>;
 }
 
 export default function Step_1({ data, form }: Step_1Props) {
-  const Map_Data = () => {
-    return data.map((items) => {
-      const typeLabel = data_type(items.type.name);
+  // Helper to update field value in state
+  const handleValueChange = (fieldId: number, value: string | null) => {
+    form.setFieldValue("personal_info", {
+      ...form.values.personal_info,
+      [fieldId]: value ?? "",
+    });
+  };
 
-      // Extract error for this specific dynamic field ID
-      const fieldError = form.errors[`personal_info.${items.id}`];
+  // Helper function to render an individual input dynamically
+  const renderField = (field: any) => {
+    const typeLabel = data_type(field.type.name);
+    const fieldError = form.errors[`personal_info.${field.id}`];
+    const currentValue = form.values.personal_info[field.id] ?? "";
+
+    switch (typeLabel) {
+      case "Divider":
+        return <SectionDivider key={field.id} label={field.name} />;
+
+      case "Text":
+        return (
+          <TextInput1
+            key={field.id}
+            label={field.name}
+            withAsterisk={field.is_required}
+            error={fieldError}
+            value={currentValue}
+            onChange={(val) => handleValueChange(field.id, val)}
+          />
+        );
+
+      case "Date":
+        return (
+          <DateInput
+            key={field.id}
+            label={field.name}
+            withAsterisk={field.is_required}
+            error={fieldError}
+            value={currentValue}
+            onChange={(val) => handleValueChange(field.id, val)}
+          />
+        );
+
+      case "Radio":
+        return (
+          <RadioInput
+            key={field.id}
+            label={field.name}
+            withAsterisk={field.is_required}
+            error={fieldError}
+            data={field.options}
+            value={currentValue}
+            onChange={(val) => handleValueChange(field.id, val)}
+          />
+        );
+
+      case "Dropdown":
+        return (
+          <DropdownInput
+            key={field.id}
+            label={field.name}
+            withAsterisk={field.is_required}
+            error={fieldError}
+            data={field.options}
+            value={currentValue}
+            onChange={(val) => handleValueChange(field.id, val)}
+          />
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  const Map_Data = () => {
+    return data.map((item) => {
+      const selectedValue = form.values.personal_info[item.id];
+
+      // Filter dependent fields based on the parent selected value
+      const activeAdditionalFields = item.additional_fields?.filter(
+        (subField: any) => subField.required_with_field_value === selectedValue
+      );
 
       return (
-        <Stack key={items.id} gap="md">
-          {typeLabel === "Divider" && <SectionDivider label={items.name} />}
+        <Stack key={item.id} gap="md">
+          {renderField(item)}
 
-          {typeLabel === "Text" && (
-            <TextInput1
-              label={items.name}
-              withAsterisk={items.is_required}
-              error={fieldError}
-              value={form.values.personal_info[items.id] ?? ""}
-              onChange={(value) => {
-                form.setFieldValue("personal_info", {
-                  ...form.values.personal_info,
-                  [items.id]: value,
-                });
-              }}
-            />
-          )}
-
-          {typeLabel === "Date" && (
-            <DateInput
-              label={items.name}
-              withAsterisk={items.is_required}
-              error={fieldError}
-              value={form.values.personal_info[items.id] ?? ""}
-              onChange={(value) => {
-                form.setFieldValue("personal_info", {
-                  ...form.values.personal_info,
-                  [items.id]: value,
-                });
-              }}
-            />
-          )}
-
-          {typeLabel === "Radio" && (
-            <RadioInput
-              label={items.name}
-              withAsterisk={items.is_required}
-              error={fieldError}
-              data={items.options}
-              value={form.values.personal_info[items.id]}
-              onChange={(value) => {
-                form.setFieldValue("personal_info", {
-                  ...form.values.personal_info,
-                  [items.id]: value,
-                });
-              }}
-            />
-          )}
-
-          {typeLabel === "Dropdown" && (
-            <DropdownInput
-              label={items.name}
-              withAsterisk={items.is_required}
-              error={fieldError}
-              data={items.options}
-              value={form.values.personal_info[items.id]}
-              onChange={(value) => {
-                form.setFieldValue("personal_info", {
-                  ...form.values.personal_info,
-                  [items.id]: value,
-                });
-              }}
-            />
+          {/* Render nested conditional fields if available */}
+          {activeAdditionalFields && activeAdditionalFields.length > 0 && (
+            <Stack gap="md" pl="md">
+              {activeAdditionalFields.map((subField: any) => renderField(subField))}
+            </Stack>
           )}
         </Stack>
       );
@@ -106,7 +127,9 @@ export default function Step_1({ data, form }: Step_1Props) {
         Personal Information
       </Text>
       <Text>Please provide the student's basic personal details.</Text>
-      {Map_Data()}
+      <Stack gap="md" mt="md">
+        {Map_Data()}
+      </Stack>
     </>
   );
 }

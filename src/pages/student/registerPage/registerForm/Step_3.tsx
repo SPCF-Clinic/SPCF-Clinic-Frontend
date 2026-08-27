@@ -1,7 +1,7 @@
 import { Text } from "@mantine/core";
 import type { UseFormReturnType } from "@mantine/form";
 
-import TextInput1 from "../components/TextInput";
+import TextInput1 from "../../components/TextInput";
 
 interface RegisterFormValues {
   student_id: string;

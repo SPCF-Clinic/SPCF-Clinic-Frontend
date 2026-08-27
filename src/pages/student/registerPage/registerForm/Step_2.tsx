@@ -4,15 +4,15 @@ import type { UseFormReturnType } from "@mantine/form";
 import type {
   MedicalHistoryField,
   AdditionalField,
-} from "../../../../types/register.form.field";
+} from "../../../../types/student-register";
 import { data_type } from "../../utils/register.form";
 
-import TextInput1 from "../components/TextInput";
-import DateInput from "../components/DateInput";
-import RadioInput from "../components/RadioInput";
-import DropdownInput from "../components/DropdownInput";
-import SectionDivider from "../components/Divider";
-import CheckboxInput from "../components/CheckboxInput";
+import TextInput1 from "../../components/TextInput";
+import DateInput from "../../components/DateInput";
+import RadioInput from "../../components/RadioInput";
+import DropdownInput from "../../components/DropdownInput";
+import CheckboxInput from "../../components/CheckboxInput";
+import SectionDivider from "../../components/Divider";
 
 interface RegisterFormValues {
   name: string;
@@ -28,136 +28,106 @@ interface Step_2Props {
 }
 
 export default function Step_2({ data, form }: Step_2Props) {
-  const Map_Additional_Fields = (additionalFields: AdditionalField[]) => {
-    return additionalFields.map((additional) => {
-      const additional_fields_type = data_type(additional.type.name);
-      const fieldError = form.errors[`medical_history.${additional.id}`];
-
-      return (
-        <div key={additional.id}>
-          {additional.name === "Vaccine Name" && (
-            <SectionDivider
-              descriptionLabel={
-                "If you are uncertain about the exact date, please just indicate the year it was administered."
-              }
-            />
-          )}
-          {additional_fields_type === "Text" && (
-            <TextInput1
-              label={additional.name}
-              withAsterisk={additional.is_required}
-              error={fieldError}
-              value={(form.values.medical_history[additional.id] as string) ?? ""}
-              onChange={(value) => {
-                form.setFieldValue("medical_history", {
-                  ...form.values.medical_history,
-                  [additional.id]: value,
-                });
-              }}
-            />
-          )}
-        </div>
-      );
+  const handleValueChange = (
+    fieldId: number,
+    value: string | string[] | null
+  ) => {
+    form.setFieldValue("medical_history", {
+      ...form.values.medical_history,
+      [fieldId]: value ?? "",
     });
   };
 
-  const Map_Data = () => {
-    return data.map((items) => {
-      const typeLabel = data_type(items.type.name);
-      const fieldError = form.errors[`medical_history.${items.id}`];
+  const renderField = (field: MedicalHistoryField | AdditionalField) => {
+    const fieldError = form.errors[`medical_history.${field.id}`];
+    const currentValue = form.values.medical_history[field.id] ?? "";
+    const hasOptions = Array.isArray(field.options) && field.options.length > 0;
 
+    // Resolve base field type from utility helper
+    const baseType = data_type(field.type?.name);
+
+    // Dynamic type check: force Dropdown if options are present and it isn't Radio/Checkbox
+    const isDropdown =
+      baseType === "Dropdown" ||
+      (hasOptions && baseType !== "Radio" && baseType !== "Checkbox");
+
+    if (isDropdown) {
       return (
-        <Stack key={items.id} gap="md">
-          {typeLabel === "Divider" && (
-            <SectionDivider
-              label={items.name}
-              descriptionLabel={items.description_text ?? ""}
-            />
-          )}
-
-          {typeLabel === "Text" && (
-            <TextInput1
-              label={items.name}
-              withAsterisk={items.is_required}
-              error={fieldError}
-              value={(form.values.medical_history[items.id] as string) ?? ""}
-              onChange={(value) => {
-                form.setFieldValue("medical_history", {
-                  ...form.values.medical_history,
-                  [items.id]: value,
-                });
-              }}
-            />
-          )}
-
-          {typeLabel === "Date" && (
-            <DateInput
-              label={items.name}
-              withAsterisk={items.is_required}
-              error={fieldError}
-              value={(form.values.medical_history[items.id] as string) ?? ""}
-              onChange={(value) => {
-                form.setFieldValue("medical_history", {
-                  ...form.values.medical_history,
-                  [items.id]: value,
-                });
-              }}
-            />
-          )}
-
-          {typeLabel === "Radio" && (
-            <RadioInput
-              label={items.name}
-              withAsterisk={items.is_required}
-              error={fieldError}
-              data={items.options}
-              value={(form.values.medical_history[items.id] as string) ?? ""}
-              onChange={(value) => {
-                form.setFieldValue("medical_history", {
-                  ...form.values.medical_history,
-                  [items.id]: value,
-                });
-              }}
-            />
-          )}
-
-          {typeLabel === "Dropdown" && (
-            <DropdownInput
-              label={items.name}
-              withAsterisk={items.is_required}
-              error={fieldError}
-              data={items.options}
-              value={(form.values.medical_history[items.id] as string) ?? ""}
-              onChange={(value) => {
-                form.setFieldValue("medical_history", {
-                  ...form.values.medical_history,
-                  [items.id]: value,
-                });
-              }}
-            />
-          )}
-
-          {typeLabel === "Checkbox" && (
-            <CheckboxInput
-              label={items.name}
-              withAsterisk={items.is_required}
-              error={fieldError}
-              options={items.options}
-              data={form.values.medical_history[items.id]}
-              onChange={(values) => {
-                form.setFieldValue("medical_history", {
-                  ...form.values.medical_history,
-                  [items.id]: values,
-                });
-              }}
-            />
-          )}
-
-          {items.additional_fields?.length > 0 &&
-            Map_Additional_Fields(items.additional_fields)}
-        </Stack>
+        <DropdownInput
+          key={field.id}
+          label={field.name}
+          withAsterisk={"is_required" in field ? field.is_required : true}
+          error={fieldError}
+          data={field.options}
+          value={currentValue as string}
+          onChange={(val) => handleValueChange(field.id, val)}
+        />
       );
-    });
+    }
+
+    switch (baseType) {
+      case "Divider":
+        return (
+          <SectionDivider
+            key={field.id}
+            label={field.name}
+            descriptionLabel={field.description_text ?? ""}
+          />
+        );
+
+      case "Text":
+        return (
+          <TextInput1
+            key={field.id}
+            label={field.name}
+            withAsterisk={"is_required" in field ? field.is_required : false}
+            error={fieldError}
+            value={currentValue as string}
+            onChange={(val) => handleValueChange(field.id, val)}
+          />
+        );
+
+      case "Date":
+        return (
+          <DateInput
+            key={field.id}
+            label={field.name}
+            withAsterisk={"is_required" in field ? field.is_required : false}
+            error={fieldError}
+            value={currentValue as string}
+            onChange={(val) => handleValueChange(field.id, val)}
+          />
+        );
+
+      case "Radio":
+        return (
+          <RadioInput
+            key={field.id}
+            label={field.name}
+            withAsterisk={"is_required" in field ? field.is_required : false}
+            error={fieldError}
+            data={field.options}
+            value={currentValue as string}
+            onChange={(val) => handleValueChange(field.id, val)}
+          />
+        );
+
+      case "Checkbox":
+        return (
+          <CheckboxInput
+            key={field.id}
+            label={field.name}
+            withAsterisk={"is_required" in field ? field.is_required : false}
+            error={fieldError}
+            options={field.options}
+            data={(Array.isArray(currentValue) ? currentValue : []) as string[]}
+            onChange={(vals) => handleValueChange(field.id, vals)}
+          />
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
@@ -166,7 +136,39 @@ export default function Step_2({ data, form }: Step_2Props) {
         Medical & Vaccination History
       </Text>
       <Text>Please provide the student's medical and vaccination history.</Text>
-      {Map_Data()}
+
+      <Stack gap="md" mt="md">
+        {data.map((item) => {
+          const parentValue = form.values.medical_history[item.id];
+
+          // Filter sub-fields required by parent selection (e.g., vaccine details when "YES" is selected)
+          const activeAdditionalFields = item.additional_fields?.filter(
+            (subField) =>
+              subField.required_with_field_value === parentValue ||
+              !subField.required_with_field_value
+          );
+
+          return (
+            <Stack key={item.id} gap="md">
+              {renderField(item)}
+
+              {/* Dynamic sub-field rendering with informative divider notice */}
+              {activeAdditionalFields && activeAdditionalFields.length > 0 && (
+                <Stack gap="md" pl="md">
+                  {activeAdditionalFields.some(
+                    (sf) => sf.name === "Vaccine Name"
+                  ) && (
+                    <SectionDivider descriptionLabel="If you are uncertain about the exact date, please just indicate the year it was administered." />
+                  )}
+                  {activeAdditionalFields.map((subField) =>
+                    renderField(subField)
+                  )}
+                </Stack>
+              )}
+            </Stack>
+          );
+        })}
+      </Stack>
     </>
   );
 }

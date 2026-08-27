@@ -4,12 +4,12 @@ import {
   fetchPersonalInfoField,
   fetchMedicalHistoryField,
   registerStudent,
-} from "../services/register.form.field";
+} from "../api/student-register";
 
 import type {
   RegisterReqBody,
   RegisterResBody,
-} from "@/types/register.form.field";
+} from "@/types/student-register";
 
 export function usePersonalInfo() {
   return useQuery({

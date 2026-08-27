@@ -38,11 +38,12 @@ export default function LoginPage() {
     !form.getValues().username.trim() || !form.getValues().password.trim();
 
   const handleSubmit = () => {
-    loginMutation.mutate(form.values);
-    if (loginMutation.data?.data.user.role === "Student") {
-      loginMutation.data?.data.user.role
-      navigate(`student-dashboard/${loginMutation.data?.data.user.id}`);
-    }
+    loginMutation.mutate(form.values, {
+      onSuccess: ({data}) => {
+      navigate(`student-dashboard/${data?.user.id}`);
+      },
+    });
+   
   };
 
   return (
