@@ -6,11 +6,13 @@ import Activity from "@/components/activities/Activity";
 import ActivitySkeleton from "@/components/activities/ActivitySkeleton";
 import QueryError from "@/components/QueryError";
 import { useStudentActivityLogs } from "@/hooks/students/useStudentActivityLogs";
+import { useStudentDetail } from "@/hooks/students/useStudentDetail";
 import classes from "@/styles/ScrollFade.module.css";
+import { getStudentFullName } from "@/utils/students/studentName";
 
 export default function StudentActivityLogs() {
 	const {
-		data,
+		data: studentLogsData,
 		isPending,
 		error,
 		refetch,
@@ -18,6 +20,10 @@ export default function StudentActivityLogs() {
 		hasNextPage,
 		isFetchingNextPage,
 	} = useStudentActivityLogs();
+	const { data: studentData } = useStudentDetail();
+	const studentFullName = studentData
+		? getStudentFullName(studentData.data.personal_info, true)
+		: undefined;
 
 	const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
@@ -36,7 +42,7 @@ export default function StudentActivityLogs() {
 		return <QueryError error={error} onRetry={refetch} />;
 	}
 
-	if (!data?.pages[0].data.data.length) {
+	if (!studentLogsData?.pages.flatMap((page) => page.data.data).length) {
 		return null;
 	}
 
@@ -60,13 +66,14 @@ export default function StudentActivityLogs() {
 							))
 						) : (
 							<>
-								{data.pages.map((page, i) => (
+								{studentLogsData.pages.map((page, i) => (
 									<React.Fragment key={page.data.next_cursor || i}>
 										{page.data.data.map((activity) => (
 											<Activity
 												key={activity.id}
 												action={activity.action}
 												date={activity.created_at}
+												highlightAction={studentFullName}
 											/>
 										))}
 									</React.Fragment>

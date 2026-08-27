@@ -6,7 +6,7 @@ function getStringValue(value: Field["value"] | undefined) {
 	return typeof value === "string" ? value : undefined;
 }
 
-export function getStudentFullName(fields: Field[]) {
+export function getStudentFullName(fields: Field[], fullMiddleName?: boolean) {
 	const firstName = fields.find((field) => field.name === "First Name");
 
 	const middleName = fields.find((field) => field.name === "Middle Name");
@@ -19,7 +19,11 @@ export function getStudentFullName(fields: Field[]) {
 
 	return [
 		firstNameValue,
-		middleNameValue ? `${middleNameValue.charAt(0)}.` : null,
+		fullMiddleName && middleNameValue
+			? middleNameValue
+			: middleNameValue
+				? `${middleNameValue.charAt(0)}.`
+				: null,
 		lastNameValue,
 	]
 		.filter(Boolean)
