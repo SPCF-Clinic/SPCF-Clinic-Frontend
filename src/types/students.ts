@@ -13,8 +13,8 @@ export interface StudentIndex {
 export interface StudentShow {
 	id: number;
 	username: string;
-	personal_info: Fields[];
-	medical_history: Fields[];
+	personal_info: Field[];
+	medical_history: Field[];
 	contact_person: {
 		name: string;
 		number: string;
@@ -22,7 +22,7 @@ export interface StudentShow {
 	illnesses: string[];
 }
 
-export interface Fields {
+export interface Field {
 	id: number;
 	name: string;
 	form_order: number;
@@ -35,3 +35,7 @@ export interface AdditionalField {
 	name: string;
 	value: null | string;
 }
+
+export type DisplayField = Omit<Field, "id" | "form_order"> & {
+	id: number | string;
+};
