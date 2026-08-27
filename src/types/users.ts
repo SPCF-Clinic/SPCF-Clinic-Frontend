@@ -3,6 +3,7 @@ export interface UserIndex {
 	username: string;
 	name: string | null;
 	contact_number: string | null;
+	email: string | null;
 	access: UserAccess;
 }
 

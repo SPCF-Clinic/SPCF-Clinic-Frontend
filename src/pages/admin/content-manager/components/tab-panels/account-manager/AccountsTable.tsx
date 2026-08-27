@@ -21,12 +21,12 @@ export default function AccountsTable() {
 	}
 
 	return (
-		<AppTable columns={COLUMNS} isPending={isPending} data={data?.data}>
-			{data?.data.map((user) => (
+		<AppTable columns={COLUMNS} isPending={isPending} data={data?.data.users}>
+			{data?.data.users.map((user) => (
 				<Table.Tr key={user.id}>
 					<Table.Td>{user.name ?? user.username}</Table.Td>
 					<Table.Td>{user.contact_number}</Table.Td>
-					<Table.Td></Table.Td>
+					<Table.Td>{user.email}</Table.Td>
 					<Table.Td>{user.access}</Table.Td>
 					<Table.Td>
 						<Center>
