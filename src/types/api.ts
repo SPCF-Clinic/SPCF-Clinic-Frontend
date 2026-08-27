@@ -7,6 +7,7 @@ export interface ApiResponse<T> {
 
 export type PaginationQueryParams<T = Record<string, unknown>> = {
 	per_page?: number;
+	page?: number;
 } & T;
 
 export type CursorPaginationQueryParams<T = Record<string, unknown>> =
