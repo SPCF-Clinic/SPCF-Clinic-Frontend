@@ -2,10 +2,26 @@ import type { ITEM_CATEGORIES, ITEM_UNITS } from "@/constants/items";
 
 export type ItemIndex = MedicineItem | SupplyItem;
 
-export type MedicineItem = BaseItemIndex<"Medicine">;
-export type SupplyItem = BaseItemIndex<"Supply">;
+export type MedicineItem = {
+	[U in MedicineUnit]: ItemIndexForUnit<"Medicine", U>;
+}[MedicineUnit];
 
-interface BaseItemIndex<T extends ItemType> {
+export type SupplyItem = {
+	[U in SupplyUnit]: ItemIndexForUnit<"Supply", U>;
+}[SupplyUnit];
+
+type ItemIndexForUnit<
+	T extends ItemType,
+	U extends ItemUnit<T>,
+> = BaseItem<T> & {
+	unit: U;
+} & (U extends "Boxes" | "Bottles"
+		? {
+				item_content: ItemContent;
+			}
+		: Record<string, never>);
+
+interface BaseItem<T extends ItemType> {
 	id: number;
 	name: string;
 	type: T;
@@ -13,7 +29,6 @@ interface BaseItemIndex<T extends ItemType> {
 	unit: ItemUnit<T>;
 	dispensed: number;
 	quantity: number;
-	item_content: ItemContent;
 }
 
 export type ItemType = "Medicine" | "Supply";
@@ -24,16 +39,16 @@ export type MedicineUnit = (typeof ITEM_UNITS.Medicine)[number];
 export type SupplyCategory = (typeof ITEM_CATEGORIES.Supply)[number];
 export type SupplyUnit = (typeof ITEM_UNITS.Supply)[number];
 
-type ItemCategory<T extends ItemType> = T extends "Medicine"
+export type ItemCategory<T extends ItemType> = T extends "Medicine"
 	? MedicineCategory
 	: SupplyCategory;
 
-type ItemUnit<T extends ItemType> = T extends "Medicine"
+export type ItemUnit<T extends ItemType> = T extends "Medicine"
 	? MedicineUnit
 	: SupplyUnit;
 
 interface ItemContent {
-	content_unit: string;
+	content_unit: Exclude<ItemUnit<ItemType>, "Boxes">;
 	quantity_per_item_unit: number;
 }
 

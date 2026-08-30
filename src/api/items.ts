@@ -1,7 +1,9 @@
+import type { ItemFormValues } from "@/pages/admin/medicines/components/item-form/itemFormContext";
 import { apiClient } from "@/services/axios";
 import type { PaginationQueryParams, PaginationResponse } from "@/types/api";
 import type {
 	DispensedItemIndex,
+	ItemIndex,
 	ItemType,
 	MedicineItem,
 	SupplyItem,
@@ -38,3 +40,9 @@ export const getDispensedItems = (filters?: GetDispensedItemsFilters) =>
 	apiClient.get<GetDispensedItemsResponse>("/dispensed-items", {
 		params: filters,
 	});
+
+export const createItem = (data: ItemFormValues) =>
+	apiClient.post<ItemIndex>("/items", data);
+
+export const editItem = (itemId: number, data: ItemFormValues) =>
+	apiClient.put<ItemIndex>(`/items/${itemId}`, data);

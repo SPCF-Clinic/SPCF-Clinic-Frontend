@@ -5,7 +5,7 @@ import ActionMenu from "@/components/ActionMenu";
 import { AppTable, type ColumnDef } from "@/components/AppTable";
 import QueryError from "@/components/QueryError";
 import { useItems } from "@/hooks/items/useItems";
-import type { ItemType } from "@/types/items";
+import type { ItemIndex, ItemType } from "@/types/items";
 import { getStockStatus } from "@/utils/items/getStockStatus";
 import StockBadge from "../StockBadge";
 
@@ -19,9 +19,15 @@ const COLUMNS: ColumnDef[] = [
 	{ id: "actions", w: 48 },
 ];
 
-export default function MedicineSupplyTable<T extends ItemType>(
-	props: GetItemsFilters<T>,
-) {
+interface MedicineSupplyTableProps<T extends ItemType>
+	extends GetItemsFilters<T> {
+	onEdit: (item: ItemIndex) => void;
+}
+
+export default function MedicineSupplyTable<T extends ItemType>({
+	onEdit,
+	...props
+}: MedicineSupplyTableProps<T>) {
 	const { data, isPending, error, refetch } = useItems(props);
 
 	if (error) {
@@ -47,7 +53,21 @@ export default function MedicineSupplyTable<T extends ItemType>(
 					</Table.Td>
 					<Table.Td>
 						<Center>
-							<ActionMenu items={[]} />
+							<ActionMenu
+								items={[
+									{
+										children: `Dispense ${item.type}`,
+										c: "primary",
+										fw: 500,
+									},
+									{
+										children: "Edit",
+										onClick: () => onEdit(item),
+										fw: 500,
+									},
+									{ children: "Delete", c: "red", fw: 500 },
+								]}
+							/>
 						</Center>
 					</Table.Td>
 				</Table.Tr>

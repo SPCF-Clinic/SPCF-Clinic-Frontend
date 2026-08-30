@@ -10,6 +10,16 @@ export const ITEM_UNITS = {
 	Supply: ["Packs", "Boxes", "Pairs", "Rolls"],
 } as const;
 
+export const ITEM_CONTENT_UNITS = {
+	Medicine: {
+		Boxes: ["Tablets", "Bottles"],
+		Bottles: ["ml"],
+	},
+	Supply: {
+		Boxes: ["Packs", "Pairs", "Rolls"],
+	},
+} as const;
+
 export const LOW_STOCK_LIMITS = {
 	Medicine: {
 		Tablets: 10,
