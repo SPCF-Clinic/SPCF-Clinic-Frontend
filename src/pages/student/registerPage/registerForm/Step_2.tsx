@@ -43,10 +43,8 @@ export default function Step_2({ data, form }: Step_2Props) {
     const currentValue = form.values.medical_history[field.id] ?? "";
     const hasOptions = Array.isArray(field.options) && field.options.length > 0;
 
-    // Resolve base field type from utility helper
     const baseType = data_type(field.type?.name);
 
-    // Dynamic type check: force Dropdown if options are present and it isn't Radio/Checkbox
     const isDropdown =
       baseType === "Dropdown" ||
       (hasOptions && baseType !== "Radio" && baseType !== "Checkbox");
@@ -141,7 +139,6 @@ export default function Step_2({ data, form }: Step_2Props) {
         {data.map((item) => {
           const parentValue = form.values.medical_history[item.id];
 
-          // Filter sub-fields required by parent selection (e.g., vaccine details when "YES" is selected)
           const activeAdditionalFields = item.additional_fields?.filter(
             (subField) =>
               subField.required_with_field_value === parentValue ||
@@ -152,7 +149,6 @@ export default function Step_2({ data, form }: Step_2Props) {
             <Stack key={item.id} gap="md">
               {renderField(item)}
 
-              {/* Dynamic sub-field rendering with informative divider notice */}
               {activeAdditionalFields && activeAdditionalFields.length > 0 && (
                 <Stack gap="md" pl="md">
                   {activeAdditionalFields.some(

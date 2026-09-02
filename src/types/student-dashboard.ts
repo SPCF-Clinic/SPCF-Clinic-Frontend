@@ -23,7 +23,8 @@ export interface StudentData {
   personal_info: DynamicFormField[];
   medical_history: DynamicFormField[];
   contact_person: ContactPerson;
-  illnesses: string[]; // Adjust item type if illness objects contain nested properties
+personal_info_form_version: string;
+medical_history_form_version: string;
 }
 
 export interface StudentResponse {

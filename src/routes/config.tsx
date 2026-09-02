@@ -12,7 +12,7 @@ import RegisterPage from "../pages/student/registerPage";
 import FormPage from "../pages/student/registerPage/registerForm";
 import StudentDashboard from "@/pages/student/dashboardPage";
 import Updatedetails from "@/pages/student/dashboardPage/UpdateDetails";
-import ReviewDetails from "@/pages/student/dashboardPage/ReviewDeatils";
+import ReviewDetails from "@/pages/student/dashboardPage/ReviewDetails";
 
 //Admin
 import ContentManager from "@/pages/admin/content-manager";
@@ -26,19 +26,24 @@ import StudentList from "@/pages/admin/student-list";
 export const routes = [
   // Student Auth Routes (Redirects to "/" if already authed)
   {
-    element: <MobLayout />,
+    element: <PublicOnlyRoute redirectPath="/admin" />,
     children: [
       {
-        index: true,
-        element: <LoginPage />,
-      },
-      {
-        path: "register",
-        element: <RegisterPage />,
-      },
-      {
-        path: "register/form/:studentId",
-        element: <FormPage />,
+        element: <MobLayout />,
+        children: [
+          {
+            index: true,
+            element: <LoginPage />,
+          },
+          {
+            path: "register",
+            element: <RegisterPage />,
+          },
+          {
+            path: "register/form/:studentId",
+            element: <FormPage />,
+          },
+        ],
       },
     ],
   },

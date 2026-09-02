@@ -3,8 +3,8 @@ import { Flex, Box } from "@mantine/core";
 
 interface LayoutProps {
   children: React.ReactNode;
-  onSubmit?: () => void;
-  height?: string
+  onSubmit?: React.FormEventHandler<HTMLFormElement>;
+  height?: string;
 }
 export default function Layout({children,onSubmit, height }:LayoutProps){
     return (

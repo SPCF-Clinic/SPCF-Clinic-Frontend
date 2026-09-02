@@ -1,6 +1,10 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 
-import { fetchStudent, updatePersonalInfo } from "@/api/student-dashboard";
+import {
+  fetchStudent,
+  updateMedicalHistory,
+  updatePersonalInfo,
+} from "@/api/student-dashboard";
 
 import type {
   PersonalInfoQueryParams,
@@ -40,7 +44,7 @@ export function useUpdateMedicalHistory() {
     { student_number: number; request: MedicalHistoryQueryParams }
   >({
     mutationFn: ({ student_number, request }) =>
-      updatePersonalInfo(student_number, request),
+      updateMedicalHistory(student_number, request),
     onSuccess: (data, variables) => {
       console.log("Update Success Response:", data);
       console.log("Variables", variables)

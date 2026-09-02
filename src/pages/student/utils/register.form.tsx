@@ -51,9 +51,6 @@ export const isStepDisabled = (
     });
   }
 
-  
-
-
   if (active === 5) {
     return !formValues.full_name.trim();
   }
@@ -64,27 +61,51 @@ export const isStepDisabled = (
 /**
  * Formats the form state into the payload structure expected by the API.
  */
-export const createRegisterPayload = (values: FormValues) => {
-  return {
-    student_id: values.student_id,
-    password: values.password,
-    personal_info_form_version: values.personal_info_form_version,
-    medical_history_form_version: values.medical_history_form_version,
+export const createStudentFormPayload = (values: any, type: string) => {
+  if (type === "register") {
+    return {
+      student_id: values.student_id,
+      password: values.password,
+      personal_info_form_version: values.personal_info_form_version,
+      medical_history_form_version: values.medical_history_form_version,
 
-    ...Object.fromEntries(
-      Object.entries(values.personal_info).map(([id, value]) => [
-        `personal_info[${id}]`,
-        value,
-      ]),
-    ),
+      ...Object.fromEntries(
+        Object.entries(values.personal_info).map(([id, value]) => [
+          `personal_info[${id}]`,
+          value,
+        ]),
+      ),
 
-    ...Object.fromEntries(
-      Object.entries(values.medical_history).map(([id, value]) => [
-        `medical_history[${id}]`,
-        value,
-      ]),
-    ),
-  };
+      ...Object.fromEntries(
+        Object.entries(values.medical_history).map(([id, value]) => [
+          `medical_history[${id}]`,
+          value,
+        ]),
+      ),
+    };
+  } else if (type === "personal") {
+    return {
+      form_version: values.form_version ?? values.personal_info_form_version,
+
+      ...Object.fromEntries(
+        Object.entries(values.formData ?? {}).map(([id, value]) => [
+          `personal_info[${id}]`,
+          value,
+        ]),
+      ),
+    };
+  } else if (type === "medical") {
+    return {
+      form_version: values.form_version ?? values.medical_history_form_version,
+
+      ...Object.fromEntries(
+        Object.entries(values.formData ?? {}).map(([id, value]) => [
+          `medical_history[${id}]`,
+          value,
+        ]),
+      ),
+    };
+  }
 };
 
 /**

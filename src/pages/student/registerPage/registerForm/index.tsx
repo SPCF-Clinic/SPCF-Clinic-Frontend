@@ -18,7 +18,7 @@ import {
 import { useAuthStore } from "@/stores/useAuthStore";
 import {
   isStepDisabled,
-  createRegisterPayload,
+  createStudentFormPayload,
   handleStepNext,
   extractApiErrorMessage,
 } from "../../utils/register.form";
@@ -119,7 +119,8 @@ export default function Form() {
   }, [step1_data, step2_data]);
 
   const handleSubmit = () => {
-    const payload = createRegisterPayload(form.values);
+    console.log("FORM",form)
+    const payload = createStudentFormPayload(form.values, "register");
 
     registerUser(payload, {
       onSuccess: (data) => {

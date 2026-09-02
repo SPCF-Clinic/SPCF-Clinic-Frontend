@@ -39,11 +39,16 @@ export default function LoginPage() {
 
   const handleSubmit = () => {
     loginMutation.mutate(form.values, {
-      onSuccess: ({data}) => {
-      navigate(`student-dashboard/${data?.user.id}`);
+      onSuccess: ({ data }) => {
+        navigate(`student-dashboard/${data?.user.id}`);
+      },
+      onError: () => {
+        form.setErrors({
+          username: "Invalid student number or password",
+          password: "Invalid student number or password",
+        });
       },
     });
-   
   };
 
   return (
@@ -83,6 +88,7 @@ export default function LoginPage() {
             size="md"
             gradient={{ from: "#29315B", to: "#294FAF", deg: 90 }}
             opacity={isFormEmpty ? 0.7 : 1}
+            loading={loginMutation.isPending}
           >
             Continue
           </Button>
@@ -92,6 +98,7 @@ export default function LoginPage() {
             onClick={() => {
               navigate("register");
             }}
+    
           >
             Register
           </Button>

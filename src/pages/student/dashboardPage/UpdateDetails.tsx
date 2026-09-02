@@ -7,15 +7,13 @@ import {
   Breadcrumbs,
   Stack,
   Title,
+  Loader,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 
-import {
-  useSpecificStudent,
-  useUpdateMedicalHistory,
-  useUpdatePersonalInfo,
-} from "@/query/student-dashboard";
+import { useSpecificStudent } from "@/query/student-dashboard";
+import { useMedicalInfo, usePersonalInfo } from "@/query/student-register";
 import { data_type } from "../utils/register.form";
 
 import TextInput1 from "../components/TextInput";
@@ -39,15 +37,15 @@ export default function Updatedetails() {
 
   // Explicit type check with fallback
   const rawType = searchParams.get("type");
-  const type = rawType === "medical_history" ? "medical_history" : "personal_info";
+  const type =
+    rawType === "medical_history" ? "medical_history" : "personal_info";
   const isPersonal = type === "personal_info";
 
   const { data: studentData, isLoading } = useSpecificStudent(
-    Number(student_number)
+    Number(student_number),
   );
-
-  const updateMedicalHistory = useUpdateMedicalHistory();
-  const updatePersonalInfo = useUpdatePersonalInfo();
+  const { data: personalSchema } = usePersonalInfo();
+  const { data: medicalSchema } = useMedicalInfo();
 
   const form = useForm<UpdateFormValues>({
     initialValues: {
@@ -59,14 +57,30 @@ export default function Updatedetails() {
   useEffect(() => {
     if (studentData?.data) {
       const personalMap: Record<number, string> = {};
-      studentData.data.personal_info?.forEach((field: any) => {
-        personalMap[field.id] = field.value ?? "";
-      });
+      const mapPersonalFields = (fields: any[]) => {
+        fields?.forEach((field: any) => {
+          personalMap[field.id] = Array.isArray(field.value)
+            ? field.value.join(", ")
+            : (field.value ?? "");
+
+          if (Array.isArray(field.additional_fields)) {
+            mapPersonalFields(field.additional_fields);
+          }
+        });
+      };
+      mapPersonalFields(studentData.data.personal_info ?? []);
 
       const medicalMap: Record<number, string | string[]> = {};
-      studentData.data.medical_history?.forEach((field: any) => {
-        medicalMap[field.id] = field.value ?? "";
-      });
+      const mapMedicalFields = (fields: any[]) => {
+        fields?.forEach((field: any) => {
+          medicalMap[field.id] = field.value ?? "";
+
+          if (Array.isArray(field.additional_fields)) {
+            mapMedicalFields(field.additional_fields);
+          }
+        });
+      };
+      mapMedicalFields(studentData.data.medical_history ?? []);
 
       form.setValues({
         personal_info: personalMap,
@@ -77,7 +91,7 @@ export default function Updatedetails() {
 
   const handleValueChange = (
     fieldId: number,
-    value: string | string[] | null
+    value: string | string[] | null,
   ) => {
     const targetKey = isPersonal ? "personal_info" : "medical_history";
     form.setFieldValue(targetKey, {
@@ -88,18 +102,26 @@ export default function Updatedetails() {
 
   const renderField = (field: any) => {
     const activeKey = isPersonal ? "personal_info" : "medical_history";
-    const fieldError = form.errors[`${activeKey}.${field.id}`];
+    const fieldError = form.errors[`${activeKey}.${field.id}`] as
+      | string
+      | undefined;
     const currentValue =
       form.values[activeKey]?.[field.id] ?? field.value ?? "";
+    const fallbackOptions = Array.isArray(currentValue)
+      ? currentValue.filter((v): v is string => typeof v === "string")
+      : typeof currentValue === "string" && currentValue.trim() !== ""
+        ? [currentValue]
+        : [];
+    const fieldOptions =
+      Array.isArray(field.options) && field.options.length > 0
+        ? field.options
+        : fallbackOptions;
 
     const rawTypeName =
       field.type?.name ?? (Array.isArray(field.value) ? "Checkbox" : "Text");
     const baseType = data_type(rawTypeName) || "Text";
-    const hasOptions = Array.isArray(field.options) && field.options.length > 0;
 
-    const isDropdown =
-      baseType === "Dropdown" ||
-      (hasOptions && baseType !== "Radio" && baseType !== "Checkbox");
+    const isDropdown = baseType === "Dropdown";
 
     if (isDropdown) {
       return (
@@ -108,7 +130,7 @@ export default function Updatedetails() {
           label={field.name}
           withAsterisk={field.is_required ?? false}
           error={fieldError}
-          data={field.options}
+          data={fieldOptions}
           value={currentValue as string}
           onChange={(val) => handleValueChange(field.id, val)}
         />
@@ -144,7 +166,7 @@ export default function Updatedetails() {
             label={field.name}
             withAsterisk={field.is_required ?? false}
             error={fieldError}
-            data={field.options}
+            data={fieldOptions}
             value={currentValue as string}
             onChange={(val) => handleValueChange(field.id, val)}
           />
@@ -157,8 +179,14 @@ export default function Updatedetails() {
             label={field.name}
             withAsterisk={field.is_required ?? false}
             error={fieldError}
-            options={field.options}
-            data={(Array.isArray(currentValue) ? currentValue : []) as string[]}
+            options={fieldOptions}
+            data={
+              Array.isArray(currentValue)
+                ? currentValue
+                : typeof currentValue === "string"
+                  ? currentValue
+                  : []
+            }
             onChange={(vals) => handleValueChange(field.id, vals)}
           />
         );
@@ -178,34 +206,45 @@ export default function Updatedetails() {
     }
   };
 
-const handleSubmit = (values: UpdateFormValues) => {
-  console.log("Submitting values:", values); // Check if this prints
-  console.log("Student Number:", student_number); // Ensure this is not undefined
-
-  if (!student_number) {
-    console.error("student_number is missing from URL params!");
-    return;
-  }
-
-  const payload = isPersonal
-    ? { personal_info: values.personal_info }
-    : { medical_history: values.medical_history };
-
-  navigate(
-    `/student-dashboard/${student_number}/review-details?type=${type}`,
-    {
-      state: { formData: payload },
+  const handleSubmit = (values: UpdateFormValues) => {
+    if (!student_number) {
+      console.error("student_number is missing from URL params!");
+      return;
     }
-  );
-};
 
-  if (isLoading) {
-    return <Text p="md">Loading information...</Text>;
-  }
+    const payload = isPersonal
+      ? { personal_info: values.personal_info }
+      : { medical_history: values.medical_history };
+
+    navigate(
+      `/student-dashboard/${student_number}/review-details?type=${type}`,
+      {
+        state: { formData: payload },
+      },
+    );
+  };
+
+  const personalSchemaFields = Array.isArray(
+    (personalSchema as any)?.data?.data,
+  )
+    ? (personalSchema as any).data.data
+    : Array.isArray((personalSchema as any)?.data)
+      ? (personalSchema as any).data
+      : [];
+
+  const medicalSchemaFields = Array.isArray((medicalSchema as any)?.data?.data)
+    ? (medicalSchema as any).data.data
+    : Array.isArray((medicalSchema as any)?.data)
+      ? (medicalSchema as any).data
+      : [];
 
   const fieldsSchema = isPersonal
-    ? studentData?.data?.personal_info || []
-    : studentData?.data?.medical_history || [];
+    ? personalSchemaFields.length > 0
+      ? personalSchemaFields
+      : studentData?.data?.personal_info || []
+    : medicalSchemaFields.length > 0
+      ? medicalSchemaFields
+      : studentData?.data?.medical_history || [];
 
   const titleText = isPersonal
     ? "Personal Information"
@@ -215,14 +254,9 @@ const handleSubmit = (values: UpdateFormValues) => {
     ? "Please provide the student's basic personal details."
     : "Please provide the student's medical and vaccination history.";
 
-  const isPending = updatePersonalInfo.isPending || updateMedicalHistory.isPending;
-
   return (
-    <Layout height="100%">
-      <Box component="form" onSubmit={(e) => {
-    e.preventDefault(); 
-    form.onSubmit(handleSubmit)(e);
-  }}>
+    <Layout height="100%" onSubmit={form.onSubmit(handleSubmit)}>
+      <Box>
         <Breadcrumbs separator=">" mb="xs">
           <Anchor onClick={() => navigate(-1)} size="xs" c="dimmed">
             Home
@@ -240,35 +274,46 @@ const handleSubmit = (values: UpdateFormValues) => {
             {descriptionText}
           </Text>
         </Box>
-
+        {isLoading && <Loader />}
         <Stack gap="md">
           {fieldsSchema.map((item: any) => {
             const activeKey = isPersonal ? "personal_info" : "medical_history";
             const parentValue = form.values[activeKey]?.[item.id];
 
             const activeAdditionalFields = item.additional_fields?.filter(
-              (subField: any) =>
-                subField.required_with_field_value === parentValue ||
-                !subField.required_with_field_value
+              (subField: any) => {
+                if (!subField.required_with_field_value) {
+                  return true;
+                }
+
+                if (Array.isArray(parentValue)) {
+                  return parentValue.includes(
+                    subField.required_with_field_value,
+                  );
+                }
+
+                return subField.required_with_field_value === parentValue;
+              },
             );
 
             return (
               <Stack key={item.id} gap="md">
                 {renderField(item)}
 
-                {activeAdditionalFields && activeAdditionalFields.length > 0 && (
-                  <Stack gap="md" pl="md">
-                    {!isPersonal &&
-                      activeAdditionalFields.some(
-                        (sf: any) => sf.name === "Vaccine Name"
-                      ) && (
-                        <SectionDivider descriptionLabel="If you are uncertain about the exact date, please just indicate the year it was administered." />
+                {activeAdditionalFields &&
+                  activeAdditionalFields.length > 0 && (
+                    <Stack gap="md" pl="md">
+                      {!isPersonal &&
+                        activeAdditionalFields.some(
+                          (sf: any) => sf.name === "Vaccine Name",
+                        ) && (
+                          <SectionDivider descriptionLabel="If you are uncertain about the exact date, please just indicate the year it was administered." />
+                        )}
+                      {activeAdditionalFields.map((subField: any) =>
+                        renderField(subField),
                       )}
-                    {activeAdditionalFields.map((subField: any) =>
-                      renderField(subField)
-                    )}
-                  </Stack>
-                )}
+                    </Stack>
+                  )}
               </Stack>
             );
           })}
@@ -282,7 +327,6 @@ const handleSubmit = (values: UpdateFormValues) => {
             fullWidth
             h={50}
             bg="#294FAF"
-            loading={isPending}
             styles={{
               root: {
                 fontWeight: 600,

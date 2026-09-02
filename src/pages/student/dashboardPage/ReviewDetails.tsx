@@ -9,13 +9,22 @@ import {
   Group,
   Divider,
 } from "@mantine/core";
-import { useParams, useNavigate, useSearchParams, useLocation } from "react-router-dom";
-import { IconLock } from "@tabler/icons-react";
-
+import {
+  useParams,
+  useNavigate,
+  useSearchParams,
+  useLocation,
+} from "react-router-dom";
+import { createStudentFormPayload } from "../utils/register.form";
 import {
   useUpdateMedicalHistory,
   useUpdatePersonalInfo,
 } from "@/query/student-dashboard";
+import { useSpecificStudent } from "@/query/student-dashboard";
+import type {
+  MedicalHistoryQueryParams,
+  PersonalInfoQueryParams,
+} from "@/types/student-dashboard";
 
 import Layout from "../components/Layout";
 import Footer from "../components/Footer";
@@ -33,27 +42,78 @@ export default function ReviewDetails() {
   const updatePersonalInfo = useUpdatePersonalInfo();
   const updateMedicalHistory = useUpdateMedicalHistory();
 
+  const isPending =
+    updatePersonalInfo.isPending || updateMedicalHistory.isPending;
+
+  const { data: studentData } = useSpecificStudent(Number(student_number));
+  console.log(studentData);
+
+  const fields = isPersonal
+    ? (studentData?.data?.personal_info ?? [])
+    : (studentData?.data?.medical_history ?? []);
+
+  const values = isPersonal
+    ? (formData?.personal_info ?? {})
+    : (formData?.medical_history ?? []);
+
+  const reviewData = fields
+    .filter((field) => values[field.id] !== undefined)
+    .sort((a, b) => a.form_order - b.form_order)
+    .map((field) => ({
+      id: field.id,
+      name: field.name,
+      form_order: field.form_order,
+      value: values[field.id],
+    }));
+
   const handleConfirmUpdate = () => {
     if (!formData) return;
+    console.log(formData);
 
-    const mutation = isPersonal ? updatePersonalInfo : updateMedicalHistory;
+    const data = {
+      form_version: isPersonal
+        ? studentData?.data.personal_info_form_version
+        : studentData?.data.medical_history_form_version,
+      formData: isPersonal ? formData.personal_info : formData.medical_history,
+    };
 
-    mutation.mutate(
-      { student_number: Number(student_number), ...formData },
+    console.log("data", data);
+
+    if (isPersonal) {
+      const payload = createStudentFormPayload(
+        data,
+        "personal",
+      ) as PersonalInfoQueryParams | undefined;
+
+      if (!payload) return;
+
+      updatePersonalInfo.mutate(
+        { student_number: Number(student_number), request: payload },
+        {
+          onSuccess: () => {
+            navigate(`/student-dashboard/${student_number}`);
+          },
+        },
+      );
+      return;
+    }
+
+    const payload = createStudentFormPayload(
+      data,
+      "medical",
+    ) as MedicalHistoryQueryParams | undefined;
+
+    if (!payload) return;
+
+    updateMedicalHistory.mutate(
+      { student_number: Number(student_number), request: payload },
       {
         onSuccess: () => {
           navigate(`/student-dashboard/${student_number}`);
         },
-      }
+      },
     );
   };
-
-  const isPending = updatePersonalInfo.isPending || updateMedicalHistory.isPending;
-
-  // Fallback if user navigates directly without state data
-  const dataEntries = formData 
-    ? Object.entries(isPersonal ? formData.personal_info : formData.medical_history) 
-    : [];
 
   return (
     <Layout height="100%">
@@ -64,7 +124,9 @@ export default function ReviewDetails() {
             Home
           </Anchor>
           <Anchor onClick={() => navigate(-1)} size="xs" c="dimmed">
-            {isPersonal ? "Personal Information" : "Medical & Vaccination History"}
+            {isPersonal
+              ? "Personal Information"
+              : "Medical & Vaccination History"}
           </Anchor>
           <Text size="xs" c="dimmed" fw={500}>
             Review
@@ -85,22 +147,22 @@ export default function ReviewDetails() {
         <Group align="center" mb="md">
           <Divider flex={1} />
           <Text size="xs" fw={700} c="dimmed" tt="uppercase" lts={1}>
-            {isPersonal ? "Personal Information" : "Medical & Vaccination History"}
+            {isPersonal
+              ? "Personal Information"
+              : "Medical & Vaccination History"}
           </Text>
           <Divider flex={1} />
         </Group>
 
         {/* Dynamic Summary List */}
         <Stack gap="sm" mb={30}>
-          {dataEntries.map(([key, value]) => (
-            <Group key={key} justify="space-between" align="flex-start">
-              <Text size="sm" c="dimmed" w="40%">
-                Field #{key}
+          {reviewData.map((item) => (
+            <Box key={item.id}>
+              <Text fw={600}>{item.name}</Text>
+              <Text ta={"right"}>
+                {Array.isArray(item.value) ? item.value.join(", ") : item.value}
               </Text>
-              <Text size="sm" fw={500} w="58%" ta="right">
-                {Array.isArray(value) ? value.join(", ") : String(value || "—")}
-              </Text>
-            </Group>
+            </Box>
           ))}
         </Stack>
 
@@ -123,14 +185,6 @@ export default function ReviewDetails() {
           >
             Update
           </Button>
-
-          {/* Confidentiality Notice */}
-          <Group justify="center" gap={8} mt="md">
-            <IconLock size={14} color="gray" />
-            <Text size="xs" c="dimmed" ta="center">
-              Your information is kept confidential and used only for clinic records.
-            </Text>
-          </Group>
 
           <Box mt="md">
             <Footer />
