@@ -1,8 +1,6 @@
 import {
 	Button,
 	Collapse,
-	Divider,
-	Modal,
 	type ModalRootProps,
 	NumberInput,
 	type NumberInputProps,
@@ -12,8 +10,9 @@ import {
 	TextInput,
 	type TextInputProps,
 } from "@mantine/core";
-import { IconCaretDownFilled, IconX } from "@tabler/icons-react";
+import { IconCaretDownFilled } from "@tabler/icons-react";
 
+import { AppModal } from "@/components/AppModal";
 import { toast } from "@/components/toast";
 import {
 	EMPTY_ITEM_CONTENT,
@@ -130,86 +129,68 @@ export default function ItemFormModal({
 	};
 
 	return (
-		<Modal.Root
-			centered
-			{...props}
+		<AppModal
+			title={
+				isEditing ? `Edit ${computedItemType}` : `Add New ${computedItemType}`
+			}
 			onClose={() => {
 				form.reset();
 				onClose?.();
 			}}
+			bodyProps={{ py: "md", px: "lg" }}
+			{...props}
 		>
-			<Modal.Overlay />
-			<Modal.Content>
-				<Modal.Header p="lg" pb="sm">
-					<Modal.Title fz={20} fw={600}>
-						{isEditing
-							? `Edit ${computedItemType}`
-							: `Add New ${computedItemType}`}
-					</Modal.Title>
+			<ItemFormProvider form={form}>
+				<form onSubmit={form.onSubmit(handleSubmit)}>
+					<Stack>
+						<TextField
+							data-autofocus
+							label={`${computedItemType} Name`}
+							placeholder={`e.g. ${
+								computedItemType === "Medicine" ? "Biogesic" : "Cotton Balls"
+							}`}
+							key={form.key("name")}
+							{...form.getInputProps("name")}
+						/>
 
-					<Modal.CloseButton
-						icon={<IconX color="var(--mantine-color-text)" stroke={2.5} />}
-					/>
-				</Modal.Header>
+						<SelectField
+							label="Category"
+							data={ITEM_CATEGORIES[computedItemType]}
+							key={form.key("category")}
+							{...form.getInputProps("category")}
+						/>
 
-				<Divider />
+						<SelectField
+							label="Unit"
+							data={ITEM_UNITS[computedItemType]}
+							key={form.key("unit")}
+							{...form.getInputProps("unit")}
+							onChange={handleUnitChange}
+						/>
 
-				<Modal.Body py="md" px="lg">
-					<ItemFormProvider form={form}>
-						<form onSubmit={form.onSubmit(handleSubmit)}>
-							<Stack>
-								<TextField
-									data-autofocus
-									label={`${computedItemType} Name`}
-									placeholder={`e.g. ${
-										computedItemType === "Medicine"
-											? "Biogesic"
-											: "Cotton Balls"
-									}`}
-									key={form.key("name")}
-									{...form.getInputProps("name")}
-								/>
-
-								<SelectField
-									label="Category"
-									data={ITEM_CATEGORIES[computedItemType]}
-									key={form.key("category")}
-									{...form.getInputProps("category")}
-								/>
-
-								<SelectField
-									label="Unit"
-									data={ITEM_UNITS[computedItemType]}
-									key={form.key("unit")}
-									{...form.getInputProps("unit")}
-									onChange={handleUnitChange}
-								/>
-
-								<Collapse expanded={Boolean(unit)}>
-									<Stack bg="#EDF0F6" p="md" pt="xs" bdrs="sm">
-										{renderUnitFields()}
-									</Stack>
-								</Collapse>
-
-								<Button
-									type="submit"
-									fullWidth
-									size="md"
-									radius="xl"
-									loading={
-										isEditing
-											? editItemMutation.isPending
-											: createItemMutation.isPending
-									}
-								>
-									Confirm
-								</Button>
+						<Collapse expanded={Boolean(unit)}>
+							<Stack bg="#EDF0F6" p="md" pt="xs" bdrs="sm">
+								{renderUnitFields()}
 							</Stack>
-						</form>
-					</ItemFormProvider>
-				</Modal.Body>
-			</Modal.Content>
-		</Modal.Root>
+						</Collapse>
+
+						<Button
+							type="submit"
+							fullWidth
+							size="md"
+							radius="xl"
+							loading={
+								isEditing
+									? editItemMutation.isPending
+									: createItemMutation.isPending
+							}
+						>
+							Confirm
+						</Button>
+					</Stack>
+				</form>
+			</ItemFormProvider>
+		</AppModal>
 	);
 }
 
