@@ -125,16 +125,12 @@ export default function MedicineSupplyTable<T extends ItemType>({
 				))}
 			</AppTable>
 
-			{dispensingItem && (
-				<DispenseItemModal
-					item={dispensingItem}
-					opened={opened}
-					onClose={() => {
-						close();
-						setDispensingItem(null);
-					}}
-				/>
-			)}
+			<DispenseItemModal
+				item={dispensingItem}
+				opened={opened}
+				onClose={close}
+				onExitTransitionEnd={() => setDispensingItem(null)}
+			/>
 		</>
 	);
 }

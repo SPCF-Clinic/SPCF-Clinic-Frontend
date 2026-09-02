@@ -17,7 +17,7 @@ type ItemIndexForUnit<
 	unit: U;
 } & (U extends "Boxes" | "Bottles"
 		? {
-				item_content: ItemContent;
+				item_content: ItemContent<U>;
 			}
 		: Record<string, never>);
 
@@ -47,9 +47,19 @@ export type ItemUnit<T extends ItemType> = T extends "Medicine"
 	? MedicineUnit
 	: SupplyUnit;
 
-interface ItemContent {
-	content_unit: Exclude<ItemUnit<ItemType>, "Boxes">;
+type ItemContent<U extends "Boxes" | "Bottles"> = U extends "Boxes"
+	? BottleItemContent
+	: TerminalItemContent;
+
+interface TerminalItemContent {
+	content_unit: Exclude<ItemUnit<ItemType>, "Boxes" | "Bottles">;
 	quantity_per_item_unit: number;
+}
+
+interface BottleItemContent {
+	content_unit: "Bottles";
+	quantity_per_item_unit: number;
+	item_content: TerminalItemContent;
 }
 
 export interface DispensedItemIndex {

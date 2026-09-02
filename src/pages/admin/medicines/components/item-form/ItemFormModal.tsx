@@ -11,7 +11,7 @@ import {
 	type TextInputProps,
 } from "@mantine/core";
 import { IconCaretDownFilled } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { AppModal } from "@/components/AppModal";
 import { toast } from "@/components/toast";
@@ -22,11 +22,11 @@ import {
 } from "@/constants/items";
 import { useCreateItemMutation } from "@/hooks/items/useCreateItemMutation";
 import { useEditItemMutation } from "@/hooks/items/useEditItemMutation";
+import classes from "@/styles/Form.module.css";
 import type { ItemIndex, ItemType, ItemUnit } from "@/types/items";
 import { isApiError } from "@/utils/api";
 import BottleFields from "./BottleFields";
 import BoxFields from "./BoxFields";
-import classes from "./ItemFormModal.module.css";
 import {
 	ItemFormProvider,
 	type ItemFormValues,
@@ -61,12 +61,13 @@ export default function ItemFormModal({
 	});
 
 	useEffect(() => {
+		if (!props.opened) return;
 		const values = itemFormInitialValues({ itemType: computedItemType, item });
 
 		form.setInitialValues(values);
 		form.reset();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [item, computedItemType]);
+	}, [form.reset, form.setInitialValues, item, computedItemType, props.opened]);
 
 	const unit = form.useWatchValue("unit");
 

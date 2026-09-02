@@ -8,7 +8,7 @@ import { useItems } from "@/hooks/items/useItems";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { ItemIndex, ItemType } from "@/types/items";
 import { SEARCH_KEYS } from "../../searchKeys";
-import MedicineSupplyFormModal from "../item-form/ItemFormModal";
+import ItemFormModal from "../item-form/ItemFormModal";
 import MedicineSupplyTable from "./MedicineSupplyTable";
 
 interface MedicineSupplyProps {
@@ -58,7 +58,7 @@ export default function MedicineSupply({ type }: MedicineSupplyProps) {
 				<MedicineSupplyTable type={type} onEdit={handleEdit} />
 			</Stack>
 
-			<MedicineSupplyFormModal
+			<ItemFormModal
 				opened={opened}
 				onClose={close}
 				{...(selectedItem ? { item: selectedItem } : { itemType: type })}

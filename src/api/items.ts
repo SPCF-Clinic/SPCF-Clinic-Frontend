@@ -49,3 +49,12 @@ export const editItem = (itemId: number, data: ItemFormValues) =>
 
 export const deleteItem = (itemId: number) =>
 	apiClient.delete(`/items/${itemId}`);
+
+interface DispenseItemData {
+	item_id: number;
+	quantity_dispensed: number;
+	dispensed_to?: number;
+}
+
+export const dispenseItem = (data: DispenseItemData) =>
+	apiClient.post("/dispense-item", data);
