@@ -35,11 +35,6 @@ export default function MedicineSupply({ type }: MedicineSupplyProps) {
 		open();
 	};
 
-	const handleClose = () => {
-		close();
-		setSelectedItem(null);
-	};
-
 	return (
 		<>
 			<Stack>
@@ -64,10 +59,10 @@ export default function MedicineSupply({ type }: MedicineSupplyProps) {
 			</Stack>
 
 			<MedicineSupplyFormModal
-				key={selectedItem?.id ?? "add"}
 				opened={opened}
-				onClose={handleClose}
+				onClose={close}
 				{...(selectedItem ? { item: selectedItem } : { itemType: type })}
+				onExitTransitionEnd={() => setSelectedItem(null)}
 			/>
 		</>
 	);

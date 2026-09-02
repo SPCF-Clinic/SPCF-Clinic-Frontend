@@ -11,6 +11,7 @@ import {
 	type TextInputProps,
 } from "@mantine/core";
 import { IconCaretDownFilled } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 
 import { AppModal } from "@/components/AppModal";
 import { toast } from "@/components/toast";
@@ -29,6 +30,7 @@ import classes from "./ItemFormModal.module.css";
 import {
 	ItemFormProvider,
 	type ItemFormValues,
+	itemFormInitialValues,
 	itemFormTransformValues,
 	itemFormValidate,
 	useItemForm,
@@ -44,7 +46,6 @@ type ItemFormModalProps = ModalRootProps &
 export default function ItemFormModal({
 	item,
 	itemType,
-	onClose,
 	...props
 }: ItemFormModalProps) {
 	const computedItemType = (item?.type ?? itemType) as ItemType;
@@ -54,17 +55,18 @@ export default function ItemFormModal({
 
 	const form = useItemForm({
 		mode: "uncontrolled",
-		initialValues: {
-			name: item?.name,
-			type: computedItemType,
-			category: item?.category,
-			unit: item?.unit,
-			quantity: item?.quantity,
-			item_content: item?.item_content ?? EMPTY_ITEM_CONTENT,
-		},
+		initialValues: itemFormInitialValues({ itemType: computedItemType, item }),
 		transformValues: (values) => itemFormTransformValues(values),
 		validate: itemFormValidate(computedItemType),
 	});
+
+	useEffect(() => {
+		const values = itemFormInitialValues({ itemType: computedItemType, item });
+
+		form.setInitialValues(values);
+		form.reset();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [item, computedItemType]);
 
 	const unit = form.useWatchValue("unit");
 
@@ -109,7 +111,7 @@ export default function ItemFormModal({
 							message: `${computedItemType} edited successfully`,
 						});
 						form.reset();
-						onClose?.();
+						props.onClose();
 					},
 					onError,
 				},
@@ -121,7 +123,7 @@ export default function ItemFormModal({
 						message: `${computedItemType} created successfully`,
 					});
 					form.reset();
-					onClose?.();
+					props.onClose();
 				},
 				onError,
 			});
@@ -133,10 +135,6 @@ export default function ItemFormModal({
 			title={
 				isEditing ? `Edit ${computedItemType}` : `Add New ${computedItemType}`
 			}
-			onClose={() => {
-				form.reset();
-				onClose?.();
-			}}
 			bodyProps={{ py: "md", px: "lg" }}
 			{...props}
 		>

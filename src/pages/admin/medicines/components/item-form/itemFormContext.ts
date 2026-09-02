@@ -4,8 +4,17 @@ import {
 	isNotEmpty,
 	isOneOf,
 } from "@mantine/form";
-import { ITEM_CATEGORIES, ITEM_UNITS } from "@/constants/items";
-import type { ItemCategory, ItemType, ItemUnit } from "@/types/items";
+import {
+	EMPTY_ITEM_CONTENT,
+	ITEM_CATEGORIES,
+	ITEM_UNITS,
+} from "@/constants/items";
+import type {
+	ItemCategory,
+	ItemIndex,
+	ItemType,
+	ItemUnit,
+} from "@/types/items";
 
 export type ItemFormValues = Partial<{
 	name: string;
@@ -25,6 +34,21 @@ export type ContentUnit = Exclude<ItemUnit<ItemType>, "Boxes"> | "ml";
 
 export const [ItemFormProvider, useItemFormContext, useItemForm] =
 	createFormContext<ItemFormValues>();
+
+export const itemFormInitialValues = ({
+	itemType,
+	item,
+}: {
+	itemType: ItemType;
+	item?: ItemIndex;
+}): ItemFormValues => ({
+	name: item?.name,
+	type: itemType,
+	category: item?.category,
+	unit: item?.unit,
+	quantity: item?.quantity,
+	item_content: item?.item_content ?? EMPTY_ITEM_CONTENT,
+});
 
 export const itemFormTransformValues = (
 	values: ItemFormValues,
