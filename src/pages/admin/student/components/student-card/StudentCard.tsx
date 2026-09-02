@@ -9,6 +9,8 @@ import StudentCardTabs from "./StudentCardTabs";
 export default function StudentCard() {
   const { data, isPending, error, refetch } = useStudentDetail();
 
+  console.log(data)
+
   if (isPending) return;
 
   if (error) {

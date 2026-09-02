@@ -42,6 +42,7 @@ export default function StudentCardHeader({
 					fw={400}
 					fz="sm"
 					tt="none"
+					onClick={()=>{}}
 				>
 					Not In Clinic
 				</Badge>

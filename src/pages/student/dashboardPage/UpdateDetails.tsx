@@ -8,6 +8,7 @@ import {
   Stack,
   Title,
   Loader,
+  Center,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
@@ -274,7 +275,11 @@ export default function Updatedetails() {
             {descriptionText}
           </Text>
         </Box>
-        {isLoading && <Loader />}
+        {isLoading && (
+          <Center>
+            <Loader />
+          </Center>
+        )}
         <Stack gap="md">
           {fieldsSchema.map((item: any) => {
             const activeKey = isPersonal ? "personal_info" : "medical_history";
