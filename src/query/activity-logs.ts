@@ -1,11 +1,12 @@
 import { infiniteQueryOptions } from "@tanstack/react-query";
+
 import {
 	type GetActivityLogsFilters,
 	getActivityLogs,
 } from "@/api/activity-logs";
 
 export const activityLogQueries = {
-	all: () => ["activityLog"],
+	all: () => ["activityLogs"],
 	lists: () => [...activityLogQueries.all(), "list"],
 	list: (filters?: GetActivityLogsFilters) =>
 		infiniteQueryOptions({

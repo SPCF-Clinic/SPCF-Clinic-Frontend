@@ -7,7 +7,7 @@ import {
 } from "@/api/check-ins";
 
 export const checkInQueries = {
-	all: () => ["checkIn"],
+	all: () => ["checkIns"],
 	lists: () => [...checkInQueries.all(), "list"],
 	list: (filters?: GetCheckInsFilters) =>
 		queryOptions({

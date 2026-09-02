@@ -1,19 +1,19 @@
 import { Group, Paper, Stack, Text } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
-import { useQueryState } from "nuqs";
+import { useRef } from "react";
 
 import { PrintButton } from "@/components/PrintButton";
 import { SearchFilter } from "@/components/SearchFilter";
-import { studentQueries } from "@/query/students";
+import { useStudents } from "@/hooks/students/useStudents";
 import StudentTable from "./components/student-table/StudentTable";
 
 export default function StudentList() {
-	const [student_id] = useQueryState("student_id", { defaultValue: "" });
-	const { data, isFetching } = useQuery(studentQueries.list({ student_id }));
+	const { data, isFetching } = useStudents();
+
+	const contentRef = useRef<HTMLDivElement>(null);
 
 	return (
 		<Paper flex={1} p="lg" radius="lg" withBorder>
-			<Stack className="printable-area">
+			<Stack ref={contentRef}>
 				<Text component="h2" fw="bold" size="xl">
 					List of Students {data ? `(${data.data.pagination.total})` : ""}
 				</Text>
@@ -27,7 +27,7 @@ export default function StudentList() {
 							inputMode: "numeric",
 						}}
 					/>
-					<PrintButton className="no-print" />
+					<PrintButton printOptions={{ contentRef }} />
 				</Group>
 				<StudentTable />
 			</Stack>

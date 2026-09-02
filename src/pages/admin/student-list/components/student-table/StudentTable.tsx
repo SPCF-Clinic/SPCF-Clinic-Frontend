@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import ActionMenu from "@/components/ActionMenu";
 import { AppTable, type ColumnDef } from "@/components/AppTable";
 import QueryError from "@/components/QueryError";
+import { useStudents } from "@/hooks/students/useStudents";
 import { studentQueries } from "@/query/students";
 import SexIcon from "./SexIcon";
 
@@ -22,12 +23,7 @@ const COLUMNS: ColumnDef[] = [
 export default function StudentTable() {
 	const navigate = useNavigate();
 
-	const [student_id] = useQueryState("student_id", { defaultValue: "" });
-
-	const { data, isPending, error, refetch } = useQuery({
-		...studentQueries.list({ student_id }),
-		placeholderData: keepPreviousData,
-	});
+	const { data, isPending, error, refetch } = useStudents();
 
 	if (error) {
 		return <QueryError error={error} onRetry={refetch} />;

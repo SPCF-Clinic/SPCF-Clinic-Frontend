@@ -1,32 +1,9 @@
 @media print {
-  body * {
-    visibility: hidden;
-  }
+	.print-container {
+		padding: 20px;
+	}
 
-  .no-print,
-  button,
-  header,
-  nav,
-  aside {
-    display: none !important;
-  }
-
-  .printable-area,
-  .printable-area * {
-    visibility: visible;
-  }
-
-  .printable-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-  }
-
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
+	.no-print {
+		display: none;
+	}
 }

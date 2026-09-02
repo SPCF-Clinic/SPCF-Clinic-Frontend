@@ -1,0 +1,27 @@
+.item {
+	&::before {
+		margin-block: var(--mantine-spacing-sm);
+		top: 12px;
+	}
+}
+
+.itemBullet {
+	top: 2px;
+	background-color: var(--tl-color);
+	border-color: var(--tl-color);
+}
+.itemBulletSkeleton {
+	background-color: var(--mantine-color-gray-3);
+	border-color: var(--mantine-color-gray-3);
+}
+
+.itemBody {
+	display: grid;
+	grid-template-columns: 64px minmax(0, 1fr);
+}
+
+.itemTitle {
+	color: var(--mantine-color-dimmed);
+	font-weight: normal;
+	font-size: var(--mantine-font-size-xs);
+}

@@ -19,14 +19,10 @@ export default function StudentCardTabs() {
 			variant="outline"
 			value={tab}
 			onChange={(value) => setTab(value as TabValue)}
-			classNames={{ tab: classes.tab }}
+			classNames={{ tab: classes.tab, list: classes.list }}
 		>
-			<Tabs.List
-				style={{
-					"--tab-border-color": "var(--mantine-color-primary-outline)",
-				}}
-			>
-				<Tabs.Tab ms="xl" value="personal" tt="uppercase" fw={600}>
+			<Tabs.List>
+				<Tabs.Tab value="personal" tt="uppercase" fw={600}>
 					Personal Information
 				</Tabs.Tab>
 				<Tabs.Tab value="medical" tt="uppercase" fw={600}>

@@ -5,8 +5,16 @@ export interface ApiResponse<T> {
 	error: boolean;
 }
 
+export interface ApiErrorResponse {
+	message: string;
+	data: string;
+	code: number;
+	error: boolean;
+}
+
 export type PaginationQueryParams<T = Record<string, unknown>> = {
 	per_page?: number;
+	page?: number;
 } & T;
 
 export type CursorPaginationQueryParams<T = Record<string, unknown>> =

@@ -1,87 +1,79 @@
 import { useMemo } from "react";
 
 import { useStudentDetail } from "@/hooks/students/useStudentDetail";
-import type { Fields } from "@/types/students";
+import type { DisplayField } from "@/types/students";
 import {
-  getPersonalInfoWithoutName,
-  getStudentFullName,
+	getPersonalInfoWithoutName,
+	getStudentFullName,
 } from "@/utils/students/studentName";
-import { renderStudentValue } from "@/utils/students/studentValue";
-import {
-  StudentInfoColumn,
-  StudentInfoLayout,
-  StudentInfoRow,
-} from "../StudentInfoLayout";
-
-type DisplayField = Omit<Fields, "id" | "form_order"> & {
-  id: number | string;
-};
+import { FieldRow } from "../FieldRow";
+import { StudentInfoColumn, StudentInfoLayout } from "../StudentInfoLayout";
 
 export default function PersonalInformation() {
-  const { data, isPending, error } = useStudentDetail();
+	const { data, isPending, error } = useStudentDetail();
 
-  const fields = useMemo<DisplayField[]>(() => {
-    if (!data) {
-      return [];
-    }
+	const fields = useMemo<DisplayField[]>(() => {
+		if (!data) {
+			return [];
+		}
 
-    const personalInfo = [...data.data.personal_info].sort(
-      (a, b) => a.form_order - b.form_order,
-    );
+		const personalInfo = [...data.data.personal_info].sort(
+			(a, b) => a.form_order - b.form_order,
+		);
 
-    const fullName = getStudentFullName(personalInfo);
+		const fullName = getStudentFullName(personalInfo);
 
-    return [
-      {
-        id: "name",
-        name: "Name",
-        value: fullName,
-        additional_fields: [],
-      },
-      ...getPersonalInfoWithoutName(personalInfo),
-    ];
-  }, [data]);
+		return [
+			{
+				id: "name",
+				name: "Name",
+				value: fullName,
+				additional_fields: [],
+			},
+			...getPersonalInfoWithoutName(personalInfo),
+		];
+	}, [data]);
 
-  const midpoint = Math.ceil(fields.length / 2);
+	const guardianContact = fields.find(
+		(field) => field.name === "Contact No. of Guardian",
+	);
 
-  return (
-    <StudentInfoLayout isPending={isPending} error={error}>
-      <StudentInfoColumn>
-        {fields.slice(0, midpoint).map((field) => (
-          <FieldRow key={field.id} field={field} />
-        ))}
-      </StudentInfoColumn>
+	const midpoint = Math.ceil(
+		fields.filter((field) => field.name !== "Contact No. of Guardian").length /
+			2,
+	);
 
-      <StudentInfoColumn>
-        {fields.slice(midpoint).map((field) => (
-          <FieldRow key={field.id} field={field} />
-        ))}
-      </StudentInfoColumn>
-    </StudentInfoLayout>
-  );
-}
+	const visibleFields = fields.filter(
+		(field) => field.name !== "Contact No. of Guardian",
+	);
 
-function FieldRow({ field }: { field: DisplayField }) {
-  return (
-    <>
-      <StudentInfoRow
-        label={field.name}
-        value={renderStudentValue(field.value)}
-      />
+	return (
+		<StudentInfoLayout isPending={isPending} error={error}>
+			<StudentInfoColumn>
+				{visibleFields.slice(0, midpoint).map((field) => (
+					<FieldRow
+						key={field.id}
+						field={field}
+						variant={field.name === "Guardian's Name" ? "indented" : "default"}
+						secondaryField={
+							field.name === "Guardian's Name" ? guardianContact : undefined
+						}
+					/>
+				))}
+			</StudentInfoColumn>
 
-      {field.additional_fields
-        .filter((additionalField) => additionalField.value !== null)
-        .map((additionalField) => (
-          <StudentInfoRow
-            key={additionalField.id}
-            label={additionalField.name}
-            value={
-              additionalField.value
-                ? renderStudentValue(additionalField.value)
-                : ""
-            }
-          />
-        ))}
-    </>
-  );
+			<StudentInfoColumn>
+				{visibleFields.slice(midpoint).map((field) => (
+					<FieldRow
+						key={field.id}
+						field={field}
+						variant={field.name === "Guardian's Name" ? "indented" : "default"}
+						secondaryField={
+							field.name === "Guardian's Name" ? guardianContact : undefined
+						}
+					/>
+				))}
+			</StudentInfoColumn>
+		</StudentInfoLayout>
+	);
 }

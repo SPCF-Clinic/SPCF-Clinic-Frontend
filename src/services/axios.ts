@@ -1,5 +1,7 @@
-import axios from "axios";
+import axios, { type AxiosError } from "axios";
+
 import { useAuthStore } from "@/stores/useAuthStore";
+import type { ApiErrorResponse } from "@/types/api";
 import { queryClient } from "./query-client";
 
 export const apiClient = axios.create({
@@ -22,7 +24,7 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
 	(response) => response.data,
-	(error) => {
+	(error: AxiosError<ApiErrorResponse>) => {
 		if (error.response?.status === 401) {
 			useAuthStore.getState().logout();
 			queryClient.clear();

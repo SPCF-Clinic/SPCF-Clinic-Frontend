@@ -2,6 +2,7 @@ import { Card, Tabs } from "@mantine/core";
 import { parseAsStringLiteral, useQueryState } from "nuqs";
 
 import classes from "@/styles/Tabs.module.css";
+import ActivityLog from "./tab-panels/activity-log/ActivityLog";
 import VisitHistory from "./tab-panels/visit-history/VisitHistory";
 
 const TAB_VALUES = ["visit", "activity"] as const;
@@ -18,14 +19,10 @@ export default function RecordsTabs() {
 			variant="outline"
 			value={tab}
 			onChange={(value) => setTab(value as TabValue)}
-			classNames={{ tab: classes.tab }}
+			classNames={{ tab: classes.tab, list: classes.list }}
 		>
-			<Tabs.List
-				style={{
-					"--tab-border-color": "var(--mantine-color-primary-outline)",
-				}}
-			>
-				<Tabs.Tab ms="xl" value="visit" tt="uppercase" fw={600}>
+			<Tabs.List>
+				<Tabs.Tab value="visit" tt="uppercase" fw={600}>
 					Visit History
 				</Tabs.Tab>
 				<Tabs.Tab value="activity" tt="uppercase" fw={600}>
@@ -37,7 +34,9 @@ export default function RecordsTabs() {
 				<Tabs.Panel value="visit">
 					<VisitHistory />
 				</Tabs.Panel>
-				<Tabs.Panel value="activity">Activity</Tabs.Panel>
+				<Tabs.Panel value="activity">
+					<ActivityLog />
+				</Tabs.Panel>
 			</Card>
 		</Tabs>
 	);

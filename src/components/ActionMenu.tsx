@@ -9,8 +9,10 @@ import {
 
 import { IconDots } from "@tabler/icons-react";
 
+export type ActionMenuItem = PolymorphicComponentProps<"button", MenuItemProps>;
+
 interface ActionMenuProps {
-	items: MenuItemProps[];
+	items: ActionMenuItem[];
 	actionIconProps?: PolymorphicComponentProps<"button", ActionIconProps>;
 }
 

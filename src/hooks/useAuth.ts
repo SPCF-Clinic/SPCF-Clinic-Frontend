@@ -1,10 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useShallow } from "zustand/shallow";
 
 import { login, logout } from "@/api/auth";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 export function useAuth() {
+	const queryClient = useQueryClient();
+
 	const { setAuth, logoutAuth } = useAuthStore(
 		useShallow((state) => ({
 			setAuth: state.setAuth,
@@ -18,7 +20,13 @@ export function useAuth() {
 	});
 	const logoutMutation = useMutation({
 		mutationFn: logout,
-		onSuccess: logoutAuth,
+		onSettled: async () => {
+			await queryClient.cancelQueries();
+
+			queryClient.clear();
+
+			logoutAuth();
+		},
 	});
 
 	return { loginMutation, logoutMutation };
