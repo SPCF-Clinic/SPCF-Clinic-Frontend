@@ -5,6 +5,7 @@ import ActionMenu from "@/components/ActionMenu";
 import { AppTable, type ColumnDef } from "@/components/AppTable";
 import QueryError from "@/components/QueryError";
 import { useItems } from "@/hooks/items/useItems";
+import { useAuthStore } from "@/stores/useAuthStore";
 import type { ItemIndex, ItemType } from "@/types/items";
 import { getStockStatus } from "@/utils/items/getStockStatus";
 import StockBadge from "../StockBadge";
@@ -29,6 +30,8 @@ export default function MedicineSupplyTable<T extends ItemType>({
 	...props
 }: MedicineSupplyTableProps<T>) {
 	const { data, isPending, error, refetch } = useItems(props);
+	const { user } = useAuthStore();
+	const isSuperAdmin = user?.role === "Super Admin";
 
 	if (error) {
 		return <QueryError error={error} onRetry={refetch} />;
@@ -60,12 +63,16 @@ export default function MedicineSupplyTable<T extends ItemType>({
 										c: "primary",
 										fw: 500,
 									},
-									{
-										children: "Edit",
-										onClick: () => onEdit(item),
-										fw: 500,
-									},
-									{ children: "Delete", c: "red", fw: 500 },
+									...(isSuperAdmin
+										? [
+												{
+													children: "Edit",
+													onClick: () => onEdit(item),
+													fw: 500,
+												},
+												{ children: "Delete", c: "red", fw: 500 },
+											]
+										: []),
 								]}
 							/>
 						</Center>
