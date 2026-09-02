@@ -71,8 +71,8 @@ export interface DispensedItemIndex {
 		quantity: number;
 	};
 	dispensed_to: {
-		id: number;
-		name: string;
+		id?: number;
+		name?: string;
 	};
 	created_at: string;
 }
