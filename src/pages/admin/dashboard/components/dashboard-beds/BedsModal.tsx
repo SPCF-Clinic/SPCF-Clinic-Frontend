@@ -1,9 +1,9 @@
-import { Box, Divider, Grid, Modal, type ModalProps } from "@mantine/core";
+import { Box, Grid, type ModalProps } from "@mantine/core";
 import { useIntersection } from "@mantine/hooks";
-import { IconX } from "@tabler/icons-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 
+import { AppModal } from "@/components/AppModal";
 import QueryError from "@/components/QueryError";
 import { bedQueries } from "@/query/beds";
 import Bed from "./Bed";
@@ -48,49 +48,10 @@ export default function BedsModal(props: ModalProps) {
 	}
 
 	return (
-		<Modal.Root size="xl" centered {...props}>
-			<Modal.Overlay />
-			<Modal.Content h="60vh" ref={setContainer}>
-				<Modal.Header>
-					<Modal.Title fz={20} fw={600}>
-						Bed Status
-					</Modal.Title>
-					<Modal.CloseButton
-						icon={<IconX color="var(--mantine-color-text)" stroke={2.5} />}
-					/>
-				</Modal.Header>
-				<Divider />
-				<Modal.Body py="md">
-					<Grid columns={5} justify="space-between" gap="md">
-						{isPending
-							? Array.from({ length: 20 }, (_, i) => (
-									<Grid.Col span={{ base: 3, xs: 2, sm: 1 }} key={i}>
-										<BedSkeleton />
-									</Grid.Col>
-								))
-							: data.pages.map(({ data }, i) => (
-									<React.Fragment key={data.next_cursor ?? i}>
-										{data.data.map((bed) => (
-											<Grid.Col span={{ base: 3, xs: 2, sm: 1 }} key={bed.id}>
-												<Bed {...bed} />
-											</Grid.Col>
-										))}
-									</React.Fragment>
-								))}
-
-						{(hasNextPage || isFetchingNextPage) &&
-							Array.from({ length: 10 }, (_, i) => (
-								<Grid.Col
-									span={{ base: 3, xs: 2, sm: 1 }}
-									key={`skeleton-next-${i}`}
-								>
-									<BedSkeleton />
-								</Grid.Col>
-							))}
-					</Grid>
-
-					{hasNextPage && !isFetchingNextPage && <Box ref={ref} />}
-				</Modal.Body>
+		<AppModal
+			size="xl"
+			title="Bed Status"
+			footer={
 				<Box
 					py="sm"
 					px="md"
@@ -104,7 +65,40 @@ export default function BedsModal(props: ModalProps) {
 				>
 					<ColorSwatchLegend />
 				</Box>
-			</Modal.Content>
-		</Modal.Root>
+			}
+			contentProps={{ h: "60dvh", ref: setContainer }}
+			bodyProps={{ py: "md" }}
+			{...props}
+		>
+			<Grid columns={5} justify="space-between" gap="md">
+				{isPending
+					? Array.from({ length: 20 }, (_, i) => (
+							<Grid.Col span={{ base: 3, xs: 2, sm: 1 }} key={i}>
+								<BedSkeleton />
+							</Grid.Col>
+						))
+					: data.pages.map(({ data }, i) => (
+							<React.Fragment key={data.next_cursor ?? i}>
+								{data.data.map((bed) => (
+									<Grid.Col span={{ base: 3, xs: 2, sm: 1 }} key={bed.id}>
+										<Bed {...bed} />
+									</Grid.Col>
+								))}
+							</React.Fragment>
+						))}
+
+				{(hasNextPage || isFetchingNextPage) &&
+					Array.from({ length: 10 }, (_, i) => (
+						<Grid.Col
+							span={{ base: 3, xs: 2, sm: 1 }}
+							key={`skeleton-next-${i}`}
+						>
+							<BedSkeleton />
+						</Grid.Col>
+					))}
+			</Grid>
+
+			{hasNextPage && !isFetchingNextPage && <Box ref={ref} />}
+		</AppModal>
 	);
 }
