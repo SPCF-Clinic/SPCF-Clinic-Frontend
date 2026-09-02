@@ -15,7 +15,11 @@ import {
 import { IconCaretDownFilled, IconX } from "@tabler/icons-react";
 
 import { toast } from "@/components/toast";
-import { ITEM_CATEGORIES, ITEM_UNITS } from "@/constants/items";
+import {
+	EMPTY_ITEM_CONTENT,
+	ITEM_CATEGORIES,
+	ITEM_UNITS,
+} from "@/constants/items";
 import { useCreateItemMutation } from "@/hooks/items/useCreateItemMutation";
 import { useEditItemMutation } from "@/hooks/items/useEditItemMutation";
 import type { ItemIndex, ItemType, ItemUnit } from "@/types/items";
@@ -26,6 +30,7 @@ import classes from "./ItemFormModal.module.css";
 import {
 	ItemFormProvider,
 	type ItemFormValues,
+	itemFormTransformValues,
 	itemFormValidate,
 	useItemForm,
 } from "./itemFormContext";
@@ -36,11 +41,6 @@ type ItemFormModalProps = ModalRootProps &
 		| { item: ItemIndex; itemType?: never }
 		| { item?: never; itemType: ItemType }
 	);
-
-const EMPTY_ITEM_CONTENT = {
-	content_unit: undefined,
-	quantity_per_item_unit: undefined,
-};
 
 export default function ItemFormModal({
 	item,
@@ -63,6 +63,7 @@ export default function ItemFormModal({
 			quantity: item?.quantity,
 			item_content: item?.item_content ?? EMPTY_ITEM_CONTENT,
 		},
+		transformValues: (values) => itemFormTransformValues(values),
 		validate: itemFormValidate(computedItemType),
 	});
 
@@ -90,17 +91,6 @@ export default function ItemFormModal({
 	};
 
 	const handleSubmit = (values: ItemFormValues) => {
-		const submitValues = {
-			...values,
-			item_content:
-				values.unit === "Bottles"
-					? {
-							...values.item_content,
-							content_unit: "ml" as const,
-						}
-					: values.item_content,
-		};
-
 		const onError = (error: Error) => {
 			const message = `Failed to ${isEditing ? "edit" : "create"} ${computedItemType}`;
 			if (isApiError(error)) {
@@ -113,7 +103,7 @@ export default function ItemFormModal({
 
 		if (isEditing) {
 			editItemMutation.mutate(
-				{ itemId: item.id, data: submitValues },
+				{ itemId: item.id, data: values },
 				{
 					onSuccess: () => {
 						toast.success({
@@ -126,7 +116,7 @@ export default function ItemFormModal({
 				},
 			);
 		} else {
-			createItemMutation.mutate(submitValues, {
+			createItemMutation.mutate(values, {
 				onSuccess: () => {
 					toast.success({
 						message: `${computedItemType} created successfully`,

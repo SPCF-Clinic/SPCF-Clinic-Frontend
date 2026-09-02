@@ -13,14 +13,45 @@ export type ItemFormValues = Partial<{
 	category: ItemCategory<ItemType>;
 	unit: ItemUnit<ItemType>;
 	quantity: number;
-	item_content?: {
-		content_unit?: Exclude<ItemUnit<ItemType>, "Boxes"> | "ml";
-		quantity_per_item_unit?: number;
-	};
+	item_content?: ItemContent & { item_content?: ItemContent };
 }>;
+
+interface ItemContent {
+	content_unit?: ContentUnit;
+	quantity_per_item_unit?: number;
+}
+
+export type ContentUnit = Exclude<ItemUnit<ItemType>, "Boxes"> | "ml";
 
 export const [ItemFormProvider, useItemFormContext, useItemForm] =
 	createFormContext<ItemFormValues>();
+
+export const itemFormTransformValues = (
+	values: ItemFormValues,
+): ItemFormValues => {
+	if (values.unit === "Bottles") {
+		return {
+			...values,
+			item_content: { ...values.item_content, content_unit: "ml" as const },
+		};
+	}
+
+	if (values.item_content?.content_unit === "Bottles") {
+		return {
+			...values,
+			item_content: {
+				...values.item_content,
+				item_content: {
+					...values.item_content.item_content,
+					content_unit: "ml" as const,
+				},
+			},
+		};
+	}
+
+	delete values.item_content?.item_content;
+	return values;
+};
 
 export const itemFormValidate = (
 	itemType: ItemType,
@@ -52,12 +83,22 @@ export const itemFormValidate = (
 			if (!requiresItemContent(itemType, unit)) return null;
 			return getQuantityPerItemUnitErrorMessage(value, unit);
 		},
+		item_content: {
+			quantity_per_item_unit: (value, { item_content }) => {
+				if (!requiresItemContent(itemType, item_content?.content_unit))
+					return null;
+				return getQuantityPerItemUnitErrorMessage(
+					value,
+					item_content?.content_unit,
+				);
+			},
+		},
 	},
 });
 
 const getQuantityPerItemUnitErrorMessage = <T extends ItemType>(
-	value?: number,
-	unit?: ItemUnit<T>,
+	value?: number | "",
+	unit?: ItemUnit<T> | "ml",
 ) => {
 	let label: string | undefined;
 	switch (unit) {
@@ -65,20 +106,21 @@ const getQuantityPerItemUnitErrorMessage = <T extends ItemType>(
 			label = "Quantity per box";
 			break;
 		case "Bottles":
+		case "ml":
 			label = "Volume per bottle";
 			break;
 		default:
 			return null;
 	}
 
-	if (value === undefined) return `${label} is required`;
+	if (value === undefined || value === "") return `${label} is required`;
 	if (value <= 0) return `${label} must be greater than 0`;
 	return null;
 };
 
-function requiresItemContent(type: ItemType, unit?: ItemUnit<ItemType>) {
+function requiresItemContent(type: ItemType, unit?: ItemUnit<ItemType> | "ml") {
 	if (type === "Medicine") {
-		return unit === "Boxes" || unit === "Bottles";
+		return unit === "Boxes" || unit === "Bottles" || unit === "ml";
 	}
 
 	return unit === "Boxes";

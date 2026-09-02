@@ -35,3 +35,8 @@ export const LOW_STOCK_LIMITS = {
 } satisfies {
 	[T in ItemType]: Record<(typeof ITEM_UNITS)[T][number], number>;
 };
+
+export const EMPTY_ITEM_CONTENT = {
+	content_unit: undefined,
+	quantity_per_item_unit: undefined,
+};
