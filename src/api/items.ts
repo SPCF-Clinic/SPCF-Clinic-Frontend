@@ -46,3 +46,6 @@ export const createItem = (data: ItemFormValues) =>
 
 export const editItem = (itemId: number, data: ItemFormValues) =>
 	apiClient.put<ItemIndex>(`/items/${itemId}`, data);
+
+export const deleteItem = (itemId: number) =>
+	apiClient.delete(`/items/${itemId}`);

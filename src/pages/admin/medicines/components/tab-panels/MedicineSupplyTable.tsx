@@ -1,9 +1,11 @@
-import { Center, Table } from "@mantine/core";
+import { Center, Loader, Table } from "@mantine/core";
 
 import type { GetItemsFilters } from "@/api/items";
-import ActionMenu from "@/components/ActionMenu";
+import ActionMenu, { type ActionMenuItem } from "@/components/ActionMenu";
 import { AppTable, type ColumnDef } from "@/components/AppTable";
 import QueryError from "@/components/QueryError";
+import { toast } from "@/components/toast";
+import { useDeleteItemMutation } from "@/hooks/items/useDeleteItemMutation";
 import { useItems } from "@/hooks/items/useItems";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { ItemIndex, ItemType } from "@/types/items";
@@ -32,6 +34,14 @@ export default function MedicineSupplyTable<T extends ItemType>({
 	const { data, isPending, error, refetch } = useItems(props);
 	const { user } = useAuthStore();
 	const isSuperAdmin = user?.role === "Super Admin";
+
+	const deleteItemMutation = useDeleteItemMutation(props.type);
+
+	const handleDeleteItem = (itemId: number) =>
+		deleteItemMutation.mutate(itemId, {
+			onSuccess: () =>
+				toast.success({ message: `${props.type} deleted successfully` }),
+		});
 
 	if (error) {
 		return <QueryError error={error} onRetry={refetch} />;
@@ -64,14 +74,24 @@ export default function MedicineSupplyTable<T extends ItemType>({
 										fw: 500,
 									},
 									...(isSuperAdmin
-										? [
+										? ([
 												{
 													children: "Edit",
 													onClick: () => onEdit(item),
 													fw: 500,
 												},
-												{ children: "Delete", c: "red", fw: 500 },
-											]
+												{
+													children: "Delete",
+													rightSection: deleteItemMutation.isPending ? (
+														<Loader size={16} color="red" />
+													) : undefined,
+													onClick: () => handleDeleteItem(item.id),
+													c: "red",
+													fw: 500,
+													closeMenuOnClick: false,
+													disabled: deleteItemMutation.isPending,
+												},
+											] as ActionMenuItem[])
 										: []),
 								]}
 							/>
