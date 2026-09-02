@@ -9,6 +9,7 @@ import { useDeleteItemMutation } from "@/hooks/items/useDeleteItemMutation";
 import { useItems } from "@/hooks/items/useItems";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { ItemIndex, ItemType } from "@/types/items";
+import { isApiError } from "@/utils/api";
 import { getStockStatus } from "@/utils/items/getStockStatus";
 import StockBadge from "../StockBadge";
 
@@ -41,6 +42,16 @@ export default function MedicineSupplyTable<T extends ItemType>({
 		deleteItemMutation.mutate(itemId, {
 			onSuccess: () =>
 				toast.success({ message: `${props.type} deleted successfully` }),
+			onError: (error) => {
+				const message = `Failed to delete ${props.type}`;
+
+				if (isApiError(error)) {
+					return toast.error({
+						message: error.response?.data.message ?? message,
+					});
+				}
+				toast.error({ message });
+			},
 		});
 
 	if (error) {

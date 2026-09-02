@@ -19,6 +19,7 @@ import { ITEM_CATEGORIES, ITEM_UNITS } from "@/constants/items";
 import { useCreateItemMutation } from "@/hooks/items/useCreateItemMutation";
 import { useEditItemMutation } from "@/hooks/items/useEditItemMutation";
 import type { ItemIndex, ItemType, ItemUnit } from "@/types/items";
+import { isApiError } from "@/utils/api";
 import BottleFields from "./BottleFields";
 import BoxFields from "./BoxFields";
 import classes from "./ItemFormModal.module.css";
@@ -100,6 +101,16 @@ export default function ItemFormModal({
 					: values.item_content,
 		};
 
+		const onError = (error: Error) => {
+			const message = `Failed to ${isEditing ? "edit" : "create"} ${computedItemType}`;
+			if (isApiError(error)) {
+				return toast.error({
+					message: error.response?.data.message ?? message,
+				});
+			}
+			return toast.error({ message });
+		};
+
 		if (isEditing) {
 			editItemMutation.mutate(
 				{ itemId: item.id, data: submitValues },
@@ -111,6 +122,7 @@ export default function ItemFormModal({
 						form.reset();
 						onClose?.();
 					},
+					onError,
 				},
 			);
 		} else {
@@ -122,6 +134,7 @@ export default function ItemFormModal({
 					form.reset();
 					onClose?.();
 				},
+				onError,
 			});
 		}
 	};
