@@ -12,6 +12,10 @@ export interface ApiErrorResponse {
 	error: boolean;
 }
 
+export interface FormApiResponse<T> extends ApiResponse<T> {
+	form_version: string;
+}
+
 export type PaginationQueryParams<T = Record<string, unknown>> = {
 	per_page?: number;
 	page?: number;

@@ -1,0 +1,7 @@
+.item {
+	border-color: var(--item-border-color);
+}
+
+.label {
+	font-weight: 600;
+}

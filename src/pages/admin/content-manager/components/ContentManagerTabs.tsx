@@ -3,6 +3,7 @@ import { parseAsStringLiteral, useQueryState } from "nuqs";
 
 import classes from "@/styles/Tabs.module.css";
 import AccountManager from "./tab-panels/account-manager/AccountManager";
+import FormEditor from "./tab-panels/form-editor/FormEditor";
 
 const TAB_VALUES = ["account", "form"] as const;
 type TabValue = (typeof TAB_VALUES)[number];
@@ -33,7 +34,9 @@ export default function ContentManagerTabs() {
 				<Tabs.Panel value="account">
 					<AccountManager />
 				</Tabs.Panel>
-				<Tabs.Panel value="form">Form Editor</Tabs.Panel>
+				<Tabs.Panel value="form">
+					<FormEditor />
+				</Tabs.Panel>
 			</Card>
 		</Tabs>
 	);
