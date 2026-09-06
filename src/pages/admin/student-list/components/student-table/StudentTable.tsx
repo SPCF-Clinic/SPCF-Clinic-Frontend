@@ -1,13 +1,10 @@
 import { Center, Table } from "@mantine/core";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useQueryState } from "nuqs";
 import { useNavigate } from "react-router-dom";
 
 import ActionMenu from "@/components/ActionMenu";
 import { AppTable, type ColumnDef } from "@/components/AppTable";
 import QueryError from "@/components/QueryError";
 import { useStudents } from "@/hooks/students/useStudents";
-import { studentQueries } from "@/query/students";
 import SexIcon from "./SexIcon";
 
 const COLUMNS: ColumnDef[] = [

@@ -12,28 +12,25 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
 import App from "./App.tsx";
-import AppProvider from "./provider/AppProvider.tsx";
 import { queryClient } from "./services/query-client.ts";
 import { resolver, theme } from "./theme.ts";
 
 createRoot(document.getElementById("root")!).render(
 	<QueryClientProvider client={queryClient}>
-		<AppProvider>
-			<BrowserRouter>
-				<NuqsAdapter>
-					<StrictMode>
-						<MantineProvider
-							defaultColorScheme="light"
-							theme={theme}
-							cssVariablesResolver={resolver}
-						>
-							<Notifications />
-							<ReactQueryDevtools />
-							<App />
-						</MantineProvider>
-					</StrictMode>
-				</NuqsAdapter>
-			</BrowserRouter>
-		</AppProvider>
+		<BrowserRouter>
+			<NuqsAdapter>
+				<StrictMode>
+					<MantineProvider
+						defaultColorScheme="light"
+						theme={theme}
+						cssVariablesResolver={resolver}
+					>
+						<Notifications />
+						<ReactQueryDevtools />
+						<App />
+					</MantineProvider>
+				</StrictMode>
+			</NuqsAdapter>
+		</BrowserRouter>
 	</QueryClientProvider>,
 );
