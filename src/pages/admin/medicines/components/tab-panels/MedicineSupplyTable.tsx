@@ -1,6 +1,7 @@
 import { Center, Loader, Table } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
+
 import type { GetItemsFilters } from "@/api/items";
 import ActionMenu, { type ActionMenuItem } from "@/components/ActionMenu";
 import { AppTable, type ColumnDef } from "@/components/AppTable";
@@ -10,8 +11,8 @@ import { useDeleteItemMutation } from "@/hooks/items/useDeleteItemMutation";
 import { useItems } from "@/hooks/items/useItems";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { ItemIndex, ItemType } from "@/types/items";
-import { isApiError } from "@/utils/api";
 import { getStockStatus } from "@/utils/items/getStockStatus";
+import { showToastError } from "@/utils/toastError";
 import DispenseItemModal from "../DispenseItemModal";
 import StockBadge from "../StockBadge";
 
@@ -53,16 +54,8 @@ export default function MedicineSupplyTable<T extends ItemType>({
 		deleteItemMutation.mutate(itemId, {
 			onSuccess: () =>
 				toast.success({ message: `${props.type} deleted successfully` }),
-			onError: (error) => {
-				const message = `Failed to delete ${props.type}`;
-
-				if (isApiError(error)) {
-					return toast.error({
-						message: error.response?.data.message ?? message,
-					});
-				}
-				toast.error({ message });
-			},
+			onError: (error) =>
+				showToastError(error, `Failed to delete ${props.type}`),
 		});
 
 	if (error) {

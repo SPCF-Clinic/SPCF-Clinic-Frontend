@@ -15,7 +15,7 @@ import { toast } from "@/components/toast";
 import { useDispenseItemMutation } from "@/hooks/items/useDispenseItemMutation";
 import classes from "@/styles/Form.module.css";
 import type { ItemIndex, ItemType } from "@/types/items";
-import { isApiError } from "@/utils/api";
+import { showToastError } from "@/utils/toastError";
 
 interface DispenseItemModalProps extends ModalRootProps {
 	item: ItemIndex | null;
@@ -60,15 +60,8 @@ export default function DispenseItemModal({
 					toast.success({ message: `${item.type} dispensed successfully` });
 					props.onClose();
 				},
-				onError: (error) => {
-					const message = `Failed to dispense ${item.type}`;
-					if (isApiError(error)) {
-						return toast.error({
-							message: error.response?.data.message,
-						});
-					}
-					toast.error({ message });
-				},
+				onError: (error) =>
+					showToastError(error, `Failed to dispense ${item.type}`),
 			},
 		);
 	});

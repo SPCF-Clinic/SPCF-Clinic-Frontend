@@ -24,7 +24,7 @@ import { useCreateItemMutation } from "@/hooks/items/useCreateItemMutation";
 import { useEditItemMutation } from "@/hooks/items/useEditItemMutation";
 import classes from "@/styles/Form.module.css";
 import type { ItemIndex, ItemType, ItemUnit } from "@/types/items";
-import { isApiError } from "@/utils/api";
+import { showToastError } from "@/utils/toastError";
 import BottleFields from "./BottleFields";
 import BoxFields from "./BoxFields";
 import {
@@ -93,15 +93,11 @@ export default function ItemFormModal({
 	};
 
 	const handleSubmit = (values: ItemFormValues) => {
-		const onError = (error: Error) => {
-			const message = `Failed to ${isEditing ? "edit" : "create"} ${computedItemType}`;
-			if (isApiError(error)) {
-				return toast.error({
-					message: error.response?.data.message ?? message,
-				});
-			}
-			return toast.error({ message });
-		};
+		const onError = (error: Error) =>
+			showToastError(
+				error,
+				`Failed to ${isEditing ? "edit" : "create"} ${computedItemType}`,
+			);
 
 		if (isEditing) {
 			editItemMutation.mutate(
