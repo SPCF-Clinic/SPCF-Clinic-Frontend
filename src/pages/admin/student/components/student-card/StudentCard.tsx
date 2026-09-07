@@ -24,8 +24,8 @@ export default function StudentCard() {
       <Stack gap="xl">
         <StudentCardHeader
           fullName={fullName}
-          studentNumber={data.data.username}
-        />
+          studentData={data.data}
+        /> 
         <Card.Section>
           <StudentCardTabs />
         </Card.Section>

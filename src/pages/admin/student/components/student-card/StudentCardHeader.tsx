@@ -1,5 +1,7 @@
 import { Badge, Box, Group, type MenuItemProps, Text } from "@mantine/core";
+
 import ActionMenu from "@/components/ActionMenu";
+import StatusModal from "@/components/modals/StatusModal";
 
 const MENU_ITEMS: MenuItemProps[] = [
 	{
@@ -16,13 +18,15 @@ const MENU_ITEMS: MenuItemProps[] = [
 
 interface StudentCardHeaderProps {
 	fullName: string;
-	studentNumber: string;
+	studentData: any;
 }
 
 export default function StudentCardHeader({
 	fullName,
-	studentNumber,
+	studentData,
 }: StudentCardHeaderProps) {
+
+
 	return (
 		<Group justify="space-between">
 			<Box>
@@ -30,7 +34,7 @@ export default function StudentCardHeader({
 					{fullName}
 				</Text>
 				<Text size="sm" c="gray.7">
-					{studentNumber}
+					{studentData.username}
 				</Text>
 			</Box>
 			<Group>
@@ -42,7 +46,7 @@ export default function StudentCardHeader({
 					fw={400}
 					fz="sm"
 					tt="none"
-					onClick={()=>{}}
+					onClick={()=>{StatusModal.StudentInClinic(studentData)}}
 				>
 					Not In Clinic
 				</Badge>

@@ -1,22 +1,29 @@
 import { modals } from "@mantine/modals";
-import { Text } from '@mantine/core';
+import { Text, Radio, Group, Select, TextInput, Button } from '@mantine/core';
 
-const StudentInClinic = () => modals.openConfirmModal({
-    title: 'Please confirm your action',
-    children: (
-      <Text size="sm">
-        This action is so important that you are required to confirm it with a modal. Please click
-        one of these buttons to proceed.
-      </Text>
-    ),
-    labels: { confirm: 'Confirm', cancel: 'Cancel' },
-    onCancel: () => console.log('Cancel'),
-    onConfirm: () => console.log('Confirmed'),
-  });
+import type { StudentShow } from "@/types/students";
+
+import StudentInClinicModalForm from "@/pages/admin/student/components/student-card/modal/StudentInClinicModalForm";
+
+const StudentInClinic = (studentdata: StudentShow) => modals.open({
+  centered: true,
+  size: 400,
+  title: (<>
+    <Text size="xl" fw={700}>
+      Check in student
+    </Text>
+    <Text size="sm" c="dimmed">
+      Student Number: {studentdata.username}
+    </Text>
+  </>),
+  children: (<StudentInClinicModalForm studentData={studentdata} />
+  ),
+
+});
 
 
 const StatusModal = {
-    StudentInClinic
+  StudentInClinic
 }
 
 export default StatusModal;
