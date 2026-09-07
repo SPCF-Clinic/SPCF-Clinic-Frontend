@@ -1,11 +1,12 @@
 import { Accordion } from "@mantine/core";
 
-import { useMedicalInfo } from "@/query/student-register";
+import { useMedicalInfo, usePersonalInfo } from "@/query/student-register";
 import classes from "./FormEditor.module.css";
 import MedicalPanel from "./MedicalPanel";
 import PersonalInfoPanel from "./PersonalInfoPanel";
 
 export default function FormEditor() {
+	usePersonalInfo();
 	useMedicalInfo();
 
 	return (

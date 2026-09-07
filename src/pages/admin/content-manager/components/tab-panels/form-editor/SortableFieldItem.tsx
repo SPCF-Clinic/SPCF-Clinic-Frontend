@@ -6,7 +6,7 @@ import { IconGripVertical } from "@tabler/icons-react";
 import { memo, useRef, useState } from "react";
 
 import type { FormField } from "@/types/student-register";
-import { FieldRenderer } from "./FormField";
+import FieldRenderer from "./form-fields/FieldRenderer";
 import {
 	FormEditorFormProvider,
 	useFormEditorForm,
@@ -30,6 +30,8 @@ function SortableFieldItem({ field, index }: SortableFieldItemProps) {
 		initialValues: {
 			name: field?.name,
 			type: field?.type.name,
+			options: field?.options,
+			is_required: field?.is_required,
 		},
 		validate: {
 			name: isNotEmpty("Field name is required"),
@@ -37,7 +39,7 @@ function SortableFieldItem({ field, index }: SortableFieldItemProps) {
 		},
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
-		onValuesChange: useDebouncedCallback(handleSubmit, 500),
+		onValuesChange: useDebouncedCallback(handleSubmit, 2000),
 	});
 
 	const [element, setElement] = useState<HTMLElement | null>(null);

@@ -1,10 +1,20 @@
+import { Center, Loader } from "@mantine/core";
+
+import QueryError from "@/components/QueryError";
 import { usePersonalInfo } from "@/query/student-register";
 import ReorderableFields from "./ReorderableFields";
 
 export default function PersonalInfoPanel() {
-	const { data } = usePersonalInfo();
+	const { data, isPending, error, refetch } = usePersonalInfo();
 
-	if (!data) return null;
+	if (error) return <QueryError error={error} onRetry={refetch} />;
+
+	if (isPending)
+		return (
+			<Center>
+				<Loader />
+			</Center>
+		);
 
 	return (
 		<ReorderableFields

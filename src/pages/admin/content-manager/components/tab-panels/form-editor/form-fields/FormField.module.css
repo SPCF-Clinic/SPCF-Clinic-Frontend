@@ -1,0 +1,23 @@
+.input {
+	border-bottom: 1px solid var(--mantine-color-dimmed);
+	border-radius: 0;
+
+	&:disabled {
+		cursor: default;
+	}
+
+	&::placeholder {
+		color: var(--mantine-color-dimmed);
+	}
+
+	&[type="checkbox"] {
+		width: 1rem;
+		height: 1rem;
+	}
+}
+
+.track {
+	input:not(:checked) + & {
+		background-color: var(--mantine-color-dimmed);
+	}
+}
