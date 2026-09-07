@@ -1,9 +1,12 @@
 import { ActionIcon } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 
+import { useFieldContext } from "../contexts/useFieldContext";
 import FormField from "./FormField";
 
 export default function DividerField() {
+	const field = useFieldContext();
+
 	return (
 		<FormField>
 			<ActionIcon
@@ -12,6 +15,7 @@ export default function DividerField() {
 				aria-label="Delete field"
 				color="gray.9"
 				size="sm"
+				disabled={field?.is_default}
 			>
 				<IconTrash />
 			</ActionIcon>

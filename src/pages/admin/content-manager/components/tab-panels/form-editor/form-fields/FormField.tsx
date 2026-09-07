@@ -21,6 +21,7 @@ import {
 import type { PropsWithChildren } from "react";
 
 import { FIELD_TYPE_SELECT_DATA, type FieldTypeName } from "@/constants/fields";
+import { useFieldContext } from "../contexts/useFieldContext";
 import { useFormEditorFormContext } from "../formEditorFormContext";
 import classes from "./FormField.module.css";
 
@@ -53,6 +54,7 @@ const renderSelectOption: SelectProps["renderOption"] = ({
 
 export default function FormField({ children }: PropsWithChildren) {
 	const form = useFormEditorFormContext();
+	const field = useFieldContext();
 
 	return (
 		<Stack gap="sm" flex={1}>
@@ -61,15 +63,19 @@ export default function FormField({ children }: PropsWithChildren) {
 					flex={1}
 					radius="sm"
 					size="md"
+					disabled={field?.is_default}
+					classNames={{ input: classes.input }}
 					key={form.key("name")}
 					{...form.getInputProps("name")}
 				/>
 				<Select
+					disabled={field?.is_default}
 					radius="sm"
 					size="md"
 					leftSection={
 						FIELD_TYPE_ICONS[form.useWatchValue("type") as FieldTypeName]
 					}
+					classNames={{ input: classes.input }}
 					styles={{
 						input: { color: "var(--mantine-color-gray-7)" },
 						dropdown: { color: "var(--mantine-color-gray-7)" },
@@ -95,6 +101,7 @@ export default function FormField({ children }: PropsWithChildren) {
 
 export function CommonActions() {
 	const form = useFormEditorFormContext();
+	const field = useFieldContext();
 
 	return (
 		<Group justify="end" gap="sm">
@@ -104,6 +111,7 @@ export function CommonActions() {
 				labelPosition="left"
 				classNames={{ track: classes.track }}
 				c="dimmed"
+				disabled={field?.is_default}
 				key={form.key("is_required")}
 				{...form.getInputProps("is_required", { type: "checkbox" })}
 			/>
@@ -113,6 +121,7 @@ export function CommonActions() {
 				aria-label="Delete field"
 				color="gray.9"
 				size="sm"
+				disabled={field?.is_default}
 			>
 				<IconTrash />
 			</ActionIcon>

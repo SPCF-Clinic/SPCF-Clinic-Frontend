@@ -2,12 +2,14 @@ import { ActionIcon, Stack, Text, TextInput } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { useState } from "react";
 
+import { useFieldContext } from "../contexts/useFieldContext";
 import { useFormEditorFormContext } from "../formEditorFormContext";
 import FormField, { CommonActions } from "./FormField";
 import classes from "./FormField.module.css";
 
 export default function DropdownField() {
 	const form = useFormEditorFormContext();
+	const field = useFieldContext();
 
 	const [options, setOptions] = useState<{ id: string; value: string }[]>(
 		() => {
@@ -79,6 +81,7 @@ export default function DropdownField() {
 
 					return (
 						<TextInput
+							disabled={field?.is_default}
 							key={option.id}
 							flex={1}
 							leftSectionPointerEvents="none"
@@ -107,7 +110,7 @@ export default function DropdownField() {
 							onChange={(event) =>
 								handleChange(option.id, event.currentTarget.value)
 							}
-							classNames={{ input: classes.input }}
+							classNames={{ input: classes.inputPreview }}
 						/>
 					);
 				})}

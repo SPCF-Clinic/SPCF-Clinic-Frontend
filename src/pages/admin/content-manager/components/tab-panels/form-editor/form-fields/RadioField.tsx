@@ -1,12 +1,15 @@
 import { ActionIcon, Stack, TextInput } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { useState } from "react";
+
+import { useFieldContext } from "../contexts/useFieldContext";
 import { useFormEditorFormContext } from "../formEditorFormContext";
 import FormField, { CommonActions } from "./FormField";
 import classes from "./FormField.module.css";
 
 export default function RadioField() {
 	const form = useFormEditorFormContext();
+	const field = useFieldContext();
 
 	const [options, setOptions] = useState<{ id: string; value: string }[]>(
 		() => {
@@ -78,11 +81,16 @@ export default function RadioField() {
 
 					return (
 						<TextInput
+							disabled={field.is_default}
 							key={option.id}
 							flex={1}
 							leftSectionPointerEvents="none"
 							leftSection={
-								<input type="checkbox" disabled className={classes.input} />
+								<input
+									type="checkbox"
+									disabled
+									className={classes.inputPreview}
+								/>
 							}
 							rightSection={
 								isLast ? null : (
@@ -104,7 +112,7 @@ export default function RadioField() {
 							onChange={(event) =>
 								handleChange(option.id, event.currentTarget.value)
 							}
-							classNames={{ input: classes.input }}
+							classNames={{ input: classes.inputPreview }}
 						/>
 					);
 				})}

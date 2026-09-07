@@ -20,6 +20,7 @@ export interface AdditionalField {
 export interface FormField {
 	id: number;
 	version_number: number;
+	is_default: boolean;
 	name: string;
 	type: FieldType;
 	form_order: number;

@@ -4,24 +4,15 @@ import type {
 	RegisterReqBody,
 	RegisterResBody,
 } from "@/types/student-register";
-import {
-	fetchMedicalHistoryField,
-	fetchPersonalInfoField,
-	registerStudent,
-} from "../api/student-register";
+import { registerStudent } from "../api/student-register";
+import { medicalHistoryFieldQueries, personalInfoFieldQueries } from "./fields";
 
 export function usePersonalInfo() {
-	return useQuery({
-		queryKey: ["personal-info-field"],
-		queryFn: fetchPersonalInfoField,
-	});
+	return useQuery(personalInfoFieldQueries.list());
 }
 
 export function useMedicalInfo() {
-	return useQuery({
-		queryKey: ["medical-history-field"],
-		queryFn: fetchMedicalHistoryField,
-	});
+	return useQuery(medicalHistoryFieldQueries.list());
 }
 
 export function useRegisterUser() {

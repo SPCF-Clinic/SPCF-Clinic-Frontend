@@ -10,7 +10,7 @@ export default function LongTextField() {
 				variant="unstyled"
 				disabled
 				placeholder="Long answer text"
-				classNames={{ input: classes.input }}
+				classNames={{ input: classes.inputPreview }}
 			/>
 			<CommonActions />
 		</FormField>

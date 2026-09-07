@@ -71,7 +71,12 @@ export default function ReorderableFields({
 		<DragDropProvider onDragEnd={handleDragEnd}>
 			<Stack>
 				{fields.map((field, index) => (
-					<SortableFieldItem field={field} key={field.id} index={index} />
+					<SortableFieldItem
+						fieldType={type}
+						field={field}
+						key={field.id}
+						index={index}
+					/>
 				))}
 			</Stack>
 		</DragDropProvider>

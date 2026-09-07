@@ -1,5 +1,7 @@
 import type { FieldTypeName } from "@/constants/fields";
+import type { FieldFormValues } from "@/pages/admin/content-manager/components/tab-panels/form-editor/formEditorFormContext";
 import { apiClient } from "@/services/axios";
+import type { FormField } from "@/types/student-register";
 
 const FIELD_TYPE_URL = {
 	Personal: "/personal-info-fields",
@@ -15,6 +17,7 @@ export interface FieldData {
 	required_with_field_value?: string;
 	form_order: number;
 	options?: string[];
+	version_number: number;
 }
 
 export type FieldType = "Personal" | "Medical";
@@ -24,7 +27,7 @@ export const createField = ({
 	data,
 }: {
 	type: FieldType;
-	data: FieldData;
+	data: FieldFormValues;
 }) => apiClient.post(FIELD_TYPE_URL[type], data);
 
 export const editField = ({
@@ -34,8 +37,8 @@ export const editField = ({
 }: {
 	type: FieldType;
 	id: number;
-	data: FieldData;
-}) => apiClient.put(`${FIELD_TYPE_URL[type]}/${id}`, data);
+	data: FieldFormValues;
+}) => apiClient.put<FormField>(`${FIELD_TYPE_URL[type]}/${id}`, data);
 
 interface ReorderFieldData {
 	field_id: number;

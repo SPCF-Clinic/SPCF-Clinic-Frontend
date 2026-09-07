@@ -10,7 +10,7 @@ export default function ShortTextField() {
 				variant="unstyled"
 				disabled
 				placeholder="Short answer text"
-				classNames={{ input: classes.input }}
+				classNames={{ input: classes.inputPreview }}
 			/>
 			<CommonActions />
 		</FormField>

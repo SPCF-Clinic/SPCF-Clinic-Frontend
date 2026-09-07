@@ -12,21 +12,21 @@ export default function DateField() {
 					disabled
 					placeholder="Month"
 					flex={1}
-					classNames={{ input: classes.input }}
+					classNames={{ input: classes.inputPreview }}
 				/>
 				<TextInput
 					variant="unstyled"
 					disabled
 					placeholder="Day"
 					maw="9rem"
-					classNames={{ input: classes.input }}
+					classNames={{ input: classes.inputPreview }}
 				/>
 				<TextInput
 					variant="unstyled"
 					disabled
 					placeholder="Year"
 					maw="9rem"
-					classNames={{ input: classes.input }}
+					classNames={{ input: classes.inputPreview }}
 				/>
 			</Group>
 			<CommonActions />

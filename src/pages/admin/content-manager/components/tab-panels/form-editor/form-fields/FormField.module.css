@@ -1,4 +1,8 @@
 .input {
+	background-color: var(--mantine-color-white) !important;
+}
+
+.inputPreview {
 	border-bottom: 1px solid var(--mantine-color-dimmed);
 	border-radius: 0;
 
@@ -17,6 +21,8 @@
 }
 
 .track {
+	--switch-disabled-color: var(--mantine-color-primary-3);
+
 	input:not(:checked) + & {
 		background-color: var(--mantine-color-dimmed);
 	}

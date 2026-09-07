@@ -1,16 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
-import {
-	type FieldType,
-	type ReorderFieldVariables,
-	reorderField,
-} from "@/api/fields";
+
+import { type ReorderFieldVariables, reorderField } from "@/api/fields";
+import { FIELD_QUERY_KEY } from "@/query/fields";
 import type { FormApiResponse } from "@/types/api";
 import type { FormField } from "@/types/student-register";
-
-const FIELD_QUERY_KEY = {
-	Personal: ["personal-info-field"],
-	Medical: ["medical-history-field"],
-} satisfies Record<FieldType, unknown[]>;
 
 interface MutationFnVariables extends ReorderFieldVariables {
 	previousIndex: number;
