@@ -86,11 +86,10 @@ export default function FormField({ children }: PropsWithChildren) {
 					allowDeselect={false}
 					key={form.key("type")}
 					{...form.getInputProps("type")}
-					// onChange={(value) => {
-					// 	form.setFieldValue("type", value as FieldTypeName);
-
-					// 	return form.setFieldValue("options", undefined);
-					// }}
+					onChange={(value) => {
+						form.setFieldValue("type", value as FieldTypeName);
+						form.validateField("options");
+					}}
 				/>
 			</Group>
 

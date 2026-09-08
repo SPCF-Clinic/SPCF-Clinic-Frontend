@@ -28,7 +28,7 @@ export const createField = ({
 }: {
 	type: FieldType;
 	data: FieldFormValues;
-}) => apiClient.post(FIELD_TYPE_URL[type], data);
+}) => apiClient.post<FormField>(FIELD_TYPE_URL[type], data);
 
 export const editField = ({
 	type,

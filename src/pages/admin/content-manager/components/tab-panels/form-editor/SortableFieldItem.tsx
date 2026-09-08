@@ -1,6 +1,5 @@
 import { useSortable } from "@dnd-kit/react/sortable";
 import { Center, Group, Paper, Stack } from "@mantine/core";
-import { type FormValidateInput, isNotEmpty } from "@mantine/form";
 import { useDebouncedCallback } from "@mantine/hooks";
 import { IconGripVertical } from "@tabler/icons-react";
 import { memo, useEffect, useRef, useState } from "react";
@@ -9,59 +8,24 @@ import type { FieldType } from "@/api/fields";
 import { useEditFieldMutation } from "@/hooks/fields/useEditFieldMutation";
 import type { FormField } from "@/types/student-register";
 import { showToastError } from "@/utils/toastError";
-import FieldProvider from "../contexts/FieldProvider";
-import FieldRenderer from "../form-fields/FieldRenderer";
+import FieldProvider from "./contexts/FieldProvider";
+import FieldRenderer from "./form-fields/FieldRenderer";
 import {
 	type FieldFormValues,
 	FormEditorFormProvider,
 	useFormEditorForm,
-} from "../formEditorFormContext";
+} from "./formEditorFormContext";
+import {
+	hasValidationErrors,
+	REQUIRED_OPTION_TYPES,
+	removeTrailingEmptyOption,
+	validators,
+} from "./utils";
 
 interface EditSortableFieldItemProps {
 	field: FormField;
 	index: number;
 	fieldType: FieldType;
-}
-
-const REQUIRED_OPTION_TYPES = ["Dropdown", "Checkbox", "Radio"];
-
-const validators: FormValidateInput<FieldFormValues> = {
-	name: isNotEmpty("Field name is required"),
-	type: isNotEmpty("Field type is required"),
-	options: (value) => {
-		const options = (value as string[] | undefined) ?? [];
-
-		return options.some((option) => option.trim() !== "")
-			? null
-			: "At least one option is required";
-	},
-};
-
-function hasValidationErrors(values: FieldFormValues) {
-	for (const [key, validate] of Object.entries(validators)) {
-		if (
-			key === "options" &&
-			!REQUIRED_OPTION_TYPES.includes(values.type ?? "")
-		) {
-			continue;
-		}
-
-		const value = values[key as keyof FieldFormValues];
-
-		if (validate(value, values) != null) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-function removeTrailingEmptyOption(options?: string[]) {
-	if (options?.at(-1) === "") {
-		return options.slice(0, -1);
-	}
-
-	return options;
 }
 
 function EditSortableFieldItem({

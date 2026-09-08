@@ -3,10 +3,12 @@ import { isSortable } from "@dnd-kit/react/sortable";
 import { Button, Stack } from "@mantine/core";
 
 import type { FieldType } from "@/api/fields";
+import { useCreateField } from "@/hooks/fields/useCreateField";
 import { useReorderFieldMutation } from "@/hooks/fields/useReorderFieldMutation";
 import type { FormField } from "@/types/student-register";
 import { showToastError } from "@/utils/toastError";
-import EditSortableFieldItem from "./sortable-field-item/EditSortableFieldItem";
+import SortableFieldItem from "./SortableFieldItem";
+import { calculateFormOrder } from "./utils";
 
 interface ReorderableFieldsProps {
 	fields: FormField[];
@@ -14,23 +16,16 @@ interface ReorderableFieldsProps {
 	type: FieldType;
 }
 
-const calculateTargetFormOrder = (fields: FormField[], targetIndex: number) => {
-	return (
-		fields
-			.slice(0, targetIndex)
-			.reduce(
-				(total, field) => total + 1 + (field.additional_fields?.length ?? 0),
-				0,
-			) + 1
-	);
-};
-
 export default function ReorderableFields({
 	fields,
 	formVersion,
 	type,
 }: ReorderableFieldsProps) {
 	const reorderFieldMutation = useReorderFieldMutation();
+	const { handleAddField, createFieldMutation } = useCreateField({
+		fields,
+		type,
+	});
 
 	const handleDragEnd = ({ operation }: DragEndEvent) => {
 		const { source, canceled } = operation;
@@ -45,7 +40,7 @@ export default function ReorderableFields({
 		if (!movedField) return;
 		nextFields.splice(targetIndex, 0, movedField);
 
-		const target_form_order = calculateTargetFormOrder(nextFields, targetIndex);
+		const target_form_order = calculateFormOrder(nextFields, targetIndex);
 
 		reorderFieldMutation.mutate(
 			{
@@ -71,7 +66,7 @@ export default function ReorderableFields({
 		<DragDropProvider onDragEnd={handleDragEnd}>
 			<Stack>
 				{fields.map((field, index) => (
-					<EditSortableFieldItem
+					<SortableFieldItem
 						fieldType={type}
 						field={field}
 						key={field.id}
@@ -79,7 +74,14 @@ export default function ReorderableFields({
 					/>
 				))}
 
-				<Button fs="italic" c="gray.7" variant="transparent" fullWidth>
+				<Button
+					fs="italic"
+					c="gray.7"
+					variant="transparent"
+					fullWidth
+					onClick={handleAddField}
+					loading={createFieldMutation.isPending}
+				>
 					+ Add Field
 				</Button>
 			</Stack>
