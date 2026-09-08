@@ -1,4 +1,4 @@
-import { ActionIcon, Stack, TextInput } from "@mantine/core";
+import { ActionIcon, Stack, Text, TextInput } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { useState } from "react";
 
@@ -73,15 +73,17 @@ export default function RadioField() {
 		);
 	};
 
+	const optionsError = form.errors.options;
+
 	return (
 		<FormField>
 			<Stack gap="sm">
-				{options.map((option, index) => {
-					const isLast = index === options.length - 1;
+				{options.map((option, i) => {
+					const isLast = i === options.length - 1;
 
 					return (
 						<TextInput
-							disabled={field.is_default}
+							disabled={field?.is_default}
 							key={option.id}
 							flex={1}
 							leftSectionPointerEvents="none"
@@ -93,7 +95,7 @@ export default function RadioField() {
 								/>
 							}
 							rightSection={
-								isLast ? null : (
+								isLast ? undefined : (
 									<ActionIcon
 										variant="transparent"
 										color="gray.9"
@@ -105,17 +107,23 @@ export default function RadioField() {
 									</ActionIcon>
 								)
 							}
-							placeholder={isLast ? "Add Option" : undefined}
 							variant="unstyled"
 							size="md"
 							value={option.value}
+							placeholder={isLast ? "Add Option" : undefined}
+							classNames={{ input: classes.inputPreview }}
 							onChange={(event) =>
 								handleChange(option.id, event.currentTarget.value)
 							}
-							classNames={{ input: classes.inputPreview }}
 						/>
 					);
 				})}
+
+				{optionsError && (
+					<Text c="red" size="sm">
+						{optionsError}
+					</Text>
+				)}
 			</Stack>
 			<CommonActions />
 		</FormField>

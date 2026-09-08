@@ -1,12 +1,12 @@
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
-import { Stack } from "@mantine/core";
+import { Button, Stack } from "@mantine/core";
 
 import type { FieldType } from "@/api/fields";
 import { useReorderFieldMutation } from "@/hooks/fields/useReorderFieldMutation";
 import type { FormField } from "@/types/student-register";
 import { showToastError } from "@/utils/toastError";
-import SortableFieldItem from "./SortableFieldItem";
+import EditSortableFieldItem from "./sortable-field-item/EditSortableFieldItem";
 
 interface ReorderableFieldsProps {
 	fields: FormField[];
@@ -71,13 +71,17 @@ export default function ReorderableFields({
 		<DragDropProvider onDragEnd={handleDragEnd}>
 			<Stack>
 				{fields.map((field, index) => (
-					<SortableFieldItem
+					<EditSortableFieldItem
 						fieldType={type}
 						field={field}
 						key={field.id}
 						index={index}
 					/>
 				))}
+
+				<Button fs="italic" c="gray.7" variant="transparent" fullWidth>
+					+ Add Field
+				</Button>
 			</Stack>
 		</DragDropProvider>
 	);

@@ -1,7 +1,7 @@
 import { useSortable } from "@dnd-kit/react/sortable";
 import { Center, Group, Paper, Stack } from "@mantine/core";
-import { isNotEmpty } from "@mantine/form";
-import { useDebouncedCallback, useId } from "@mantine/hooks";
+import { type FormValidateInput, isNotEmpty } from "@mantine/form";
+import { useDebouncedCallback } from "@mantine/hooks";
 import { IconGripVertical } from "@tabler/icons-react";
 import { memo, useEffect, useRef, useState } from "react";
 
@@ -9,29 +9,51 @@ import type { FieldType } from "@/api/fields";
 import { useEditFieldMutation } from "@/hooks/fields/useEditFieldMutation";
 import type { FormField } from "@/types/student-register";
 import { showToastError } from "@/utils/toastError";
-import FieldProvider from "./contexts/FieldProvider";
-import FieldRenderer from "./form-fields/FieldRenderer";
+import FieldProvider from "../contexts/FieldProvider";
+import FieldRenderer from "../form-fields/FieldRenderer";
 import {
 	type FieldFormValues,
 	FormEditorFormProvider,
 	useFormEditorForm,
-} from "./formEditorFormContext";
+} from "../formEditorFormContext";
 
-interface SortableFieldItemProps {
-	field?: FormField;
+interface EditSortableFieldItemProps {
+	field: FormField;
 	index: number;
 	fieldType: FieldType;
 }
 
-const validators = {
+const REQUIRED_OPTION_TYPES = ["Dropdown", "Checkbox", "Radio"];
+
+const validators: FormValidateInput<FieldFormValues> = {
 	name: isNotEmpty("Field name is required"),
 	type: isNotEmpty("Field type is required"),
+	options: (value) => {
+		const options = (value as string[] | undefined) ?? [];
+
+		return options.some((option) => option.trim() !== "")
+			? null
+			: "At least one option is required";
+	},
 };
 
 function hasValidationErrors(values: FieldFormValues) {
-	return Object.entries(validators).some(
-		([key, validate]) => validate(values[key as keyof FieldFormValues]) != null,
-	);
+	for (const [key, validate] of Object.entries(validators)) {
+		if (
+			key === "options" &&
+			!REQUIRED_OPTION_TYPES.includes(values.type ?? "")
+		) {
+			continue;
+		}
+
+		const value = values[key as keyof FieldFormValues];
+
+		if (validate(value, values) != null) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 function removeTrailingEmptyOption(options?: string[]) {
@@ -42,47 +64,45 @@ function removeTrailingEmptyOption(options?: string[]) {
 	return options;
 }
 
-function SortableFieldItem({
+function EditSortableFieldItem({
 	field,
 	index,
 	fieldType,
-}: SortableFieldItemProps) {
-	const isEditing = !!field;
-	const isDefault = field?.is_default ?? false;
-	const id = useId(String(field?.id));
+}: EditSortableFieldItemProps) {
+	const isDefault = field.is_default;
 	const editFieldMutation = useEditFieldMutation();
 
-	const versionNumberRef = useRef(field?.version_number);
+	const versionNumberRef = useRef(field.version_number);
 	useEffect(() => {
-		versionNumberRef.current = field?.version_number;
-	}, [field?.version_number]);
+		versionNumberRef.current = field.version_number;
+	}, [field.version_number]);
 
 	const form = useFormEditorForm({
 		mode: "uncontrolled",
 		initialValues: {
-			name: field?.name,
-			type: field?.type.name,
-			options: field?.options,
-			is_required: field?.is_required,
+			name: field.name,
+			type: field.type.name,
+			options: field.options,
+			is_required: field.is_required,
 		},
-		validate: {
-			name: isNotEmpty("Field name is required"),
-			type: isNotEmpty("Field type is required"),
-		},
+		validate: validators,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 		onValuesChange: useDebouncedCallback((values: FieldFormValues) => {
 			if (hasValidationErrors(values)) return;
-			if (!isEditing) return;
+			const payload = {
+				...values,
+				options:
+					values.type && REQUIRED_OPTION_TYPES.includes(values.type)
+						? removeTrailingEmptyOption(values.options)
+						: undefined,
+				version_number: versionNumberRef.current,
+			};
 
 			editFieldMutation.mutate(
 				{
-					data: {
-						...values,
-						options: removeTrailingEmptyOption(values.options),
-						version_number: versionNumberRef.current,
-					},
-					id: Number(id),
+					data: payload,
+					id: field.id,
 					type: fieldType,
 				},
 				{
@@ -97,7 +117,7 @@ function SortableFieldItem({
 	const [element, setElement] = useState<HTMLElement | null>(null);
 	const handleRef = useRef<HTMLDivElement | null>(null);
 	useSortable({
-		id,
+		id: field.id,
 		index,
 		element,
 		handle: handleRef,
@@ -139,4 +159,4 @@ function SortableFieldItem({
 	);
 }
 
-export default memo(SortableFieldItem);
+export default memo(EditSortableFieldItem);

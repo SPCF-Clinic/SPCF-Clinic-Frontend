@@ -1,4 +1,4 @@
-import { ActionIcon, Stack, TextInput } from "@mantine/core";
+import { ActionIcon, Stack, Text, TextInput } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { useState } from "react";
 
@@ -72,6 +72,8 @@ export default function CheckboxField() {
 		);
 	};
 
+	const optionsError = form.errors.options;
+
 	return (
 		<FormField>
 			<Stack gap="sm">
@@ -107,14 +109,20 @@ export default function CheckboxField() {
 							variant="unstyled"
 							size="md"
 							value={option.value}
+							placeholder={isLast ? "Add Option" : undefined}
+							classNames={{ input: classes.inputPreview }}
 							onChange={(event) =>
 								handleChange(option.id, event.currentTarget.value)
 							}
-							placeholder={isLast ? "Add Option" : undefined}
-							classNames={{ input: classes.inputPreview }}
 						/>
 					);
 				})}
+
+				{optionsError && (
+					<Text c="red" size="sm">
+						{optionsError}
+					</Text>
+				)}
 			</Stack>
 			<CommonActions />
 		</FormField>

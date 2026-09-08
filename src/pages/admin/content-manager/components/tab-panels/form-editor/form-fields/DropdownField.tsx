@@ -73,11 +73,13 @@ export default function DropdownField() {
 		);
 	};
 
+	const optionsError = form.errors.options;
+
 	return (
 		<FormField>
 			<Stack gap="sm">
-				{options.map((option, index) => {
-					const isLast = index === options.length - 1;
+				{options.map((option, i) => {
+					const isLast = i === options.length - 1;
 
 					return (
 						<TextInput
@@ -86,12 +88,14 @@ export default function DropdownField() {
 							flex={1}
 							leftSectionPointerEvents="none"
 							leftSection={
-								<Text size="sm" c="dimmed" w={20} ta="center">
-									{index + 1}.
-								</Text>
+								<input
+									type="checkbox"
+									disabled
+									className={classes.inputPreview}
+								/>
 							}
 							rightSection={
-								isLast ? null : (
+								isLast ? undefined : (
 									<ActionIcon
 										variant="transparent"
 										color="gray.9"
@@ -103,17 +107,23 @@ export default function DropdownField() {
 									</ActionIcon>
 								)
 							}
-							placeholder={isLast ? "Add Option" : undefined}
 							variant="unstyled"
 							size="md"
 							value={option.value}
+							placeholder={isLast ? "Add Option" : undefined}
+							classNames={{ input: classes.inputPreview }}
 							onChange={(event) =>
 								handleChange(option.id, event.currentTarget.value)
 							}
-							classNames={{ input: classes.inputPreview }}
 						/>
 					);
 				})}
+
+				{optionsError && (
+					<Text c="red" size="sm">
+						{optionsError}
+					</Text>
+				)}
 			</Stack>
 
 			<CommonActions />

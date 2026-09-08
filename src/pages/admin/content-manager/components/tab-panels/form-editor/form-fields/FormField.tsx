@@ -83,7 +83,7 @@ export default function FormField({ children }: PropsWithChildren) {
 					}}
 					data={FIELD_TYPE_SELECT_DATA}
 					renderOption={renderSelectOption}
-					// allowDeselect={false}
+					allowDeselect={false}
 					key={form.key("type")}
 					{...form.getInputProps("type")}
 					// onChange={(value) => {
