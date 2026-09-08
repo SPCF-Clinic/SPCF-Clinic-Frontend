@@ -1,15 +1,16 @@
 import type { PropsWithChildren } from "react";
 
-import type { FormField } from "@/types/student-register";
-import { FieldContext } from "./fieldContext";
+import { FieldContext, type FieldContextValue } from "./fieldContext";
 
-interface FieldProviderProps extends PropsWithChildren {
-	field?: FormField;
-}
+type FieldProviderProps = PropsWithChildren & FieldContextValue;
 
-export default function FieldProvider({ children, field }: FieldProviderProps) {
+export default function FieldProvider({
+	children,
+	field,
+	fieldType,
+}: FieldProviderProps) {
 	return (
-		<FieldContext.Provider value={field ?? null}>
+		<FieldContext.Provider value={{ field, fieldType }}>
 			{children}
 		</FieldContext.Provider>
 	);

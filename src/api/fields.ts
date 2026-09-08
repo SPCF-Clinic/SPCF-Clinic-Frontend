@@ -52,3 +52,13 @@ export interface ReorderFieldVariables {
 }
 export const reorderField = ({ type, data }: ReorderFieldVariables) =>
 	apiClient.post(`${FIELD_TYPE_URL[type]}/reorder`, data);
+
+export const deleteField = ({
+	type,
+	id,
+	data,
+}: {
+	type: FieldType;
+	id: number;
+	data: { version_number: number };
+}) => apiClient.delete(`${FIELD_TYPE_URL[type]}/${id}`, { data });

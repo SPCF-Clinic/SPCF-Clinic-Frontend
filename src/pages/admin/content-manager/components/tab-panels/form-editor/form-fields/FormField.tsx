@@ -21,6 +21,7 @@ import {
 import type { PropsWithChildren } from "react";
 
 import { FIELD_TYPE_SELECT_DATA, type FieldTypeName } from "@/constants/fields";
+import { useDeleteField } from "@/hooks/fields/useDeleteField";
 import { useFieldContext } from "../contexts/useFieldContext";
 import { useFormEditorFormContext } from "../formEditorFormContext";
 import classes from "./FormField.module.css";
@@ -54,7 +55,7 @@ const renderSelectOption: SelectProps["renderOption"] = ({
 
 export default function FormField({ children }: PropsWithChildren) {
 	const form = useFormEditorFormContext();
-	const field = useFieldContext();
+	const { field } = useFieldContext();
 
 	return (
 		<Stack gap="sm" flex={1}>
@@ -100,7 +101,12 @@ export default function FormField({ children }: PropsWithChildren) {
 
 export function CommonActions() {
 	const form = useFormEditorFormContext();
-	const field = useFieldContext();
+	const { field, fieldType } = useFieldContext();
+	const { handleDeleteField, deleteFieldMutation } = useDeleteField({
+		fieldType,
+		id: field.id,
+		version_number: field.version_number,
+	});
 
 	return (
 		<Group justify="end" gap="sm">
@@ -121,6 +127,8 @@ export function CommonActions() {
 				color="gray.9"
 				size="sm"
 				disabled={field?.is_default}
+				loading={deleteFieldMutation.isPending}
+				onClick={handleDeleteField}
 			>
 				<IconTrash />
 			</ActionIcon>

@@ -101,7 +101,7 @@ function EditSortableFieldItem({
 			}}
 		>
 			<FormEditorFormProvider form={form}>
-				<FieldProvider field={field}>
+				<FieldProvider field={field} fieldType={fieldType}>
 					<form>
 						<Group>
 							<Stack gap="sm" flex={1}>

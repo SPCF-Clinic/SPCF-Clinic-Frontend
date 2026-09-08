@@ -9,7 +9,7 @@ import classes from "./FormField.module.css";
 
 export default function RadioField() {
 	const form = useFormEditorFormContext();
-	const field = useFieldContext();
+	const { field } = useFieldContext();
 
 	const [options, setOptions] = useState<{ id: string; value: string }[]>(
 		() => {

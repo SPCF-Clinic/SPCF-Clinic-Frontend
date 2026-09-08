@@ -1,4 +1,11 @@
 import { createContext } from "react";
+
+import type { FieldType } from "@/api/fields";
 import type { FormField } from "@/types/student-register";
 
-export const FieldContext = createContext<FormField | null>(null);
+export interface FieldContextValue {
+	field: FormField;
+	fieldType: FieldType;
+}
+
+export const FieldContext = createContext<FieldContextValue | null>(null);
