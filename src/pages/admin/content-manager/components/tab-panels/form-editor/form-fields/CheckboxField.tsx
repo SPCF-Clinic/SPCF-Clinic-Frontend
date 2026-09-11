@@ -100,6 +100,7 @@ export default function CheckboxField() {
 										color="gray.9"
 										size="sm"
 										aria-label="Delete option"
+										disabled={field.is_default}
 										onClick={() => handleRemove(option.id)}
 									>
 										<IconX size={18} />
