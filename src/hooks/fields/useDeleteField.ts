@@ -1,4 +1,5 @@
 import type { FieldType } from "@/api/fields";
+import { toast } from "@/components/toast";
 import { showToastError } from "@/utils/toastError";
 import { useDeleteFieldMutation } from "./useDeleteFieldMutation";
 
@@ -23,6 +24,9 @@ export function useDeleteField({
 				data: { version_number },
 			},
 			{
+				onSuccess: () => {
+					toast.success({ message: "Field deleted successfully" });
+				},
 				onError: (error) => showToastError(error, "Failed to delete field"),
 			},
 		);
