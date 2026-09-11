@@ -82,7 +82,7 @@ export default function CheckboxField() {
 
 					return (
 						<TextInput
-							disabled={field?.is_default}
+							disabled={field.is_default}
 							key={option.id}
 							flex={1}
 							leftSectionPointerEvents="none"

@@ -19,8 +19,8 @@ import {
 	IconSelect,
 	IconTrash,
 } from "@tabler/icons-react";
-import { useMutationState } from "@tanstack/react-query";
-import { type PropsWithChildren, useEffect, useState } from "react";
+import type { PropsWithChildren } from "react";
+
 import { FIELD_TYPE_SELECT_DATA, type FieldTypeName } from "@/constants/fields";
 import { useDeleteField } from "@/hooks/fields/useDeleteField";
 import { useFieldSaveIndicator } from "@/hooks/fields/useFieldSaveIndicator";
@@ -58,7 +58,7 @@ const renderSelectOption: SelectProps["renderOption"] = ({
 export default function FormField({ children }: PropsWithChildren) {
 	const form = useFormEditorFormContext();
 	const { field } = useFieldContext();
-	const { isPending, showSuccess } = useFieldSaveIndicator(field?.id);
+	const { isPending, showSuccess } = useFieldSaveIndicator(field.id);
 
 	return (
 		<Stack gap="sm" flex={1}>
@@ -67,7 +67,7 @@ export default function FormField({ children }: PropsWithChildren) {
 					flex={1}
 					radius="sm"
 					size="md"
-					disabled={field?.is_default}
+					disabled={field.is_default}
 					classNames={{ input: classes.input }}
 					key={form.key("name")}
 					{...form.getInputProps("name")}
@@ -81,7 +81,7 @@ export default function FormField({ children }: PropsWithChildren) {
 					rightSectionPointerEvents="none"
 				/>
 				<Select
-					disabled={field?.is_default}
+					disabled={field.is_default}
 					radius="sm"
 					size="md"
 					leftSection={
@@ -127,22 +127,24 @@ export function CommonActions() {
 				labelPosition="left"
 				classNames={{ track: classes.track }}
 				c="dimmed"
-				disabled={field?.is_default}
+				disabled={field.is_default}
 				key={form.key("is_required")}
 				{...form.getInputProps("is_required", { type: "checkbox" })}
 			/>
 
-			<ActionIcon
-				variant="transparent"
-				aria-label="Delete field"
-				color="gray.9"
-				size="sm"
-				disabled={field?.is_default}
-				loading={deleteFieldMutation.isPending}
-				onClick={handleDeleteField}
-			>
-				<IconTrash />
-			</ActionIcon>
+			{!field.is_default && (
+				<ActionIcon
+					variant="transparent"
+					aria-label="Delete field"
+					color="gray.9"
+					size="sm"
+					disabled={field.is_default}
+					loading={deleteFieldMutation.isPending}
+					onClick={handleDeleteField}
+				>
+					<IconTrash />
+				</ActionIcon>
+			)}
 		</Group>
 	);
 }

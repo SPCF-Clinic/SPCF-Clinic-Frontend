@@ -14,18 +14,20 @@ export default function DividerField() {
 
 	return (
 		<FormField>
-			<ActionIcon
-				style={{ alignSelf: "flex-end" }}
-				variant="transparent"
-				aria-label="Delete field"
-				color="gray.9"
-				size="sm"
-				disabled={field?.is_default}
-				loading={deleteFieldMutation.isPending}
-				onClick={handleDeleteField}
-			>
-				<IconTrash />
-			</ActionIcon>
+			{!field.is_default && (
+				<ActionIcon
+					style={{ alignSelf: "flex-end" }}
+					variant="transparent"
+					aria-label="Delete field"
+					color="gray.9"
+					size="sm"
+					disabled={field.is_default}
+					loading={deleteFieldMutation.isPending}
+					onClick={handleDeleteField}
+				>
+					<IconTrash />
+				</ActionIcon>
+			)}
 		</FormField>
 	);
 }
