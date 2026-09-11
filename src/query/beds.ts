@@ -1,5 +1,6 @@
-import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
+import { infiniteQueryOptions, queryOptions, mutationOptions } from "@tanstack/react-query";
 
+import {postCheckInStudent} from "@/api/check-ins";
 import { type GetBedsFilters, getBeds } from "@/api/beds";
 
 export const bedQueries = {
@@ -19,3 +20,10 @@ export const bedQueries = {
 			// queryFn: () => getBed(id),
 		}),
 };
+
+export const checkInMuations = {
+	post: () =>  mutationOptions({
+            mutationFn: (payload: any) =>
+                postCheckInStudent(payload),
+        }),
+}

@@ -13,3 +13,11 @@ export const getCheckIns = (filters?: GetCheckInsFilters) =>
 
 export const getCheckIn = (id: number) =>
 	apiClient.get<CheckInShow>(`/check-ins/${id}`);
+
+export const postCheckInStudent = (payload?: any) => 
+  apiClient.post("/check-ins", payload);
+
+export const putDispenseItem = (id: number, payload: any) => {
+	console.log("putDispenseItem called with id:", id, "and payload:", payload) 
+	return apiClient.put(`/check-ins/${id}`, payload)
+}

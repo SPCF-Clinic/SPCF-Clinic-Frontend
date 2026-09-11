@@ -1,7 +1,9 @@
-import { Badge, Box, Group, type MenuItemProps, Text } from "@mantine/core";
+import { Badge, Box, Group, type MenuItemProps, Text, ActionIcon } from "@mantine/core";
+import { IconPill } from "@tabler/icons-react";
 
 import ActionMenu from "@/components/ActionMenu";
-import StatusModal from "@/components/modals/StatusModal";
+import StatusModal from "@/pages/admin/modals/StatusModal";
+import MedicineModal from "@/pages/admin/modals/MedicineModal";
 
 const MENU_ITEMS: MenuItemProps[] = [
 	{
@@ -26,6 +28,7 @@ export default function StudentCardHeader({
 	studentData,
 }: StudentCardHeaderProps) {
 
+	console.log(studentData)
 
 	return (
 		<Group justify="space-between">
@@ -38,18 +41,53 @@ export default function StudentCardHeader({
 				</Text>
 			</Box>
 			<Group>
-				<Badge
-					size="xl"
+				{studentData.check_in.status === "Not In Clinic" ? <Badge
+					size="lg"
 					variant="outline"
 					color="gray.7"
 					bg="gray.2"
 					fw={400}
 					fz="sm"
 					tt="none"
-					onClick={()=>{StatusModal.StudentInClinic(studentData)}}
+					onClick={() => { StatusModal.StudentInClinic(studentData) }}
 				>
 					Not In Clinic
-				</Badge>
+				</Badge> : <>
+					<Badge
+						size="lg"
+						variant="outline"
+						color="green.7"
+						bg="green.2"
+						fw={400}
+						fz="sm"
+						tt="none"
+					>
+						{studentData.check_in.status}
+					</Badge>
+					<Badge
+						size="lg"
+						variant="outline"
+						color="blue.7"
+						bg="blue.2"
+						fw={400}
+						fz="sm"
+						tt="none"
+					>
+						{studentData.check_in.bed}
+					</Badge>
+					<ActionIcon
+						variant="light"
+						color="blue"
+						size="md"
+						radius="md"
+						onClick={() => {
+							MedicineModal.Give(studentData, "Medicine")
+						}}
+					>
+						<IconPill size={20} />
+					</ActionIcon>
+				</>}
+
 				<ActionMenu items={MENU_ITEMS} />
 			</Group>
 		</Group>
