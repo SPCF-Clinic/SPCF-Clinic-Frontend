@@ -20,6 +20,12 @@
 	}
 }
 
+.section {
+	&[data-position="right"] {
+		gap: var(--mantine-spacing-xs);
+	}
+}
+
 .track {
 	--switch-disabled-color: var(--mantine-color-primary-3);
 

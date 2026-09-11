@@ -9,6 +9,13 @@ import type { FormField } from "@/types/student-register";
 import { showToastError } from "@/utils/toastError";
 import { useCreateFieldMutation } from "./useCreateFieldMutation";
 
+const defaultValues = {
+	name: "Question",
+	type: FIELD_TYPES[0],
+	options: [],
+	is_required: false,
+};
+
 export function useCreateField({
 	fields,
 	type,
@@ -19,13 +26,6 @@ export function useCreateField({
 	const createFieldMutation = useCreateFieldMutation();
 
 	const handleAddField = () => {
-		const defaultValues = {
-			name: "Question",
-			type: FIELD_TYPES[0],
-			options: [],
-			is_required: false,
-		};
-
 		const formOrder = calculateFormOrder(fields, fields.length);
 
 		createFieldMutation.mutate(
@@ -43,9 +43,7 @@ export function useCreateField({
 				onSuccess: ({ data }) => {
 					console.log("Field created successfully", data);
 				},
-				onError: (error) => {
-					showToastError(error, "Failed to create field");
-				},
+				onError: (error) => showToastError(error, "Failed to create field"),
 			},
 		);
 	};

@@ -24,6 +24,9 @@ import type { PropsWithChildren } from "react";
 import { FIELD_TYPE_SELECT_DATA, type FieldTypeName } from "@/constants/fields";
 import { useDeleteField } from "@/hooks/fields/useDeleteField";
 import { useFieldSaveIndicator } from "@/hooks/fields/useFieldSaveIndicator";
+import { useNestedFields } from "@/hooks/fields/useNestedFields";
+import type { FormField } from "@/types/student-register";
+import { isNestedField, isParentField } from "../contexts/fieldContext";
 import { useFieldContext } from "../contexts/useFieldContext";
 import { useFormEditorFormContext } from "../formEditorFormContext";
 import classes from "./FormField.module.css";
@@ -57,8 +60,15 @@ const renderSelectOption: SelectProps["renderOption"] = ({
 
 export default function FormField({ children }: PropsWithChildren) {
 	const form = useFormEditorFormContext();
-	const { field } = useFieldContext();
+	const { field, isDefault } = useFieldContext();
+
+	const isNested = isNestedField(field);
+
 	const { isPending, showSuccess } = useFieldSaveIndicator(field.id);
+
+	const selectData = isNested
+		? FIELD_TYPE_SELECT_DATA.filter((d) => d.value !== "Divider")
+		: FIELD_TYPE_SELECT_DATA;
 
 	return (
 		<Stack gap="sm" flex={1}>
@@ -67,7 +77,7 @@ export default function FormField({ children }: PropsWithChildren) {
 					flex={1}
 					radius="sm"
 					size="md"
-					disabled={field.is_default}
+					disabled={isDefault}
 					classNames={{ input: classes.input }}
 					key={form.key("name")}
 					{...form.getInputProps("name")}
@@ -81,7 +91,7 @@ export default function FormField({ children }: PropsWithChildren) {
 					rightSectionPointerEvents="none"
 				/>
 				<Select
-					disabled={field.is_default}
+					disabled={isDefault}
 					radius="sm"
 					size="md"
 					leftSection={
@@ -93,7 +103,7 @@ export default function FormField({ children }: PropsWithChildren) {
 						dropdown: { color: "var(--mantine-color-gray-7)" },
 						section: { color: "var(--mantine-color-gray-7)" },
 					}}
-					data={FIELD_TYPE_SELECT_DATA}
+					data={selectData}
 					renderOption={renderSelectOption}
 					allowDeselect={false}
 					key={form.key("type")}
@@ -106,15 +116,13 @@ export default function FormField({ children }: PropsWithChildren) {
 			</Group>
 
 			{children}
-
-			<CommonActions />
 		</Stack>
 	);
 }
 
 export function CommonActions() {
 	const form = useFormEditorFormContext();
-	const { field, fieldType } = useFieldContext();
+	const { field, fieldType, isDefault } = useFieldContext();
 	const { handleDeleteField, deleteFieldMutation } = useDeleteField({
 		fieldType,
 		id: field.id,
@@ -123,26 +131,26 @@ export function CommonActions() {
 
 	return (
 		<Group justify="end" gap="sm">
-			{field.type.name !== "Divider" && (
+			{!isDefault && (
 				<Switch
 					withThumbIndicator={false}
 					label="Required"
 					labelPosition="left"
 					classNames={{ track: classes.track }}
 					c="dimmed"
-					disabled={field.is_default}
+					disabled={isDefault}
 					key={form.key("is_required")}
 					{...form.getInputProps("is_required", { type: "checkbox" })}
 				/>
 			)}
 
-			{!field.is_default && (
+			{!isDefault && (
 				<ActionIcon
 					variant="transparent"
 					aria-label="Delete field"
 					color="gray.9"
 					size="sm"
-					disabled={field.is_default}
+					disabled={isDefault}
 					loading={deleteFieldMutation.isPending}
 					onClick={handleDeleteField}
 				>
@@ -150,5 +158,57 @@ export function CommonActions() {
 				</ActionIcon>
 			)}
 		</Group>
+	);
+}
+
+export interface Option {
+	id: string;
+	value: string;
+}
+export function NestedFieldToggle({ option }: { option: string }) {
+	const { field } = useFieldContext();
+	if (!isParentField(field)) return null;
+	return <NestedFieldToggleInner field={field} option={option} />;
+}
+
+function NestedFieldToggleInner({
+	field,
+	option,
+}: {
+	field: FormField;
+	option: string;
+}) {
+	const { fieldType, isDefault } = useFieldContext();
+	const {
+		handleAddNestedField,
+		handleRemoveNestedFields,
+		createFieldMutation,
+		deleteFieldMutation,
+	} = useNestedFields({ type: fieldType, parentField: field, option });
+
+	const checked =
+		field.additional_fields?.some(
+			(f) => f.required_with_field_value === option,
+		) ?? false;
+
+	const isPending =
+		createFieldMutation.isPending || deleteFieldMutation.isPending;
+
+	return (
+		<Switch
+			disabled={isDefault || isPending}
+			size="xs"
+			withThumbIndicator={false}
+			classNames={{ track: classes.track }}
+			c="dimmed"
+			checked={checked}
+			onChange={(event) => {
+				if (event.currentTarget.checked) {
+					handleAddNestedField();
+				} else {
+					handleRemoveNestedFields();
+				}
+			}}
+		/>
 	);
 }

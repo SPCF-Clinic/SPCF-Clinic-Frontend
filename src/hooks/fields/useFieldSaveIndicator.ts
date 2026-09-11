@@ -1,29 +1,30 @@
 import { useMutationState } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { EditFieldVariables } from "@/api/fields";
 import { EDIT_FIELD_MUTATION_KEY } from "./useEditFieldMutation";
 
 const SUCCESS_INDICATOR_DURATION_MS = 2000;
 
-function useSuccessIndicator(active: boolean) {
-	const [prevActive, setPrevActive] = useState(active);
-	const [visible, setVisible] = useState(active);
-
-	if (active !== prevActive) {
-		setPrevActive(active);
-		setVisible(active);
-	}
+function useSuccessIndicator(status: "idle" | "pending" | "success" | "error") {
+	const [visible, setVisible] = useState(false);
+	const prevStatusRef = useRef(status);
 
 	useEffect(() => {
-		if (!visible) {
-			return;
-		}
+		const prev = prevStatusRef.current;
+		prevStatusRef.current = status;
 
+		// Only flash when we actually transition pending -> success.
+		if (prev === "pending" && status === "success") {
+			setVisible(true);
+		}
+	}, [status]);
+
+	useEffect(() => {
+		if (!visible) return;
 		const timeout = setTimeout(() => {
 			setVisible(false);
 		}, SUCCESS_INDICATOR_DURATION_MS);
-
 		return () => clearTimeout(timeout);
 	}, [visible]);
 
@@ -42,10 +43,14 @@ export function useFieldSaveIndicator(fieldId: number) {
 		select: (mutation) => mutation.state.status,
 	});
 
-	const status = statuses.at(-1) ?? "idle";
+	const status = (statuses.at(-1) ?? "idle") as
+		| "idle"
+		| "pending"
+		| "success"
+		| "error";
 
 	return {
 		isPending: status === "pending",
-		showSuccess: useSuccessIndicator(status === "success"),
+		showSuccess: useSuccessIndicator(status),
 	};
 }

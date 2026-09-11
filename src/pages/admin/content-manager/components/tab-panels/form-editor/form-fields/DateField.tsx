@@ -1,6 +1,6 @@
 import { Group, TextInput } from "@mantine/core";
 
-import FormField from "./FormField";
+import FormField, { CommonActions } from "./FormField";
 import classes from "./FormField.module.css";
 
 export default function DateField() {
@@ -29,6 +29,8 @@ export default function DateField() {
 					classNames={{ input: classes.inputPreview }}
 				/>
 			</Group>
+
+			<CommonActions />
 		</FormField>
 	);
 }

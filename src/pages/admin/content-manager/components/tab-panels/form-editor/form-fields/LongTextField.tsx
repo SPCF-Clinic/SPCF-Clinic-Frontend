@@ -1,6 +1,6 @@
 import { TextInput } from "@mantine/core";
 
-import FormField from "./FormField";
+import FormField, { CommonActions } from "./FormField";
 import classes from "./FormField.module.css";
 
 export default function LongTextField() {
@@ -12,6 +12,8 @@ export default function LongTextField() {
 				placeholder="Long answer text"
 				classNames={{ input: classes.inputPreview }}
 			/>
+
+			<CommonActions />
 		</FormField>
 	);
 }

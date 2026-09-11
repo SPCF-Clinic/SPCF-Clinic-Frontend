@@ -75,7 +75,7 @@ function EditSortableFieldItem({
 					onError: (error) => showToastError(error, "Failed to update field"),
 				},
 			);
-		}, 2000),
+		}, 1000),
 	});
 
 	const [element, setElement] = useState<HTMLElement | null>(null);
@@ -101,7 +101,11 @@ function EditSortableFieldItem({
 			}}
 		>
 			<FormEditorFormProvider form={form}>
-				<FieldProvider field={field} fieldType={fieldType}>
+				<FieldProvider
+					field={field}
+					fieldType={fieldType}
+					isDefault={isDefault}
+				>
 					<form>
 						<Group>
 							<Stack gap="sm" flex={1}>
