@@ -106,6 +106,8 @@ export default function FormField({ children }: PropsWithChildren) {
 			</Group>
 
 			{children}
+
+			<CommonActions />
 		</Stack>
 	);
 }
@@ -121,16 +123,18 @@ export function CommonActions() {
 
 	return (
 		<Group justify="end" gap="sm">
-			<Switch
-				withThumbIndicator={false}
-				label="Required"
-				labelPosition="left"
-				classNames={{ track: classes.track }}
-				c="dimmed"
-				disabled={field.is_default}
-				key={form.key("is_required")}
-				{...form.getInputProps("is_required", { type: "checkbox" })}
-			/>
+			{field.type.name !== "Divider" && (
+				<Switch
+					withThumbIndicator={false}
+					label="Required"
+					labelPosition="left"
+					classNames={{ track: classes.track }}
+					c="dimmed"
+					disabled={field.is_default}
+					key={form.key("is_required")}
+					{...form.getInputProps("is_required", { type: "checkbox" })}
+				/>
+			)}
 
 			{!field.is_default && (
 				<ActionIcon

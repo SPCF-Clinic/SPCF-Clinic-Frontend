@@ -1,6 +1,6 @@
 import { TextInput } from "@mantine/core";
 
-import FormField, { CommonActions } from "./FormField";
+import FormField from "./FormField";
 import classes from "./FormField.module.css";
 
 export default function ShortTextField() {
@@ -12,7 +12,6 @@ export default function ShortTextField() {
 				placeholder="Short answer text"
 				classNames={{ input: classes.inputPreview }}
 			/>
-			<CommonActions />
 		</FormField>
 	);
 }

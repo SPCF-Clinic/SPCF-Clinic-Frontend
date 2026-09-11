@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useFieldContext } from "../contexts/useFieldContext";
 import { useFormEditorFormContext } from "../formEditorFormContext";
-import FormField, { CommonActions } from "./FormField";
+import FormField from "./FormField";
 import classes from "./FormField.module.css";
 
 export default function DropdownField() {
@@ -126,8 +126,6 @@ export default function DropdownField() {
 					</Text>
 				)}
 			</Stack>
-
-			<CommonActions />
 		</FormField>
 	);
 }
