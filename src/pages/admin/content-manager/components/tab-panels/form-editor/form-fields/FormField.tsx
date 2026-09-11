@@ -1,6 +1,7 @@
 import {
 	ActionIcon,
 	Group,
+	Loader,
 	Select,
 	type SelectProps,
 	Stack,
@@ -18,10 +19,11 @@ import {
 	IconSelect,
 	IconTrash,
 } from "@tabler/icons-react";
-import type { PropsWithChildren } from "react";
-
+import { useMutationState } from "@tanstack/react-query";
+import { type PropsWithChildren, useEffect, useState } from "react";
 import { FIELD_TYPE_SELECT_DATA, type FieldTypeName } from "@/constants/fields";
 import { useDeleteField } from "@/hooks/fields/useDeleteField";
+import { useFieldSaveIndicator } from "@/hooks/fields/useFieldSaveIndicator";
 import { useFieldContext } from "../contexts/useFieldContext";
 import { useFormEditorFormContext } from "../formEditorFormContext";
 import classes from "./FormField.module.css";
@@ -56,6 +58,7 @@ const renderSelectOption: SelectProps["renderOption"] = ({
 export default function FormField({ children }: PropsWithChildren) {
 	const form = useFormEditorFormContext();
 	const { field } = useFieldContext();
+	const { isPending, showSuccess } = useFieldSaveIndicator(field?.id);
 
 	return (
 		<Stack gap="sm" flex={1}>
@@ -68,6 +71,14 @@ export default function FormField({ children }: PropsWithChildren) {
 					classNames={{ input: classes.input }}
 					key={form.key("name")}
 					{...form.getInputProps("name")}
+					rightSection={
+						isPending ? (
+							<Loader size={16} />
+						) : showSuccess ? (
+							<IconCheck size={18} color="var(--mantine-color-teal-7)" />
+						) : null
+					}
+					rightSectionPointerEvents="none"
 				/>
 				<Select
 					disabled={field?.is_default}

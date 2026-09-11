@@ -30,15 +30,13 @@ export const createField = ({
 	data: FieldFormValues;
 }) => apiClient.post<FormField>(FIELD_TYPE_URL[type], data);
 
-export const editField = ({
-	type,
-	id,
-	data,
-}: {
+export interface EditFieldVariables {
 	type: FieldType;
 	id: number;
 	data: FieldFormValues;
-}) => apiClient.put<FormField>(`${FIELD_TYPE_URL[type]}/${id}`, data);
+}
+export const editField = ({ type, id, data }: EditFieldVariables) =>
+	apiClient.put<FormField>(`${FIELD_TYPE_URL[type]}/${id}`, data);
 
 interface ReorderFieldData {
 	field_id: number;
