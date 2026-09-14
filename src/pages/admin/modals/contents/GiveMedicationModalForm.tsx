@@ -30,8 +30,6 @@ export default function GiveMedicationModalForm({ studentData, type }: GiveMedic
         (item) => String(item.id) === form.values.dispensed_item_id
     );
 
-    console.log(studentData);
-
     const handleSubmit = (values: typeof form.values) => {
         const payload = {
             dispensed_item_id: values.dispensed_item_id,
@@ -49,7 +47,6 @@ export default function GiveMedicationModalForm({ studentData, type }: GiveMedic
         });
     };
 
-    console.log("Medicine items:", medicineItems?.data?.items);
     return (
         <><form onSubmit={form.onSubmit(handleSubmit)}>
             <Stack gap="sm">

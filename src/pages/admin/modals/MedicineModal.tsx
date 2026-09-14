@@ -1,9 +1,9 @@
 import { modals } from "@mantine/modals";
-import { Text, Divider } from '@mantine/core';
+import { Text, Divider,Box } from '@mantine/core';
 
 import type {ItemType} from "@/types/items";
 
-import GiveMedicationModalForm from "@/pages/admin/student/components/student-card/modals/GiveMedicationModalForm.tsx";
+import GiveMedicationModalForm from "@/pages/admin/modals/contents/GiveMedicationModalForm";
 
 const Give = (studentData: any, type: ItemType) => modals.open({
     centered: true,
@@ -16,10 +16,10 @@ const Give = (studentData: any, type: ItemType) => modals.open({
             {studentData.full_name} Juan Tamad - {studentData.check_in.bed}
         </Text>
     </>),
-      children: (<>
+      children: (<Box w="100%">
         <Divider size="2px" variant="solid" color="gray.3" />
         <GiveMedicationModalForm studentData={studentData} type={type}/>
-        </>
+        </Box>
       ),
 })
 

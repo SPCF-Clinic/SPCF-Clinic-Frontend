@@ -10,7 +10,19 @@ import { useStudentDetail } from "@/hooks/students/useStudentDetail";
 import classes from "@/styles/ScrollFade.module.css";
 import { getStudentFullName } from "@/utils/students/studentName";
 
-export default function StudentActivityLogs() {
+interface StudentActivityLogsProps {
+	date?: string;
+	userId?: number;
+	studentNumber?: number;
+	withBorder?: boolean;
+}
+
+export default function StudentActivityLogs({ date, userId, studentNumber, withBorder=false }: StudentActivityLogsProps) {
+
+	const performedFor = studentNumber
+		? Number(studentNumber)
+		: undefined;
+
 	const {
 		data: studentLogsData,
 		isPending,
@@ -19,7 +31,7 @@ export default function StudentActivityLogs() {
 		fetchNextPage,
 		hasNextPage,
 		isFetchingNextPage,
-	} = useStudentActivityLogs();
+	} = useStudentActivityLogs({ performed_by: userId, performed_for: performedFor, date: date });
 	const { data: studentData } = useStudentDetail();
 	const studentFullName = studentData
 		? getStudentFullName(studentData.data.personal_info, true)
@@ -47,7 +59,7 @@ export default function StudentActivityLogs() {
 	}
 
 	return (
-		<Paper p="lg" radius="lg" withBorder>
+		<Paper p="lg" radius="lg" withBorder={withBorder}>
 			<Stack>
 				<Text fw={600} size="sm" tt="uppercase" c="primary">
 					Activity Log

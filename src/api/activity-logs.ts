@@ -15,6 +15,8 @@ export type GetActivityLogsFilters = CursorPaginationQueryParams<{
     | "FORM_FIELD"
     | "TIMER";
   performed_by?: number;
+  performed_for?: number;
+  date?: string;
 }>;
 
 type GetActivityLogsResponse = CursorPaginationResponse<ActivityLogIndex>;

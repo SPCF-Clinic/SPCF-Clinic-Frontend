@@ -3,7 +3,7 @@ import { Text,} from '@mantine/core';
 
 import type { StudentShow } from "@/types/students";
 
-import StudentInClinicModalForm from "@/pages/admin/student/components/student-card/modals/StudentInClinicModalForm";
+import StudentInClinicModalForm from "@/pages/admin/modals/contents/StudentInClinicModalForm";
 
 const StudentInClinic = (studentdata: StudentShow) => modals.open({
   centered: true,

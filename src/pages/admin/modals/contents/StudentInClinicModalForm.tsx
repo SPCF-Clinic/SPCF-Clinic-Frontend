@@ -14,8 +14,8 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import { studentQueries } from "@/query/students";
 import type { StudentShow } from "@/types/students";
-import { useBeds  } from "@/hooks/beds/useBeds";
-import {useCheckInStudent} from "@/hooks/check-ins/useCheckInStudent";
+import { useBeds } from "@/hooks/beds/useBeds";
+import { useCheckInStudent } from "@/hooks/check-ins/useCheckInStudent";
 
 interface StudentInClinicFormProps {
   studentData: StudentShow;
@@ -35,7 +35,7 @@ export default function StudentInClinicModalForm({
     initialValues: {
       user_id: studentData.id,
       bed_id: "",
-      timer_expires_at: "", // Stores the time string (e.g. "10:50:00")
+      timer_expires_at: "",
       reason_for_visit: "",
       remarks: "",
     },
@@ -45,8 +45,9 @@ export default function StudentInClinicModalForm({
     let formattedExpiresAt = "";
 
     if (isAssigned && values.timer_expires_at) {
-      const today = dayjs().format("YYYY-MM-DD");
-      formattedExpiresAt = `${today} ${values.timer_expires_at}`;
+      formattedExpiresAt = dayjs()
+        .add(Number(values.timer_expires_at), "minute")
+        .format("YYYY-MM-DD HH:mm:ss");
     }
 
     const payload = {
@@ -55,17 +56,25 @@ export default function StudentInClinicModalForm({
       timer_expires_at: formattedExpiresAt,
     };
 
-    console.log("Submitting payload:", payload);
     checkInStudent(payload, {
       onSuccess: () => {
         modals.closeAll();
 
-          queryClient.invalidateQueries({
-        queryKey: studentQueries.detail(studentData.id).queryKey,
-      });
-      }
+        queryClient.invalidateQueries({
+          queryKey: studentQueries.detail(studentData.id).queryKey,
+        });
+      },
     });
   };
+
+  const timeLimitOptions = Array.from({ length: 12 }, (_, index) => {
+    const minutes = (index + 1) * 5;
+
+    return {
+      value: String(minutes),
+      label: `${minutes} minutes`,
+    };
+  });
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -119,18 +128,20 @@ export default function StudentInClinicModalForm({
             mt="xs"
             data={
               listOfBeds?.pages[0].data.data
-              .filter((bed) => bed.status !== "Occupied")
-              .map((bed) => ({
-                value: String(bed.id),
-                label: bed.bed_number,
-              })) ?? []
+                .filter((bed) => bed.status !== "Occupied")
+                .map((bed) => ({
+                  value: String(bed.id),
+                  label: bed.bed_number,
+                })) ?? []
             }
             {...form.getInputProps("bed_id")}
           />
 
-          <TimeInput
+          <Select
             label="Set Bed Time Limit"
+            placeholder="Choose duration"
             mt="sm"
+            data={timeLimitOptions}
             {...form.getInputProps("timer_expires_at")}
           />
         </>
