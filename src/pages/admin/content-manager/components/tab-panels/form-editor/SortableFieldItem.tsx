@@ -48,7 +48,11 @@ function EditSortableFieldItem({
     initialValues: {
       name: field.name,
       type: field.type.name,
-      options: field.options,
+      options: field.options?.map((option) => ({
+        key: String(option.id),
+        id: option.id,
+        value: option.value,
+      })),
       is_required: field.is_required,
     },
     validate: validators,

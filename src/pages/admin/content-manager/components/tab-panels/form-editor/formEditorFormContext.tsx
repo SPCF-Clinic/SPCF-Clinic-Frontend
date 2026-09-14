@@ -1,10 +1,10 @@
 import { createFormContext } from "@mantine/form";
-import type { FieldData } from "@/api/fields";
+import type { FieldFormValues } from "@/api/fields";
 
-export type FieldFormValues = Partial<FieldData>;
+export type { FieldFormValues } from "@/api/fields";
 
 export const [
-	FormEditorFormProvider,
-	useFormEditorFormContext,
-	useFormEditorForm,
+  FormEditorFormProvider,
+  useFormEditorFormContext,
+  useFormEditorForm,
 ] = createFormContext<FieldFormValues>();

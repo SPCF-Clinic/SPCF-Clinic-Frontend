@@ -1,4 +1,5 @@
 import type { FieldTypeName } from "@/constants/fields";
+import type { Option } from "@/api/fields";
 
 // Field input type configuration
 interface FieldType {
@@ -30,11 +31,6 @@ export interface FormField {
   is_required: boolean;
   required_with_field: number | string | null;
   additional_fields: AdditionalField[];
-}
-
-export interface Option {
-  id: number;
-  value: string;
 }
 
 export interface RegisterReqBody {
