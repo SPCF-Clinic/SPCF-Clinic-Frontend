@@ -25,7 +25,7 @@ import { FIELD_TYPE_SELECT_DATA, type FieldTypeName } from "@/constants/fields";
 import { useDeleteField } from "@/hooks/fields/useDeleteField";
 import { useFieldSaveIndicator } from "@/hooks/fields/useFieldSaveIndicator";
 import { useNestedFields } from "@/hooks/fields/useNestedFields";
-import type { FormField } from "@/types/student-register";
+import type { FormField as TFormField } from "@/types/student-register";
 import { isNestedField, isParentField } from "../contexts/fieldContext";
 import { useFieldContext } from "../contexts/useFieldContext";
 import { useFormEditorFormContext } from "../formEditorFormContext";
@@ -161,7 +161,7 @@ export function CommonActions() {
 	);
 }
 
-export interface Option {
+export interface EditableOption {
 	id: string;
 	value: string;
 }
@@ -175,7 +175,7 @@ function NestedFieldToggleInner({
 	field,
 	option,
 }: {
-	field: FormField;
+	field: TFormField;
 	option: string;
 }) {
 	const { fieldType, isDefault } = useFieldContext();

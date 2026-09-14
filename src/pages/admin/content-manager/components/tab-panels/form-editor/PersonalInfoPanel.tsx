@@ -5,22 +5,16 @@ import { usePersonalInfo } from "@/query/student-register";
 import ReorderableFields from "./ReorderableFields";
 
 export default function PersonalInfoPanel() {
-	const { data, isPending, error, refetch } = usePersonalInfo();
+  const { data, isPending, error, refetch } = usePersonalInfo();
 
-	if (error) return <QueryError error={error} onRetry={refetch} />;
+  if (error) return <QueryError error={error} onRetry={refetch} />;
 
-	if (isPending)
-		return (
-			<Center>
-				<Loader />
-			</Center>
-		);
+  if (isPending)
+    return (
+      <Center>
+        <Loader />
+      </Center>
+    );
 
-	return (
-		<ReorderableFields
-			fields={data.data}
-			formVersion={data.form_version}
-			type="Personal"
-		/>
-	);
+  return <ReorderableFields fields={data.data} type="Personal" />;
 }

@@ -1,31 +1,47 @@
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
-import { Button, Stack } from "@mantine/core";
+import { Button, Group, Stack } from "@mantine/core";
+import { useQueryClient } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 
 import type { FieldType } from "@/api/fields";
 import { useCreateField } from "@/hooks/fields/useCreateField";
 import { useReorderFieldMutation } from "@/hooks/fields/useReorderFieldMutation";
+import { FIELD_QUERY_KEY } from "@/query/fields";
+import type { FormApiResponse } from "@/types/api";
 import type { FormField } from "@/types/student-register";
-import { showToastError } from "@/utils/toastError";
 import SortableFieldItem from "./SortableFieldItem";
-import { calculateFormOrder } from "./utils";
+import { calculateReorderPayload } from "./utils";
 
 interface ReorderableFieldsProps {
 	fields: FormField[];
-	formVersion: string;
 	type: FieldType;
 }
 
 export default function ReorderableFields({
 	fields,
-	formVersion,
 	type,
 }: ReorderableFieldsProps) {
-	const reorderFieldMutation = useReorderFieldMutation();
+	const queryClient = useQueryClient();
+	const reorderMutation = useReorderFieldMutation();
+
 	const { handleAddField, createFieldMutation } = useCreateField({
 		fields,
 		type,
 	});
+
+	const [pendingOrder, setPendingOrder] = useState<number[] | null>(null);
+
+	const isDirty = pendingOrder !== null;
+
+	const displayFields = useMemo(() => {
+		if (!pendingOrder) return fields;
+
+		const byId = new Map(fields.map((f) => [f.id, f]));
+		return pendingOrder
+			.map((id) => byId.get(id))
+			.filter((f): f is FormField => Boolean(f));
+	}, [fields, pendingOrder]);
 
 	const handleDragEnd = ({ operation }: DragEndEvent) => {
 		const { source, canceled } = operation;
@@ -35,29 +51,38 @@ export default function ReorderableFields({
 		const { initialIndex, index: targetIndex } = source;
 		if (initialIndex === targetIndex) return;
 
-		const nextFields = [...fields];
-		const [movedField] = nextFields.splice(initialIndex, 1);
-		if (!movedField) return;
-		nextFields.splice(targetIndex, 0, movedField);
+		setPendingOrder((current) => {
+			const base = current ?? displayFields.map((f) => f.id);
+			const next = [...base];
+			const [moved] = next.splice(initialIndex, 1);
+			if (moved === undefined) return current;
+			next.splice(targetIndex, 0, moved);
+			return next;
+		});
+	};
 
-		const target_form_order = calculateFormOrder(nextFields, targetIndex);
+	const handleSaveOrder = () => {
+		if (!pendingOrder) return;
 
-		reorderFieldMutation.mutate(
+		const payload = calculateReorderPayload(displayFields);
+		if (payload.length === 0) return;
+
+		const cached = queryClient.getQueryData<FormApiResponse<FormField[]>>(
+			FIELD_QUERY_KEY[type],
+		);
+
+		if (!cached?.form_version) return;
+
+		reorderMutation.mutate(
 			{
 				type,
 				data: {
-					field_id: Number(source.id),
-					target_form_order,
-					form_version: formVersion,
+					fields: payload,
+					form_version: cached.form_version,
 				},
-				previousIndex: initialIndex,
-				targetIndex,
 			},
 			{
-				onSuccess: () => {
-					console.log("Field reordered successfully");
-				},
-				onError: (error) => showToastError(error, "Failed to reorder field"),
+				onSuccess: () => setPendingOrder(null),
 			},
 		);
 	};
@@ -71,6 +96,7 @@ export default function ReorderableFields({
 						field={field}
 						key={field.id}
 						index={index}
+						disabled={reorderMutation.isPending}
 					/>
 				))}
 
@@ -84,6 +110,21 @@ export default function ReorderableFields({
 				>
 					+ Add Field
 				</Button>
+
+				<Group grow>
+					<Button variant="transparent" disabled bdrs="xl" size="md">
+						Preview
+					</Button>
+					<Button
+						disabled={!isDirty}
+						onClick={handleSaveOrder}
+						loading={reorderMutation.isPending}
+						bdrs="xl"
+						size="md"
+					>
+						Save Order
+					</Button>
+				</Group>
 			</Stack>
 		</DragDropProvider>
 	);

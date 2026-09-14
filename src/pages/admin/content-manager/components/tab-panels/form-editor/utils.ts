@@ -51,3 +51,25 @@ export const calculateFormOrder = (
 			) + 1
 	);
 };
+
+export const calculateReorderPayload = (fields: FormField[]) => {
+	const payload: {
+		field_id: number;
+		form_order: number;
+	}[] = [];
+
+	let formOrder = 1;
+
+	for (const field of fields) {
+		if (!field.is_default) {
+			payload.push({
+				field_id: field.id,
+				form_order: formOrder,
+			});
+		}
+
+		formOrder += 1 + field.additional_fields.length;
+	}
+
+	return payload;
+};

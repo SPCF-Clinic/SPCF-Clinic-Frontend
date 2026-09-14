@@ -11,120 +11,124 @@ import { showToastError } from "@/utils/toastError";
 import FieldProvider from "./contexts/FieldProvider";
 import FieldRenderer from "./form-fields/FieldRenderer";
 import {
-	type FieldFormValues,
-	FormEditorFormProvider,
-	useFormEditorForm,
+  type FieldFormValues,
+  FormEditorFormProvider,
+  useFormEditorForm,
 } from "./formEditorFormContext";
 import {
-	hasValidationErrors,
-	REQUIRED_OPTION_TYPES,
-	removeTrailingEmptyOption,
-	validators,
+  hasValidationErrors,
+  REQUIRED_OPTION_TYPES,
+  removeTrailingEmptyOption,
+  validators,
 } from "./utils";
 
 interface EditSortableFieldItemProps {
-	field: FormField;
-	index: number;
-	fieldType: FieldType;
+  field: FormField;
+  index: number;
+  fieldType: FieldType;
+  disabled?: boolean;
 }
 
 function EditSortableFieldItem({
-	field,
-	index,
-	fieldType,
+  field,
+  index,
+  fieldType,
+  disabled = false,
 }: EditSortableFieldItemProps) {
-	const isDefault = field.is_default;
-	const editFieldMutation = useEditFieldMutation();
+  const isDefault = field.is_default;
+  const editFieldMutation = useEditFieldMutation();
 
-	const versionNumberRef = useRef(field.version_number);
-	useEffect(() => {
-		versionNumberRef.current = field.version_number;
-	}, [field.version_number]);
+  const versionNumberRef = useRef(field.version_number);
+  useEffect(() => {
+    versionNumberRef.current = field.version_number;
+  }, [field.version_number]);
 
-	const form = useFormEditorForm({
-		mode: "uncontrolled",
-		initialValues: {
-			name: field.name,
-			type: field.type.name,
-			options: field.options,
-			is_required: field.is_required,
-		},
-		validate: validators,
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
-		onValuesChange: useDebouncedCallback((values: FieldFormValues) => {
-			if (hasValidationErrors(values)) return;
-			const payload = {
-				...values,
-				options:
-					values.type && REQUIRED_OPTION_TYPES.includes(values.type)
-						? removeTrailingEmptyOption(values.options)
-						: undefined,
-				version_number: versionNumberRef.current,
-			};
+  const form = useFormEditorForm({
+    mode: "uncontrolled",
+    initialValues: {
+      name: field.name,
+      type: field.type.name,
+      options: field.options,
+      is_required: field.is_required,
+    },
+    validate: validators,
+    validateInputOnBlur: true,
+    validateInputOnChange: true,
+    onValuesChange: useDebouncedCallback((values: FieldFormValues) => {
+      if (hasValidationErrors(values)) return;
+      const payload = {
+        ...values,
+        options:
+          values.type && REQUIRED_OPTION_TYPES.includes(values.type)
+            ? removeTrailingEmptyOption(values.options)
+            : undefined,
+        version_number: versionNumberRef.current,
+      };
 
-			editFieldMutation.mutate(
-				{
-					data: payload,
-					id: field.id,
-					type: fieldType,
-				},
-				{
-					onSuccess: ({ data }) =>
-						(versionNumberRef.current = data.version_number),
-					onError: (error) => showToastError(error, "Failed to update field"),
-				},
-			);
-		}, 1000),
-	});
+      editFieldMutation.mutate(
+        {
+          data: payload,
+          id: field.id,
+          type: fieldType,
+        },
+        {
+          onSuccess: ({ data }) =>
+            (versionNumberRef.current = data.version_number),
+          onError: (error) => showToastError(error, "Failed to update field"),
+        },
+      );
+    }, 1000),
+  });
 
-	const [element, setElement] = useState<HTMLElement | null>(null);
-	const handleRef = useRef<HTMLDivElement | null>(null);
-	useSortable({
-		id: field.id,
-		index,
-		element,
-		handle: handleRef,
-		disabled: isDefault,
-	});
+  const [element, setElement] = useState<HTMLElement | null>(null);
+  const handleRef = useRef<HTMLDivElement | null>(null);
+  useSortable({
+    id: field.id,
+    index,
+    element,
+    handle: handleRef,
+    disabled: isDefault || disabled,
+  });
 
-	return (
-		<Paper
-			ref={setElement}
-			radius="sm"
-			p="sm"
-			bg="rgba(237, 240, 246, 1)"
-			style={{
-				borderLeft: isDefault
-					? undefined
-					: "3px solid var(--mantine-color-primary-8)",
-			}}
-		>
-			<FormEditorFormProvider form={form}>
-				<FieldProvider
-					field={field}
-					fieldType={fieldType}
-					isDefault={isDefault}
-				>
-					<form>
-						<Group>
-							<Stack gap="sm" flex={1}>
-								<FieldRenderer />
-							</Stack>
-							<Center
-								w={32}
-								h={32}
-								ref={handleRef}
-								style={{ cursor: isDefault ? "not-allowed" : "grab" }}
-							>
-								<IconGripVertical size={16} color="gray" />
-							</Center>
-						</Group>
-					</form>
-				</FieldProvider>
-			</FormEditorFormProvider>
-		</Paper>
-	);
+  return (
+    <Paper
+      ref={setElement}
+      radius="sm"
+      p="sm"
+      bg="rgba(237, 240, 246, 1)"
+      style={{
+        borderLeft: isDefault
+          ? undefined
+          : "3px solid var(--mantine-color-primary-8)",
+      }}
+    >
+      <FormEditorFormProvider form={form}>
+        <FieldProvider
+          field={field}
+          fieldType={fieldType}
+          isDefault={isDefault}
+        >
+          <form>
+            <Group>
+              <Stack gap="sm" flex={1}>
+                <FieldRenderer />
+              </Stack>
+              <Center
+                w={32}
+                h={32}
+                ref={handleRef}
+                style={{
+                  cursor: isDefault || disabled ? "not-allowed" : "grab",
+                }}
+              >
+                <IconGripVertical size={16} color="gray" />
+              </Center>
+            </Group>
+          </form>
+        </FieldProvider>
+      </FormEditorFormProvider>
+    </Paper>
+  );
 }
 
 export default memo(EditSortableFieldItem);

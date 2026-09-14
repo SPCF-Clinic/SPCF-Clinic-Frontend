@@ -16,11 +16,5 @@ export default function MedicalPanel() {
 			</Center>
 		);
 
-	return (
-		<ReorderableFields
-			fields={data.data}
-			formVersion={data.form_version}
-			type="Medical"
-		/>
-	);
+	return <ReorderableFields fields={data.data} type="Medical" />;
 }

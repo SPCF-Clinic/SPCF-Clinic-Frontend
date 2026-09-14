@@ -2,13 +2,14 @@ import { ActionIcon, Stack, Text, TextInput } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { useState } from "react";
 
+import type { Option } from "@/types/student-register";
 import { isNestedField } from "../contexts/fieldContext";
 import { useFieldContext } from "../contexts/useFieldContext";
 import { useFormEditorFormContext } from "../formEditorFormContext";
 import FormField, {
 	CommonActions,
+	type EditableOption,
 	NestedFieldToggle,
-	type Option,
 } from "./FormField";
 import classes from "./FormField.module.css";
 import { NestedFields } from "./NestedFields";
@@ -19,12 +20,12 @@ export default function CheckboxField() {
 
 	const isNested = isNestedField(field);
 
-	const [options, setOptions] = useState<Option[]>(() => {
-		const values = (form.getValues().options as string[] | undefined) ?? [];
+	const [options, setOptions] = useState<EditableOption[]>(() => {
+		const values = (form.getValues().options as Option[] | undefined) ?? [];
 
-		const rows = values.map((value) => ({
-			id: crypto.randomUUID(),
-			value,
+		const rows = values.map((option) => ({
+			id: String(option.id),
+			value: option.value,
 		}));
 
 		if (rows.length === 0 || rows.at(-1)?.value.trim() !== "") {
@@ -80,7 +81,7 @@ export default function CheckboxField() {
 
 	const optionsError = form.errors.options;
 
-	const rightSection = ({ id, value }: Option) => (
+	const rightSection = ({ id, value }: EditableOption) => (
 		<>
 			{!isNested && <NestedFieldToggle option={value} />}
 			<ActionIcon
