@@ -68,16 +68,16 @@ export default function MultipleField({
 
   const optionsError = form.errors.options;
 
-  const rightSection = ({ key, value }: FormEditingOption) => (
+  const rightSection = (option: FormEditingOption) => (
     <>
-      {!isNested && <NestedFieldToggle option={value} />}
+      {!isNested && <NestedFieldToggle option={option} />}
       <ActionIcon
         variant="transparent"
         color="gray.9"
         size="sm"
         aria-label="Delete option"
         disabled={isDefault}
-        onClick={() => handleRemove(key)}
+        onClick={() => handleRemove(option.key)}
       >
         <IconX size={18} />
       </ActionIcon>

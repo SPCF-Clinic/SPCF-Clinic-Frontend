@@ -15,6 +15,7 @@ export interface FieldData {
   is_required?: boolean;
   required_with_field_id?: number;
   required_with_field_value?: string;
+  required_with_option_id?: number;
   form_order: number;
   options?: Option[];
   version_number: number;

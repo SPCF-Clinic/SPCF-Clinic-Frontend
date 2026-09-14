@@ -22,7 +22,8 @@ export function NestedFields() {
       {field.options.map((option) => (
         <NestedFieldGroup
           key={option.id}
-          option={option.value}
+          optionId={option.id}
+          optionValue={option.value}
           nested={grouped.get(option.value) ?? []}
         />
       ))}
@@ -31,10 +32,12 @@ export function NestedFields() {
 }
 
 function NestedFieldGroup({
-  option,
+  optionId,
+  optionValue,
   nested,
 }: {
-  option: string;
+  optionId: number;
+  optionValue: string;
   nested: AdditionalField[];
 }) {
   const { field } = useFieldContext();
@@ -42,24 +45,32 @@ function NestedFieldGroup({
   if (!isParentField(field)) return null;
 
   return (
-    <NestedFieldGroupInner field={field} option={option} nested={nested} />
+    <NestedFieldGroupInner
+      field={field}
+      optionId={optionId}
+      optionValue={optionValue}
+      nested={nested}
+    />
   );
 }
 
 function NestedFieldGroupInner({
   field,
-  option,
+  optionId,
+  optionValue,
   nested,
 }: {
   field: FormField;
-  option: string;
+  optionId: number;
+  optionValue: string;
   nested: AdditionalField[];
 }) {
   const { isDefault, fieldType } = useFieldContext();
   const { handleAddNestedField, createFieldMutation } = useNestedFields({
     type: fieldType,
     parentField: field,
-    option,
+    optionId,
+    optionValue,
   });
   const expanded = nested.length > 0;
 
@@ -67,7 +78,7 @@ function NestedFieldGroupInner({
     <Collapse expanded={expanded}>
       <Stack gap="sm" mt="sm" pl="md">
         <Text size="xs" c="dimmed" fs="italic">
-          Shows if: {field.name} equals &quot;{option}&quot;
+          Shows if: {field.name} equals &quot;{optionValue}&quot;
         </Text>
 
         {nested.map((additional) => (

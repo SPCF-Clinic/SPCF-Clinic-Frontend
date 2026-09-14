@@ -25,6 +25,7 @@ import { FIELD_TYPE_SELECT_DATA, type FieldTypeName } from "@/constants/fields";
 import { useDeleteField } from "@/hooks/fields/useDeleteField";
 import { useFieldSaveIndicator } from "@/hooks/fields/useFieldSaveIndicator";
 import { useNestedFields } from "@/hooks/fields/useNestedFields";
+import type { FormEditingOption } from "@/api/fields";
 import type { FormField as TFormField } from "@/types/student-register";
 import { isNestedField, isParentField } from "../contexts/fieldContext";
 import { useFieldContext } from "../contexts/useFieldContext";
@@ -161,7 +162,7 @@ export function CommonActions() {
   );
 }
 
-export function NestedFieldToggle({ option }: { option: string }) {
+export function NestedFieldToggle({ option }: { option: FormEditingOption }) {
   const { field } = useFieldContext();
   if (!isParentField(field)) return null;
   return <NestedFieldToggleInner field={field} option={option} />;
@@ -172,7 +173,7 @@ function NestedFieldToggleInner({
   option,
 }: {
   field: TFormField;
-  option: string;
+  option: FormEditingOption;
 }) {
   const { fieldType, isDefault } = useFieldContext();
   const {
@@ -180,11 +181,16 @@ function NestedFieldToggleInner({
     handleRemoveNestedFields,
     createFieldMutation,
     deleteFieldMutation,
-  } = useNestedFields({ type: fieldType, parentField: field, option });
+  } = useNestedFields({
+    type: fieldType,
+    parentField: field,
+    optionId: option.id,
+    optionValue: option.value,
+  });
 
   const checked =
     field.additional_fields?.some(
-      (f) => f.required_with_field_value === option,
+      (f) => f.required_with_field_value === option.value,
     ) ?? false;
 
   const isPending =
@@ -192,7 +198,7 @@ function NestedFieldToggleInner({
 
   return (
     <Switch
-      disabled={isDefault || isPending}
+      disabled={isDefault || isPending || option.id === undefined}
       size="xs"
       withThumbIndicator={false}
       classNames={{ track: classes.track }}

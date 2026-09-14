@@ -5,66 +5,71 @@ import { useCreateFieldMutation } from "./useCreateFieldMutation";
 import { useDeleteFieldMutation } from "./useDeleteFieldMutation";
 
 const defaultValues = {
-	name: "Question",
-	type: FIELD_TYPES.filter((fieldType) => fieldType !== "Divider")[0],
-	options: [],
-	is_required: false,
+  name: "Question",
+  type: FIELD_TYPES.filter((fieldType) => fieldType !== "Divider")[0],
+  options: [],
+  is_required: false,
 };
 
 interface UseNestedFieldsProps {
-	type: FieldType;
-	parentField: FormField;
-	option: string;
+  type: FieldType;
+  parentField: FormField;
+  optionId?: number;
+  optionValue: string;
 }
 
 export function useNestedFields({
-	type,
-	parentField,
-	option,
+  type,
+  parentField,
+  optionId,
+  optionValue,
 }: UseNestedFieldsProps) {
-	const createFieldMutation = useCreateFieldMutation();
-	const deleteFieldMutation = useDeleteFieldMutation();
+  const createFieldMutation = useCreateFieldMutation();
+  const deleteFieldMutation = useDeleteFieldMutation();
 
-	const siblings =
-		parentField.additional_fields?.filter(
-			(f) => f.required_with_field_value === option,
-		) ?? [];
+  const siblings =
+    parentField.additional_fields?.filter(
+      (f) => f.required_with_field_value === optionValue,
+    ) ?? [];
 
-	const handleAddNestedField = () => {
-		createFieldMutation.mutate(
-			{
-				type,
-				data: {
-					...defaultValues,
-					form_order: parentField.form_order + 1,
-					required_with_field_id: parentField.id,
-					required_with_field_value: option,
-				},
-			},
-			{
-				onSuccess: ({ data }) => {
-					console.log("Nested field created successfully", data);
-				},
-			},
-		);
-	};
+  const handleAddNestedField = () => {
+    if (optionId === undefined) return;
 
-	const handleRemoveNestedFields = async () => {
-		await Promise.all(
-			siblings.map((sibling) =>
-				deleteFieldMutation.mutateAsync({
-					type,
-					id: sibling.id,
-					data: { version_number: sibling.version_number },
-				}),
-			),
-		);
-	};
+    createFieldMutation.mutate(
+      {
+        type,
+        data: {
+          ...defaultValues,
+          form_order: parentField.form_order + 1,
+          required_with_field_id: parentField.id,
+          required_with_field_value: optionValue,
+          required_with_option_id: optionId,
+        },
+      },
+      {
+        onSuccess: ({ data }) => {
+          console.log("Nested field created successfully", data);
+        },
+      },
+    );
+  };
 
-	return {
-		handleAddNestedField,
-		createFieldMutation,
-		handleRemoveNestedFields,
-		deleteFieldMutation,
-	};
+  const handleRemoveNestedFields = async () => {
+    await Promise.all(
+      siblings.map((sibling) =>
+        deleteFieldMutation.mutateAsync({
+          type,
+          id: sibling.id,
+          data: { version_number: sibling.version_number },
+        }),
+      ),
+    );
+  };
+
+  return {
+    handleAddNestedField,
+    createFieldMutation,
+    handleRemoveNestedFields,
+    deleteFieldMutation,
+  };
 }
