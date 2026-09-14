@@ -1,19 +1,12 @@
 import { apiClient } from "@/services/axios";
-import type { ActivityLogIndex } from "@/types/activity-logs";
+import type { ActivityLogGroup, ActivityLogIndex } from "@/types/activity-logs";
 import type {
   CursorPaginationQueryParams,
   CursorPaginationResponse,
 } from "@/types/api";
 
 export type GetActivityLogsFilters = CursorPaginationQueryParams<{
-  group?:
-    | "AUTH"
-    | "INVENTORY"
-    | "STUDENT_RECORD"
-    | "CHECK-IN"
-    | "BED"
-    | "FORM_FIELD"
-    | "TIMER";
+  group?: ActivityLogGroup;
   performed_by?: number;
 }>;
 
