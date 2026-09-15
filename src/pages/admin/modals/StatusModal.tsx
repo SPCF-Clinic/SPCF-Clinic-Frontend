@@ -26,6 +26,7 @@ const StudentCheckIn = (studentdata: StudentShow) => modals.open({
 });
 
 const StudentInClinic = (studentdata: any, onClose: () => void) => {
+  console.log(studentdata)
   const modalId = `student-modal-${studentdata.id}`;
   modals.open({
     modalId: modalId,
@@ -102,7 +103,7 @@ const StudentInClinic = (studentdata: any, onClose: () => void) => {
             <IconPill size={20} />
           </ActionIcon>
           <Button fullWidth radius="xl" color="blue.9" style={{ flex: 1 }} onClick={() => {
-            VisitModal.CheckOut(studentdata.user, dayjs(studentdata.check_in_time).format("YYYY-MM-DD"), studentdata.id, studentdata.id);
+            VisitModal.CheckOut(studentdata.student_number, dayjs(studentdata.check_in_time).format("YYYY-MM-DD"), studentdata.id, studentdata.id);
           }}>
             Check out
           </Button>

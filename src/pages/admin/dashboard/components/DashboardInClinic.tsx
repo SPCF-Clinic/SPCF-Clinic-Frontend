@@ -39,27 +39,24 @@ function ClinicTable() {
     dashboardQueries.dashboard(),
   );
 
-  const {
-    data: checkInDetails
-  } = useSingleCheckInDetails(selectedStudentId);
+  const { data: checkInDetails, isPlaceholderData } =
+    useSingleCheckInDetails(selectedStudentId);
 
   const handleClickRow = (id: number | undefined) => {
     if (!id) return;
 
-    if (selectedStudentId === id && checkInDetails?.data) {
-      StatusModal.StudentInClinic(checkInDetails.data, () => setSelectedStudentId(null));
-    } else {
-      setSelectedStudentId(id);
-    }
+    setSelectedStudentId(id);
   };
 
   useEffect(() => {
-    if (checkInDetails?.data && selectedStudentId !== null) {
-      StatusModal.StudentInClinic(checkInDetails.data, () => {
+    const studentData = checkInDetails?.data;
+
+    if (studentData && selectedStudentId !== null && !isPlaceholderData) {
+      StatusModal.StudentInClinic(studentData, () => {
         setSelectedStudentId(null);
       });
     }
-  }, [checkInDetails, selectedStudentId]);
+  }, [checkInDetails?.data, isPlaceholderData, selectedStudentId]);
 
   if (error) {
     return <QueryError error={error} onRetry={refetch} />;

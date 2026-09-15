@@ -1,7 +1,8 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { LoadingOverlay, Text, Group, Stack, Button, Paper, TextInput } from "@mantine/core";
-import {Modals} from "@mantine/modals";
+import {modals} from "@mantine/modals";
 import { PrintButton } from "@/components/PrintButton";
+import { toast } from "@/components/toast";
 import { useSingleCheckInDetails } from "@/hooks/check-ins/useSingleCheckInDetails";
 import { useCheckOutStudent } from "@/hooks/check-ins/useCheckOut";
 
@@ -9,8 +10,9 @@ export default function VisitDetailsSummary({ id, checkInId, showCheckOut = true
     const { data: singleCheckInDetails, isLoading, isError } = useSingleCheckInDetails(checkInId);
 
     const contentRef = useRef<HTMLDivElement>(null);
+    const [checkoutNotes, setCheckoutNotes] = useState("");
 
-    const { mutate: checkOutStudent } = useCheckOutStudent(id);
+    const { mutate: checkOutStudent, isPending: isCheckingOut } = useCheckOutStudent(Number(checkInId));
 
     if (isLoading) {
         return <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
@@ -33,10 +35,16 @@ export default function VisitDetailsSummary({ id, checkInId, showCheckOut = true
         .join(' | ');
 
         const handleCheckOut = () => {
-            checkOutStudent(checkInId, {
+            checkOutStudent({
+                check_out: 1,
+            }, {
                 onSuccess: () => {  
-                    Modals.closeAll(); 
-                }
+                    modals.closeAll(); 
+                    toast.success({ message: "Student checked out successfully." });
+                },
+                onError: () => {
+                    toast.error({ message: "Unable to check out the student." });
+                },
             });
         };
 
@@ -101,15 +109,17 @@ export default function VisitDetailsSummary({ id, checkInId, showCheckOut = true
                     </Paper>
                 </Stack>
             </div>
-            {checkOut && <TextInput label="Notes (Optional)" placeholder="e.g. Advised to rest"></TextInput>}
+            {checkOut && <TextInput
+                label="Notes (Optional)"
+                placeholder="e.g. Advised to rest"
+                value={checkoutNotes}
+                onChange={(event) => setCheckoutNotes(event.currentTarget.value)}
+            />}
 
 
             {checkOut ? (
-                <Button fullWidth radius="xl" color="blue.9" onClick={() => {
-                    handleCheckOut()
-                    console.log("Check out clicked for student ID:", id, "Check-in ID:", checkInId);
-                }}>
-                    Check Out
+                <Button fullWidth radius="xl" color="blue.9" loading={isCheckingOut} onClick={handleCheckOut}>
+                    {isCheckingOut ? "Checking Out..." : "Check Out"}
                 </Button>
             ) : <PrintButton
                 fullWidth

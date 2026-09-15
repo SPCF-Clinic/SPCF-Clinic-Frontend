@@ -35,14 +35,14 @@ export default function StudentInClinicModalForm({
     initialValues: {
       user_id: studentData.id,
       bed_id: "",
-      timer_expires_at: "",
+      timer_expires_at: null,
       reason_for_visit: "",
       remarks: "",
     },
   });
 
   const handleSubmit = (values: typeof form.values) => {
-    let formattedExpiresAt = "";
+    let formattedExpiresAt = null;
 
     if (isAssigned && values.timer_expires_at) {
       formattedExpiresAt = dayjs()
@@ -100,7 +100,7 @@ export default function StudentInClinicModalForm({
           setIsAssigned(assigned);
           if (!assigned) {
             form.setFieldValue("bed_id", "");
-            form.setFieldValue("timer_expires_at", "");
+            form.setFieldValue("timer_expires_at", null);
           }
         }}
       >
