@@ -17,7 +17,7 @@ export const getCheckIn = (id: number) =>
 export const postCheckInStudent = (payload?: any) => 
   apiClient.post("/check-ins", payload);
 
-export const putCheckOutStudent = (checkInId: number, payload?: any) =>
+export const updateCheckIn = (checkInId: number, payload?: any) =>
 	apiClient.put(`/check-ins/${checkInId}`, undefined ,{
 		params: payload,
 	});

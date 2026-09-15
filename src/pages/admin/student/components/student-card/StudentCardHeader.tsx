@@ -80,17 +80,14 @@ export default function StudentCardHeader({
 						<Badge
 							size="lg"
 							variant="outline"
-							color="orange.7"
-							bg="orange.2"
+							color="blue"
+							bg="blue"
+							c={"white"}
 							fw={400}
 							fz="sm"
 							tt="none"
 							style={{ cursor: "pointer" }}
-							onClick={() => {
-								// Open your assign bed modal here
-								// Example:
-								// BedModal.Assign(studentData)
-							}}
+							onClick={() => { StatusModal.AssignBed(studentData) }}
 						>
 							Assign
 						</Badge>

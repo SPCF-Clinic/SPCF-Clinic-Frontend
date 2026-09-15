@@ -21,7 +21,7 @@ interface StudentInClinicFormProps {
   studentData: StudentShow;
 }
 
-export default function StudentInClinicModalForm({
+export default function StudentCheckInClinicModalForm({
   studentData,
 }: StudentInClinicFormProps) {
   const queryClient = useQueryClient();

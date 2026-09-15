@@ -4,7 +4,7 @@ import {
 	type GetCheckInsFilters,
 	getCheckIn,
 	getCheckIns,
-	putCheckOutStudent,
+	updateCheckIn,
 } from "@/api/check-ins";
 
 export const checkInQueries = {
@@ -21,10 +21,10 @@ export const checkInQueries = {
 			queryKey: [...checkInQueries.details(), id],
 			queryFn: () => getCheckIn(id),
 		}),
-	checkOut: (id: number) =>
+	updateCheckIn: (id: number) =>
 		mutationOptions({
-			mutationKey: [...checkInQueries.details(), id, "checkOut"],
-			mutationFn: (payload: any) => putCheckOutStudent(id, payload),
+			mutationKey: [...checkInQueries.details(), id, ],
+			mutationFn: (payload: any) => updateCheckIn(id, payload),
 		}),
 };
 

@@ -5,7 +5,8 @@ import dayjs from "dayjs";
 
 import type { StudentShow } from "@/types/students";
 
-import StudentInClinicModalForm from "@/pages/admin/modals/contents/StudentInClinicModalForm";
+import StudentCheckInClinicModalForm from "@/pages/admin/modals/contents/StudentCheckInClinicModalForm";
+import StudentAssignBed from "@/pages/admin/modals/contents/StudentAssignBed";
 import MedicineModal from "./MedicineModal";
 import VisitModal from "./VisitModal";
 
@@ -20,7 +21,23 @@ const StudentCheckIn = (studentdata: StudentShow) => modals.open({
       Student Number: {studentdata.username}
     </Text>
   </>),
-  children: (<StudentInClinicModalForm studentData={studentdata} />
+  children: (<StudentCheckInClinicModalForm studentData={studentdata} />
+  ),
+
+});
+
+const AssignBed = (studentdata: StudentShow) => modals.open({
+  centered: true,
+  size: 400,
+  title: (<>
+    <Text size="xl" fw={700}>
+      Assign Bed
+    </Text>
+    <Text size="sm" c="dimmed">
+      Student Number: {studentdata.username}
+    </Text>
+  </>),
+  children: (<StudentAssignBed studentData={studentdata} />
   ),
 
 });
@@ -116,7 +133,8 @@ const StudentInClinic = (studentdata: any, onClose: () => void) => {
 
 const StatusModal = {
   StudentCheckIn,
-  StudentInClinic
+  StudentInClinic,
+  AssignBed
 }
 
 export default StatusModal;

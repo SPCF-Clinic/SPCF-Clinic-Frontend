@@ -4,7 +4,7 @@ import {modals} from "@mantine/modals";
 import { PrintButton } from "@/components/PrintButton";
 import { toast } from "@/components/toast";
 import { useSingleCheckInDetails } from "@/hooks/check-ins/useSingleCheckInDetails";
-import { useCheckOutStudent } from "@/hooks/check-ins/useCheckOut";
+import { useUpdateCheckIn } from "@/hooks/check-ins/useUpdateCheckIn";
 
 export default function VisitDetailsSummary({ id, checkInId, showCheckOut = true, checkOut = false }: { id: any, checkInId: any, showCheckOut?: boolean, checkOut?: boolean }) {
     const { data: singleCheckInDetails, isLoading, isError } = useSingleCheckInDetails(checkInId);
@@ -12,7 +12,7 @@ export default function VisitDetailsSummary({ id, checkInId, showCheckOut = true
     const contentRef = useRef<HTMLDivElement>(null);
     const [checkoutNotes, setCheckoutNotes] = useState("");
 
-    const { mutate: checkOutStudent, isPending: isCheckingOut } = useCheckOutStudent(Number(checkInId));
+    const { mutate: checkOutStudent, isPending: isCheckingOut } = useUpdateCheckIn(Number(checkInId));
 
     if (isLoading) {
         return <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
