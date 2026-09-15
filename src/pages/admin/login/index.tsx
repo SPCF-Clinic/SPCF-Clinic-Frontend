@@ -1,40 +1,33 @@
-import { Button, Group } from "@mantine/core";
+import { Box, Flex, Group, Image, SimpleGrid, Stack } from "@mantine/core";
 
-import { useAuth } from "@/hooks/useAuth";
+import SPCF from "@/assets/image/SPCF.webp";
+import spcfLogo from "@/assets/spcf-logo.webp";
+import LoginForm from "./components/LoginForm";
 
 export default function AdminLogin() {
-  const { loginMutation } = useAuth();
-
-  const handleAdminLogin = () =>
-    loginMutation.mutate({ username: "admin1", password: "admin" });
-
-  const handleSuperAdminLogin = () =>
-    loginMutation.mutate({ username: "superadmin", password: "superadmin" });
-
-  const isAdminLogin =
-    loginMutation.variables?.username === "admin" && loginMutation.isPending;
-
-  const isSuperAdminLogin =
-    loginMutation.variables?.username === "superadmin" &&
-    loginMutation.isPending;
-
-  return (
-    <Group>
-      <Button
-        onClick={handleAdminLogin}
-        loading={isAdminLogin}
-        disabled={isAdminLogin}
-      >
-        Admin Login
-      </Button>
-
-      <Button
-        onClick={handleSuperAdminLogin}
-        loading={isSuperAdminLogin}
-        disabled={isSuperAdminLogin}
-      >
-        Super Admin Login
-      </Button>
-    </Group>
-  );
+	return (
+		<SimpleGrid cols={{ base: 1, md: 2 }} mih="100svh" spacing={0}>
+			<Stack gap="md" p={{ base: "md", md: "xl" }}>
+				<Group pos="absolute">
+					<Image src={spcfLogo} w={48} h={48} />
+				</Group>
+				<Flex flex={1} align="center" justify="center">
+					<Box w="100%" maw="30rem">
+						<LoginForm />
+					</Box>
+				</Flex>
+			</Stack>
+			<Box pos="relative" display={{ base: "none", md: "block" }}>
+				<Image pos="absolute" inset={0} h="100%" w="100%" src={SPCF} />
+				<Box
+					pos="absolute"
+					inset={0}
+					style={{
+						background:
+							"linear-gradient(270deg, rgba(41, 79, 175, 0.8) 0%, rgba(41, 49, 91, 0.8) 100%)",
+					}}
+				/>
+			</Box>
+		</SimpleGrid>
+	);
 }
