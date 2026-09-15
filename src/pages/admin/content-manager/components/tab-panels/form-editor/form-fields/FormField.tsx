@@ -196,9 +196,13 @@ function NestedFieldToggleInner({
   const isPending =
     createFieldMutation.isPending || deleteFieldMutation.isPending;
 
+  if (isPending) {
+    return <Loader size={16} mr="xs" />;
+  }
+
   return (
     <Switch
-      disabled={isDefault || isPending || option.id === undefined}
+      disabled={isDefault || option.id === undefined}
       size="xs"
       withThumbIndicator={false}
       classNames={{ track: classes.track }}
