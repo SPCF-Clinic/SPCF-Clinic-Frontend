@@ -22,7 +22,7 @@ export default function StudentActivityLogs({ date, userId, studentNumber, withB
 	const performedFor = studentNumber
 		? Number(studentNumber)
 		: undefined;
-
+console.log(performedFor, "performedFor in StudentActivityLogs")
 	const {
 		data: studentLogsData,
 		isPending,

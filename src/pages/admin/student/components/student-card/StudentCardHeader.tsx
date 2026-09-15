@@ -49,7 +49,7 @@ export default function StudentCardHeader({
 					fw={400}
 					fz="sm"
 					tt="none"
-					onClick={() => { StatusModal.StudentInClinic(studentData) }}
+					onClick={() => { StatusModal.StudentCheckIn(studentData) }}
 				>
 					Not In Clinic
 				</Badge> : <>
@@ -64,17 +64,37 @@ export default function StudentCardHeader({
 					>
 						{studentData.check_in.status}
 					</Badge>
-					<Badge
-						size="lg"
-						variant="outline"
-						color="blue.7"
-						bg="blue.2"
-						fw={400}
-						fz="sm"
-						tt="none"
-					>
-						{studentData.check_in.bed}
-					</Badge>
+					{studentData.check_in?.bed ? (
+						<Badge
+							size="lg"
+							variant="outline"
+							color="blue.7"
+							bg="blue.2"
+							fw={400}
+							fz="sm"
+							tt="none"
+						>
+							{studentData.check_in.bed}
+						</Badge>
+					) : (
+						<Badge
+							size="lg"
+							variant="outline"
+							color="orange.7"
+							bg="orange.2"
+							fw={400}
+							fz="sm"
+							tt="none"
+							style={{ cursor: "pointer" }}
+							onClick={() => {
+								// Open your assign bed modal here
+								// Example:
+								// BedModal.Assign(studentData)
+							}}
+						>
+							Assign
+						</Badge>
+					)}
 					<ActionIcon
 						variant="light"
 						color="blue"

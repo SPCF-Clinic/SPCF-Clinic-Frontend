@@ -17,7 +17,9 @@ export const getCheckIn = (id: number) =>
 export const postCheckInStudent = (payload?: any) => 
   apiClient.post("/check-ins", payload);
 
+export const putCheckOutStudent = (id: number, payload?: number) =>
+  apiClient.put(`/check-ins/${id}`, payload);
+
 export const putDispenseItem = (id: number, payload: any) => {
-	console.log("putDispenseItem called with id:", id, "and payload:", payload) 
 	return apiClient.put(`/check-ins/${id}`, payload)
 }

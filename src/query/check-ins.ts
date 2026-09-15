@@ -1,9 +1,10 @@
-import { queryOptions } from "@tanstack/react-query";
+import { mutationOptions,queryOptions } from "@tanstack/react-query";
 
 import {
 	type GetCheckInsFilters,
 	getCheckIn,
 	getCheckIns,
+	putCheckOutStudent,
 } from "@/api/check-ins";
 
 export const checkInQueries = {
@@ -20,4 +21,10 @@ export const checkInQueries = {
 			queryKey: [...checkInQueries.details(), id],
 			queryFn: () => getCheckIn(id),
 		}),
+	checkOut: (id: number) =>
+		mutationOptions({
+			mutationKey: [...checkInQueries.details(), id, "checkOut"],
+			mutationFn: (payload: any) => putCheckOutStudent(id, payload),
+		}),
 };
+

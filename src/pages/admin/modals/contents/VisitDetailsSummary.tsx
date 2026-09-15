@@ -1,14 +1,16 @@
 import React, { useRef } from "react";
-import { LoadingOverlay, Text, Group, Stack, Button, Paper } from "@mantine/core";
+import { LoadingOverlay, Text, Group, Stack, Button, Paper, TextInput } from "@mantine/core";
+import {Modals} from "@mantine/modals";
 import { PrintButton } from "@/components/PrintButton";
 import { useSingleCheckInDetails } from "@/hooks/check-ins/useSingleCheckInDetails";
+import { useCheckOutStudent } from "@/hooks/check-ins/useCheckOut";
 
-export default function VisitDetailsSummary({ id }: { id: any }) {
-    const { data: singleCheckInDetails, isLoading, isError } = useSingleCheckInDetails(id);
-
-console.log(singleCheckInDetails, "singleCheckInDetails")
+export default function VisitDetailsSummary({ id, checkInId, showCheckOut = true, checkOut = false }: { id: any, checkInId: any, showCheckOut?: boolean, checkOut?: boolean }) {
+    const { data: singleCheckInDetails, isLoading, isError } = useSingleCheckInDetails(checkInId);
 
     const contentRef = useRef<HTMLDivElement>(null);
+
+    const { mutate: checkOutStudent } = useCheckOutStudent(id);
 
     if (isLoading) {
         return <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
@@ -29,6 +31,14 @@ console.log(singleCheckInDetails, "singleCheckInDetails")
     const classInfo = [visitData.grade_level, visitData.course, visitData.year_level]
         .filter(Boolean)
         .join(' | ');
+
+        const handleCheckOut = () => {
+            checkOutStudent(checkInId, {
+                onSuccess: () => {  
+                    Modals.closeAll(); 
+                }
+            });
+        };
 
     return (
         <Stack w={"50%"} gap="md">
@@ -52,7 +62,7 @@ console.log(singleCheckInDetails, "singleCheckInDetails")
                         </Group>
                         <Group justify="space-between">
                             <Text c="dimmed" size="sm">Checked out</Text>
-                            <Text size="sm">{visitData.check_out_time ? formatTime(visitData.check_out_time) : "--"}</Text>
+                            {showCheckOut && <Text size="sm">{visitData.check_out_time ? formatTime(visitData.check_out_time) : "--"}</Text>}
                         </Group>
                     </Stack>
 
@@ -91,9 +101,17 @@ console.log(singleCheckInDetails, "singleCheckInDetails")
                     </Paper>
                 </Stack>
             </div>
+            {checkOut && <TextInput label="Notes (Optional)" placeholder="e.g. Advised to rest"></TextInput>}
 
-            {/* Action Button */}
-            <PrintButton
+
+            {checkOut ? (
+                <Button fullWidth radius="xl" color="blue.9" onClick={() => {
+                    handleCheckOut()
+                    console.log("Check out clicked for student ID:", id, "Check-in ID:", checkInId);
+                }}>
+                    Check Out
+                </Button>
+            ) : <PrintButton
                 fullWidth
                 radius="xl"
                 size="md"
@@ -105,7 +123,8 @@ console.log(singleCheckInDetails, "singleCheckInDetails")
                 }}
             >
                 Print
-            </PrintButton>
+            </PrintButton>}
+
         </Stack>
     );
 }

@@ -1,10 +1,13 @@
 import { Paper, Stack, Table, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { AppTable, type ColumnDef } from "@/components/AppTable";
 import QueryError from "@/components/QueryError";
 import { dashboardQueries } from "@/query/dashboard";
 import { dayjs } from "@/services/dayjs";
 import classes from "@/styles/OutlineTableRow.module.css";
+import StatusModal from "../../modals/StatusModal";
+import { useSingleCheckInDetails } from "@/hooks/check-ins/useSingleCheckInDetails";
 
 export default function DashboardInClinic() {
   return (
@@ -28,9 +31,35 @@ const COLUMNS: ColumnDef[] = [
 ];
 
 function ClinicTable() {
+  const [selectedStudentId, setSelectedStudentId] = useState<number | null>(
+    null,
+  );
+
   const { data, isPending, error, refetch } = useQuery(
     dashboardQueries.dashboard(),
   );
+
+  const {
+    data: checkInDetails
+  } = useSingleCheckInDetails(selectedStudentId);
+
+  const handleClickRow = (id: number | undefined) => {
+    if (!id) return;
+
+    if (selectedStudentId === id && checkInDetails?.data) {
+      StatusModal.StudentInClinic(checkInDetails.data, () => setSelectedStudentId(null));
+    } else {
+      setSelectedStudentId(id);
+    }
+  };
+
+  useEffect(() => {
+    if (checkInDetails?.data && selectedStudentId !== null) {
+      StatusModal.StudentInClinic(checkInDetails.data, () => {
+        setSelectedStudentId(null);
+      });
+    }
+  }, [checkInDetails, selectedStudentId]);
 
   if (error) {
     return <QueryError error={error} onRetry={refetch} />;
@@ -44,7 +73,11 @@ function ClinicTable() {
       highlightOnHover
     >
       {data?.data.currently_in_clinic.map((student) => (
-        <Table.Tr className={classes.tr} key={student.student_id}>
+        <Table.Tr
+          className={classes.tr}
+          key={student.student_id}
+          onClick={() => handleClickRow(student.id)}
+        >
           <Table.Td fw={600}>{student.student_id}</Table.Td>
           <Table.Td>{student.name}</Table.Td>
           <Table.Td>{student.bed_id || "--"}</Table.Td>

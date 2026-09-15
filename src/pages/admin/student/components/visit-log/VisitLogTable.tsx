@@ -35,7 +35,7 @@ export default function VisitLogTable() {
         className={classes.tr} 
         key={item.id} 
         onClick={() => 
-        VisitModal.VisitSummary(dayjs(item.check_in_time).format("YYYY-MM-DD"), item.id)}
+        VisitModal.VisitSummary(dayjs(item.check_in_time).format("YYYY-MM-DD"), item.user.id, item.id)}
         >
           <Table.Td c="dimmed">
             {dayjs(item.check_in_time).format("MM-DD-YYYY LT")}
