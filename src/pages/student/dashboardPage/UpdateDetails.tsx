@@ -14,7 +14,7 @@ import { useForm } from "@mantine/form";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 
 import { useSpecificStudent } from "@/query/student-dashboard";
-import { useMedicalInfo, usePersonalInfo } from "@/query/student-register";
+import { useMedicalInfo, usePersonalInfo } from "@/hooks/students/useRegisterStudent";
 import { data_type } from "../utils/register.form";
 
 import TextInput1 from "../components/TextInput";

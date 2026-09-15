@@ -5,30 +5,22 @@ import ActionMenu from "@/components/ActionMenu";
 import StatusModal from "@/pages/admin/modals/StatusModal";
 import MedicineModal from "@/pages/admin/modals/MedicineModal";
 
-const MENU_ITEMS: MenuItemProps[] = [
-	{
-		children: "Edit information",
-	},
-	{
-		children: "Change password",
-	},
-	{
-		children: "Archive",
-		c: "red",
-	},
-];
-
 interface StudentCardHeaderProps {
 	fullName: string;
 	studentData: any;
+	onEdit: () => void;
 }
 
 export default function StudentCardHeader({
 	fullName,
 	studentData,
+	onEdit,
 }: StudentCardHeaderProps) {
-
-	console.log(studentData)
+	const menuItems: MenuItemProps[] = [
+		{ children: "Edit information", onClick: onEdit },
+		{ children: "Change password" },
+		{ children: "Archive", c: "red" },
+	];
 
 	return (
 		<Group justify="space-between">
@@ -105,7 +97,7 @@ export default function StudentCardHeader({
 					</ActionIcon>
 				</>}
 
-				<ActionMenu items={MENU_ITEMS} />
+				<ActionMenu items={menuItems} />
 			</Group>
 		</Group>
 	);

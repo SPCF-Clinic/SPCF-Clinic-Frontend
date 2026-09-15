@@ -6,20 +6,12 @@ import type {
   RegisterReqBody,
 } from "../types/student-register";
 
-export function fetchPersonalInfoField() {
-  const response = apiClient.get<PersonalInfoApiResponse>(
-    `/personal-info-fields`,
-  );
-
-  return response;
+export function fetchPersonalInfoField(): Promise<PersonalInfoApiResponse> {
+  return apiClient.get(`/personal-info-fields`) as unknown as Promise<PersonalInfoApiResponse>;
 }
 
-export function fetchMedicalHistoryField() {
-  const response = apiClient.get<MedicalHistoryResponse>(
-    `/medical-history-fields`,
-  );
-
-  return response;
+export function fetchMedicalHistoryField(): Promise<MedicalHistoryResponse> {
+  return apiClient.get(`/medical-history-fields`) as unknown as Promise<MedicalHistoryResponse>;
 }
 
 export async function registerStudent(request: RegisterReqBody) {
@@ -28,3 +20,14 @@ export async function registerStudent(request: RegisterReqBody) {
   });
   return response.data;
 }
+
+export const updatePersonalInfo = (studentId: number, payload?: any) =>
+	apiClient.put(`/students/${studentId}/personal-info`, undefined ,{
+		params: payload,
+	});
+
+  export const updateMedicalHistory = (studentId: number, payload?: any) =>
+	apiClient.put(`/students/${studentId}/medical-history`, undefined ,{
+		params: payload,
+	});
+

@@ -5,10 +5,18 @@ import classes from "@/styles/Tabs.module.css";
 import MedicalHistory from "./tab-panels/MedicalHistory";
 import PersonalInformation from "./tab-panels/PersonalInformation";
 
+interface StudentCardTabsProps {
+	isEditing: boolean;
+	onCancelEdit: () => void;
+}
+
 const TAB_VALUES = ["personal", "medical"] as const;
 type TabValue = (typeof TAB_VALUES)[number];
 
-export default function StudentCardTabs() {
+export default function StudentCardTabs({
+	isEditing,
+	onCancelEdit,
+}: StudentCardTabsProps) {
 	const [tab, setTab] = useQueryState(
 		"t",
 		parseAsStringLiteral(TAB_VALUES).withDefault("personal"),
@@ -31,10 +39,10 @@ export default function StudentCardTabs() {
 			</Tabs.List>
 
 			<Tabs.Panel value="personal">
-				<PersonalInformation />
+				<PersonalInformation isEditing={isEditing} onCancelEdit={onCancelEdit} />
 			</Tabs.Panel>
 			<Tabs.Panel value="medical">
-				<MedicalHistory />
+				<MedicalHistory isEditing={isEditing} onCancelEdit={onCancelEdit} />
 			</Tabs.Panel>
 		</Tabs>
 	);

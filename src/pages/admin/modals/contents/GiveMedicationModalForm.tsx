@@ -61,7 +61,9 @@ export default function GiveMedicationModalForm({ studentData, type }: GiveMedic
                 />
                 {selectedMedicine && (
                     <Text size="xs" c="dimmed">
-                        {selectedMedicine.quantity} {selectedMedicine.unit.toLowerCase()} available
+                        {selectedMedicine.total_content} {selectedMedicine.item_content
+                            ? selectedMedicine.item_content.content_unit
+                            : selectedMedicine.unit.toLowerCase()} available
                     </Text>
                 )}
                 <NumberInput

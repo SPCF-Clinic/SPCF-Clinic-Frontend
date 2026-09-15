@@ -14,7 +14,7 @@ import {
   usePersonalInfo,
   useMedicalInfo,
   useRegisterUser,
-} from "../../../../query/student-register";
+} from "@/hooks/students/useRegisterStudent";
 import { useAuthStore } from "@/stores/useAuthStore";
 import {
   isStepDisabled,
