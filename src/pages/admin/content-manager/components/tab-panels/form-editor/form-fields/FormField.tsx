@@ -193,28 +193,31 @@ function NestedFieldToggleInner({
       (f) => f.required_with_field_value === option.value,
     ) ?? false;
 
-  const isPending =
-    createFieldMutation.isPending || deleteFieldMutation.isPending;
+  const isCreating = createFieldMutation.isPending;
+  const isDeleting = deleteFieldMutation.isPending;
 
-  if (isPending) {
-    return <Loader size={16} mr="xs" />;
-  }
+  const optimisticChecked = isCreating ? true : isDeleting ? false : checked;
+
+  const isPending = isCreating || isDeleting;
 
   return (
-    <Switch
-      disabled={isDefault || option.id === undefined}
-      size="xs"
-      withThumbIndicator={false}
-      classNames={{ track: classes.track }}
-      c="dimmed"
-      checked={checked}
-      onChange={(event) => {
-        if (event.currentTarget.checked) {
-          handleAddNestedField();
-        } else {
-          handleRemoveNestedFields();
-        }
-      }}
-    />
+    <>
+      {isPending && <Loader size={16} mr="xs" />}
+      <Switch
+        disabled={isDefault || option.id === undefined}
+        size="xs"
+        withThumbIndicator={false}
+        classNames={{ track: classes.track }}
+        c="dimmed"
+        checked={optimisticChecked}
+        onChange={(event) => {
+          if (event.currentTarget.checked) {
+            handleAddNestedField();
+          } else {
+            handleRemoveNestedFields();
+          }
+        }}
+      />
+    </>
   );
 }
