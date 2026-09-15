@@ -133,9 +133,8 @@ export default function MultipleField({
         )}
       </Stack>
 
-      <NestedFields />
-
       <CommonActions />
+      <NestedFields />
     </FormField>
   );
 }

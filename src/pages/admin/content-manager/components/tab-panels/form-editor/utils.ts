@@ -55,22 +55,41 @@ export const calculateFormOrder = (
 };
 
 export const calculateReorderPayload = (fields: FormField[]) => {
-  const payload: {
-    field_id: number;
-    form_order: number;
-  }[] = [];
+  const payload = [];
+  const reservedOrders = new Set<number>();
+  for (const field of fields) {
+    if (!field.is_default) continue;
+    reservedOrders.add(field.form_order);
+    for (const additionalField of field.additional_fields) {
+      reservedOrders.add(additionalField.form_order);
+    }
+  }
 
+  const reorderableFields = fields.filter((field) => !field.is_default);
   let formOrder = 1;
 
-  for (const field of fields) {
-    if (!field.is_default) {
-      payload.push({
-        field_id: field.id,
-        form_order: formOrder,
-      });
+  const getNextAvailableBlockStart = (blockSize: number) => {
+    while (
+      Array.from({ length: blockSize }, (_, index) => formOrder + index).some(
+        (order) => reservedOrders.has(order),
+      )
+    ) {
+      formOrder += 1;
     }
+    return formOrder;
+  };
 
-    formOrder += 1 + field.additional_fields.length;
+  for (const field of reorderableFields) {
+    const blockSize = 1 + field.additional_fields.length;
+    const blockStart = getNextAvailableBlockStart(blockSize);
+    payload.push({ field_id: field.id, form_order: blockStart });
+    field.additional_fields.forEach((additionalField, index) => {
+      payload.push({
+        field_id: additionalField.id,
+        form_order: blockStart + index + 1,
+      });
+    });
+    formOrder = blockStart + blockSize;
   }
 
   return payload;

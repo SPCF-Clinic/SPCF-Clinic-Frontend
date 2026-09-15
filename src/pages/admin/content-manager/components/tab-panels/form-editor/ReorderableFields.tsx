@@ -1,6 +1,6 @@
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
-import { Button, Group, Stack } from "@mantine/core";
+import { Button, Group, Stack, Text } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
@@ -32,16 +32,17 @@ export default function ReorderableFields({
 
   const [pendingOrder, setPendingOrder] = useState<number[] | null>(null);
 
-  const isDirty = pendingOrder !== null;
-
   const displayFields = useMemo(() => {
     if (!pendingOrder) return fields;
 
-    const byId = new Map(fields.map((f) => [f.id, f]));
+    const byId = new Map(fields.map((field) => [field.id, field]));
+
     return pendingOrder
       .map((id) => byId.get(id))
-      .filter((f): f is FormField => Boolean(f));
+      .filter((field): field is FormField => Boolean(field));
   }, [fields, pendingOrder]);
+
+  const isDirty = pendingOrder !== null;
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     const { source, canceled } = operation;
@@ -49,14 +50,22 @@ export default function ReorderableFields({
     if (canceled || !isSortable(source)) return;
 
     const { initialIndex, index: targetIndex } = source;
+
     if (initialIndex === targetIndex) return;
 
     setPendingOrder((current) => {
-      const base = current ?? displayFields.map((f) => f.id);
+      const base = current ?? displayFields.map((field) => field.id);
+
       const next = [...base];
-      const [moved] = next.splice(initialIndex, 1);
-      if (moved === undefined) return current;
-      next.splice(targetIndex, 0, moved);
+
+      const [movedId] = next.splice(initialIndex, 1);
+
+      if (movedId === undefined) {
+        return current;
+      }
+
+      next.splice(targetIndex, 0, movedId);
+
       return next;
     });
   };
@@ -65,6 +74,7 @@ export default function ReorderableFields({
     if (!pendingOrder) return;
 
     const payload = calculateReorderPayload(displayFields);
+
     if (payload.length === 0) return;
 
     const cached = queryClient.getQueryData<FormApiResponse<FormField[]>>(
@@ -82,7 +92,9 @@ export default function ReorderableFields({
         },
       },
       {
-        onSuccess: () => setPendingOrder(null),
+        onSuccess: () => {
+          setPendingOrder(null);
+        },
       },
     );
   };
@@ -90,7 +102,7 @@ export default function ReorderableFields({
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
       <Stack>
-        {fields.map((field, index) => (
+        {displayFields.map((field, index) => (
           <SortableFieldItem
             fieldType={type}
             field={field}
@@ -110,6 +122,24 @@ export default function ReorderableFields({
         >
           + Add Field
         </Button>
+
+        {isDirty && (
+          <Group justify="end" align="center">
+            <Text size="sm" c="dimmed">
+              Unsaved changes
+            </Text>
+
+            <Button
+              variant="subtle"
+              color="gray"
+              size="xs"
+              onClick={() => setPendingOrder(null)}
+              disabled={reorderMutation.isPending}
+            >
+              Discard
+            </Button>
+          </Group>
+        )}
 
         <Group grow>
           <Button variant="transparent" disabled bdrs="xl" size="md">
