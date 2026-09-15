@@ -36,10 +36,15 @@ export default function ReorderableFields({
     if (!pendingOrder) return fields;
 
     const byId = new Map(fields.map((field) => [field.id, field]));
-
-    return pendingOrder
+    const orderedIds = new Set(pendingOrder);
+    const orderedFields = pendingOrder
       .map((id) => byId.get(id))
       .filter((field): field is FormField => Boolean(field));
+
+    return [
+      ...orderedFields,
+      ...fields.filter((field) => !orderedIds.has(field.id)),
+    ];
   }, [fields, pendingOrder]);
 
   const isDirty = pendingOrder !== null;
@@ -54,7 +59,7 @@ export default function ReorderableFields({
     if (initialIndex === targetIndex) return;
 
     setPendingOrder((current) => {
-      const base = current ?? displayFields.map((field) => field.id);
+      const base = displayFields.map((field) => field.id);
 
       const next = [...base];
 
