@@ -18,6 +18,12 @@ export default function LoginForm() {
 
 	const { loginMutation } = useAuth();
 
+	const handleAdminLogin = () =>
+		loginMutation.mutate({ username: "admin1", password: "admin" });
+
+	const handleSuperAdminLogin = () =>
+		loginMutation.mutate({ username: "superadmin", password: "superadmin" });
+
 	return (
 		<form onSubmit={form.onSubmit((values) => loginMutation.mutate(values))}>
 			<Stack p={{ base: "md", md: "xl" }} gap="xl">
@@ -37,7 +43,6 @@ export default function LoginForm() {
 					key={form.key("username")}
 					{...form.getInputProps("username")}
 				/>
-
 				<TextInput
 					withAsterisk={false}
 					label="Password"
@@ -56,6 +61,9 @@ export default function LoginForm() {
 				>
 					Submit
 				</Button>
+
+				<Button onClick={handleAdminLogin}>Admin Login</Button>
+				<Button onClick={handleSuperAdminLogin}>Super Admin Login</Button>
 			</Stack>
 		</form>
 	);

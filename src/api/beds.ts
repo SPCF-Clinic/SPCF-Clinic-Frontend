@@ -1,13 +1,26 @@
-import type {
-  CursorPaginationQueryParams,
-  CursorPaginationResponse,
-} from "@/types/api";
 import { apiClient } from "@/services/axios";
-import type { BedIndex } from "@/types/beds";
+import type {
+	CursorPaginationQueryParams,
+	CursorPaginationResponse,
+} from "@/types/api";
+import type { BedIndex, EmptyBed, OccupiedBed } from "@/types/beds";
 
-export type GetBedsFilters = CursorPaginationQueryParams;
+export type BedQueryStatus = "Empty" | "Occupied" | "All";
 
-type GetBedsResponse = CursorPaginationResponse<BedIndex>;
+export type GetBedsFilters<S extends BedQueryStatus> =
+	CursorPaginationQueryParams<{
+		status?: S;
+	}>;
 
-export const getBeds = (filters?: GetBedsFilters) =>
-  apiClient.get<GetBedsResponse>("/beds", { params: filters });
+type BedForStatus<S extends BedQueryStatus> = S extends "Empty"
+	? EmptyBed
+	: S extends "Occupied"
+		? OccupiedBed
+		: BedIndex;
+
+export const getBeds = <S extends BedQueryStatus>(
+	filters?: GetBedsFilters<S>,
+) =>
+	apiClient.get<CursorPaginationResponse<BedForStatus<S>>>("/beds", {
+		params: filters,
+	});

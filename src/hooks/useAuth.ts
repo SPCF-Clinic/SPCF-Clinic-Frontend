@@ -1,32 +1,23 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useShallow } from "zustand/shallow";
+import { useMutation } from "@tanstack/react-query";
 
 import { login, logout } from "@/api/auth";
+import { pusher } from "@/services/pusher";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { clearAuthSession } from "@/utils/auth";
 
 export function useAuth() {
-	const queryClient = useQueryClient();
-
-	const { setAuth, logoutAuth } = useAuthStore(
-		useShallow((state) => ({
-			setAuth: state.setAuth,
-			logoutAuth: state.logout,
-		})),
-	);
+	const setAuth = useAuthStore((state) => state.setAuth);
 
 	const loginMutation = useMutation({
 		mutationFn: login,
-		onSuccess: ({ data }) => setAuth(data.user, data.token),
+		onSuccess: ({ data }) => {
+			setAuth(data.user, data.token);
+			pusher.connect();
+		},
 	});
 	const logoutMutation = useMutation({
 		mutationFn: logout,
-		onSettled: async () => {
-			await queryClient.cancelQueries();
-
-			queryClient.clear();
-
-			logoutAuth();
-		},
+		onSettled: clearAuthSession,
 	});
 
 	return { loginMutation, logoutMutation };

@@ -1,0 +1,48 @@
+.timer {
+	--hover-color: var(--mantine-color-primary-9);
+
+	cursor: pointer;
+
+	&[data-loading] {
+		cursor: wait;
+	}
+
+	&::after {
+		content: "View Timer";
+		position: absolute;
+		inset: -1px;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		border: 2px solid var(--hover-color);
+		border-radius: calc(var(--mantine-radius-lg) + 1px);
+		background: #bdbeffa3;
+		color: var(--hover-color);
+
+		font-size: var(--mantine-font-size-sm);
+		font-weight: 600;
+
+		opacity: 0;
+		pointer-events: none;
+		transition:
+			opacity 150ms ease,
+			border-color 150ms ease,
+			color 150ms ease;
+	}
+
+	&[data-overdue]:not([data-loading])::after {
+		opacity: 1;
+		border-color: var(--accent-color);
+		background: transparent;
+		color: transparent;
+	}
+
+	&:hover:not([data-loading])::after {
+		opacity: 1;
+		border-color: var(--hover-color);
+		background: #bdbeffa3;
+		color: var(--hover-color);
+	}
+}

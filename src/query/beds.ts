@@ -1,11 +1,11 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 
-import { type GetBedsFilters, getBeds } from "@/api/beds";
+import { type BedQueryStatus, type GetBedsFilters, getBeds } from "@/api/beds";
 
 export const bedQueries = {
 	all: () => ["beds"],
 	lists: () => [...bedQueries.all(), "list"],
-	list: (filters?: GetBedsFilters) =>
+	list: <T extends BedQueryStatus>(filters?: GetBedsFilters<T>) =>
 		infiniteQueryOptions({
 			queryKey: [...bedQueries.lists(), filters],
 			queryFn: ({ pageParam }) => getBeds({ ...filters, cursor: pageParam }),

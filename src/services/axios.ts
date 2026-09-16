@@ -2,7 +2,7 @@ import axios, { type AxiosError } from "axios";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { ApiErrorResponse } from "@/types/api";
-import { queryClient } from "./query-client";
+import { clearAuthSession } from "@/utils/auth";
 
 export const apiClient = axios.create({
 	baseURL: import.meta.env.VITE_API_URL,
@@ -26,8 +26,7 @@ apiClient.interceptors.response.use(
 	(response) => response.data,
 	(error: AxiosError<ApiErrorResponse>) => {
 		if (error.response?.status === 401) {
-			useAuthStore.getState().logout();
-			queryClient.clear();
+			clearAuthSession();
 		}
 		return Promise.reject(error);
 	},

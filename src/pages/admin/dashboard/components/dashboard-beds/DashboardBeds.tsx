@@ -39,7 +39,6 @@ export default function DashboardBeds() {
 
 	useEffect(() => {
 		if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
-			console.log("fetching");
 			fetchNextPage();
 		}
 	}, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
