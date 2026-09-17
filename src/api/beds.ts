@@ -1,4 +1,4 @@
-import type {
+ import type {
   CursorPaginationQueryParams,
   CursorPaginationResponse,
 } from "@/types/api";
@@ -11,3 +11,4 @@ type GetBedsResponse = CursorPaginationResponse<BedIndex>;
 
 export const getBeds = (filters?: GetBedsFilters) =>
   apiClient.get<GetBedsResponse>("/beds", { params: filters });
+

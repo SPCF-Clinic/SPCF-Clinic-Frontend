@@ -3,6 +3,7 @@ import "@mantine/notifications/styles.css";
 import "@/styles/App.css";
 
 import { MantineProvider } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -17,23 +18,25 @@ import { queryClient } from "./services/query-client.ts";
 import { resolver, theme } from "./theme.ts";
 
 createRoot(document.getElementById("root")!).render(
-	<QueryClientProvider client={queryClient}>
-		<AppProvider>
-			<BrowserRouter>
-				<NuqsAdapter>
-					<StrictMode>
-						<MantineProvider
-							defaultColorScheme="light"
-							theme={theme}
-							cssVariablesResolver={resolver}
-						>
-							<Notifications />
-							<ReactQueryDevtools />
-							<App />
-						</MantineProvider>
-					</StrictMode>
-				</NuqsAdapter>
-			</BrowserRouter>
-		</AppProvider>
-	</QueryClientProvider>,
+  <QueryClientProvider client={queryClient}>
+    <AppProvider>
+      <BrowserRouter>
+        <NuqsAdapter>
+          <StrictMode>
+            <MantineProvider
+              defaultColorScheme="light"
+              theme={theme}
+              cssVariablesResolver={resolver}
+            >
+              <ModalsProvider>
+                <Notifications />
+                <ReactQueryDevtools />
+                <App />
+              </ModalsProvider>
+            </MantineProvider>
+          </StrictMode>
+        </NuqsAdapter>
+      </BrowserRouter>
+    </AppProvider>
+  </QueryClientProvider>,
 );

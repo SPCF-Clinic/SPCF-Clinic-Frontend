@@ -1,4 +1,5 @@
 import { Card, Stack } from "@mantine/core";
+import { useState } from "react";
 
 import QueryError from "@/components/QueryError";
 import { useStudentDetail } from "@/hooks/students/useStudentDetail";
@@ -7,6 +8,7 @@ import StudentCardHeader from "./StudentCardHeader";
 import StudentCardTabs from "./StudentCardTabs";
 
 export default function StudentCard() {
+  const [isEditing, setIsEditing] = useState(false);
   const { data, isPending, error, refetch } = useStudentDetail();
 
   if (isPending) return;
@@ -22,10 +24,14 @@ export default function StudentCard() {
       <Stack gap="xl">
         <StudentCardHeader
           fullName={fullName}
-          studentNumber={data.data.username}
-        />
+          studentData={data.data}
+          onEdit={() => setIsEditing(true)}
+        /> 
         <Card.Section>
-          <StudentCardTabs />
+          <StudentCardTabs
+            isEditing={isEditing}
+            onCancelEdit={() => setIsEditing(false)}
+          />
         </Card.Section>
       </Stack>
     </Card>

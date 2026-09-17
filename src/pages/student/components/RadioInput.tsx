@@ -2,7 +2,7 @@ import { SegmentedControl, Input } from "@mantine/core";
 
 interface RadioInputProps {
   label: string;
-  data: string[];
+  data: Array<string | { id: number; value: string }>;
   value?: string;
   error?: React.ReactNode;
   withAsterisk?: boolean;
@@ -17,6 +17,12 @@ export default function RadioInput({
   withAsterisk,
   onChange,
 }: RadioInputProps) {
+  const options = data.map((option) =>
+    typeof option === "string"
+      ? { label: option, value: option }
+      : { label: option.value, value: option.value },
+  );
+
   return (
     <Input.Wrapper
       label={label}
@@ -38,7 +44,7 @@ export default function RadioInput({
         onChange={(val) => {
           onChange?.(val);
         }}
-        data={data ?? []}
+        data={options}
         styles={{
           root: {
             border: error

@@ -13,3 +13,15 @@ export const getCheckIns = (filters?: GetCheckInsFilters) =>
 
 export const getCheckIn = (id: number) =>
 	apiClient.get<CheckInShow>(`/check-ins/${id}`);
+
+export const postCheckInStudent = (payload?: any) => 
+  apiClient.post("/check-ins", payload);
+
+export const updateCheckIn = (checkInId: number, payload?: any) =>
+	apiClient.put(`/check-ins/${checkInId}`, undefined ,{
+		params: payload,
+	});
+
+export const putDispenseItem = (id: number, payload: any) => {
+	return apiClient.put(`/check-ins/${id}`, payload)
+}

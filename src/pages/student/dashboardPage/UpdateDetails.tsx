@@ -8,12 +8,13 @@ import {
   Stack,
   Title,
   Loader,
+  Center,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 
 import { useSpecificStudent } from "@/query/student-dashboard";
-import { useMedicalInfo, usePersonalInfo } from "@/query/student-register";
+import { useMedicalInfo, usePersonalInfo } from "@/hooks/students/useRegisterStudent";
 import { data_type } from "../utils/register.form";
 
 import TextInput1 from "../components/TextInput";
@@ -274,7 +275,11 @@ export default function Updatedetails() {
             {descriptionText}
           </Text>
         </Box>
-        {isLoading && <Loader />}
+        {isLoading && (
+          <Center>
+            <Loader />
+          </Center>
+        )}
         <Stack gap="md">
           {fieldsSchema.map((item: any) => {
             const activeKey = isPersonal ? "personal_info" : "medical_history";

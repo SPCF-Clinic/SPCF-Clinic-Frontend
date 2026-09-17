@@ -8,8 +8,17 @@ import {
 } from "@/utils/students/studentName";
 import { FieldRow } from "../FieldRow";
 import { StudentInfoColumn, StudentInfoLayout } from "../StudentInfoLayout";
+import StudentPersonalInfoForm from "./StudentPersonalInfoForm";
 
-export default function PersonalInformation() {
+interface PersonalInformationProps {
+	isEditing?: boolean;
+	onCancelEdit?: () => void;
+}
+
+export default function PersonalInformation({
+	isEditing = false,
+	onCancelEdit,
+}: PersonalInformationProps) {
 	const { data, isPending, error } = useStudentDetail();
 
 	const fields = useMemo<DisplayField[]>(() => {
@@ -33,6 +42,15 @@ export default function PersonalInformation() {
 			...getPersonalInfoWithoutName(personalInfo),
 		];
 	}, [data]);
+
+	if (isEditing && data) {
+		return (
+			<StudentPersonalInfoForm
+				studentData={data.data}
+				onCancel={onCancelEdit}
+			/>
+		);
+	}
 
 	const guardianContact = fields.find(
 		(field) => field.name === "Contact No. of Guardian",
