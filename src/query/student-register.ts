@@ -1,23 +1,68 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  mutationOptions,
+  queryOptions,
+} from "@tanstack/react-query";
+
+import {
+  fetchPersonalInfoField,
+  fetchMedicalHistoryField,
+  registerStudent,
+  updatePersonalInfo,
+  updateMedicalHistory,
+} from "@/api/student-register";
 
 import type {
-	RegisterReqBody,
-	RegisterResBody,
+  RegisterReqBody,
+  RegisterResBody,
 } from "@/types/student-register";
-import { registerStudent } from "../api/student-register";
 import { medicalHistoryFieldQueries, personalInfoFieldQueries } from "./fields";
 
 export function usePersonalInfo() {
-	return useQuery(personalInfoFieldQueries.list());
+  return useQuery(personalInfoFieldQueries.list());
 }
 
 export function useMedicalInfo() {
-	return useQuery(medicalHistoryFieldQueries.list());
+  return useQuery(medicalHistoryFieldQueries.list());
 }
 
 export function useRegisterUser() {
-	return useMutation<RegisterResBody, Error, RegisterReqBody>({
-		mutationFn: registerStudent,
-		onSuccess: ({ data }) => console.log(data),
-	});
+  return useMutation<RegisterResBody, Error, RegisterReqBody>({
+    mutationFn: registerStudent,
+    onSuccess: ({ data }) => console.log(data),
+  });
 }
+export const studentRegisterQueries = {
+  all: () => ["student-register"],
+
+  personalInfo: () =>
+    queryOptions({
+      queryKey: [...studentRegisterQueries.all(), "personal-info-field"],
+      queryFn: fetchPersonalInfoField,
+    }),
+
+  medicalHistory: () =>
+    queryOptions({
+      queryKey: [...studentRegisterQueries.all(), "medical-history-field"],
+      queryFn: fetchMedicalHistoryField,
+    }),
+
+  register: () =>
+    mutationOptions<RegisterResBody, Error, RegisterReqBody>({
+      mutationFn: registerStudent,
+      onSuccess: ({ data }) => console.log(data),
+    }),
+
+  updatePersonalInfo: (studentId: number) =>
+    mutationOptions({
+      mutationKey: [...studentRegisterQueries.all(), "update-personal-info"],
+      mutationFn: (payload?: any) => updatePersonalInfo(studentId, payload),
+    }),
+
+  updateMedicalHistory: (studentId: number) =>
+    mutationOptions({
+      mutationKey: [...studentRegisterQueries.all(), "update-medical-history"],
+      mutationFn: (payload?: any) => updateMedicalHistory(studentId, payload),
+    }),
+};

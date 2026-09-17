@@ -8,6 +8,8 @@ import type {
 export type GetActivityLogsFilters = CursorPaginationQueryParams<{
   group?: ActivityLogGroup;
   performed_by?: number;
+  performed_for?: number;
+  date?: string;
 }>;
 
 type GetActivityLogsResponse = CursorPaginationResponse<ActivityLogIndex>;

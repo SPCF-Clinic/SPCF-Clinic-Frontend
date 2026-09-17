@@ -1,9 +1,19 @@
 import { useStudentDetail } from "@/hooks/students/useStudentDetail";
 import { FieldRow } from "../FieldRow";
 import { StudentInfoColumn, StudentInfoLayout } from "../StudentInfoLayout";
+import MedicalHistoryForm from "./MedicalHistoryForm";
 
-export default function MedicalHistory() {
+interface MedicalHistoryProps {
+	isEditing?: boolean;
+	onCancelEdit?: () => void;
+}
+
+export default function MedicalHistory({ isEditing = false, onCancelEdit }: MedicalHistoryProps) {
 	const { data, isPending, error } = useStudentDetail();
+
+	if (isEditing && data) {
+		return <MedicalHistoryForm studentData={data.data} onCancel={onCancelEdit} />;
+	}
 
 	const fields = [...(data?.data.medical_history ?? [])].sort(
 		(a, b) => a.form_order - b.form_order,
