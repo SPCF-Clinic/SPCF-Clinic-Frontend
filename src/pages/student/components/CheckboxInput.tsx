@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Input, Stack, Text, UnstyledButton } from '@mantine/core';
 
-export type CheckboxOption = string | { value: string; label: string };
+export type CheckboxOption = string | { value: string; label?: string };
 
 interface CheckboxInputProps {
   label?: string;
@@ -62,7 +62,7 @@ export default function CheckboxInput({
     >
       <Stack gap="xs" style={{ maxWidth: 400, marginTop: 4 }}>
         {options?.map((option) => {
-          const optionLabel = typeof option === 'string' ? option : option.label;
+          const optionLabel = typeof option === 'string' ? option : option.label ?? option.value;
           const optionValue = typeof option === 'string' ? option : option.value;
           const isChecked = selectedValues.includes(optionValue);
 
