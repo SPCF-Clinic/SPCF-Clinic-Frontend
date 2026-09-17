@@ -102,6 +102,7 @@ export default function Step_2({ data, form }: Step_2Props) {
           <RadioInput
             key={field.id}
             label={field.name}
+            description={field.description_text}
             withAsterisk={"is_required" in field ? field.is_required : false}
             error={fieldError}
             data={field.options}
@@ -115,6 +116,7 @@ export default function Step_2({ data, form }: Step_2Props) {
           <CheckboxInput
             key={field.id}
             label={field.name}
+            description={field.description_text}
             withAsterisk={"is_required" in field ? field.is_required : false}
             error={fieldError}
             options={field.options}

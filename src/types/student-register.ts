@@ -41,12 +41,19 @@ interface FieldType {
   can_select_multiple: boolean;
 }
 
+export interface FormOption {
+  id?: number;
+  value: string;
+  label?: string;
+}
+
 export interface AdditionalField {
   id: number;
   version_number: number;
   name: string;
   type: FieldType;
-  options: string[];
+  options: FormOption[];
+  description_text?: string | null;
   required_with_field_value: string;
 }
 
@@ -56,7 +63,7 @@ export interface MedicalHistoryField {
   type: FieldType;
   form_order: number;
   description_text: string | null;
-  options: string[];
+  options: FormOption[];
   is_required: boolean;
   required_with_field: number | string | null;
   additional_fields: AdditionalField[];

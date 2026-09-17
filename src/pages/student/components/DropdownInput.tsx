@@ -2,7 +2,7 @@ import { Select, Input } from "@mantine/core";
 
 interface DropdownInputProps {
   label: string;
-  data: string[];
+  data: Array<string | { value: string; label?: string }>;
   value?: string;
   error?: React.ReactNode;
   withAsterisk?: boolean;
@@ -33,7 +33,11 @@ export default function DropdownInput({
       }}
     >
       <Select
-        data={data ?? []}
+        data={(data ?? []).map((option) =>
+          typeof option === "string"
+            ? option
+            : { value: option.value, label: option.label ?? option.value },
+        )}
         value={value ?? ""}
         error={!!error}
         onChange={(val) => {
