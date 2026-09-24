@@ -14,6 +14,7 @@ import { useTimerNow } from "@/hooks/timers/useTimerNow";
 import { dayjs } from "@/services/dayjs";
 import type { CurrentOccupant } from "@/types/beds";
 import classes from "./Timer.module.css";
+import formatDuration from "@/utils/formatDuration";
 
 interface TimerProps {
 	occupant: CurrentOccupant;
@@ -21,24 +22,10 @@ interface TimerProps {
 	startedAt: string;
 	expiresAt: string;
 	pausedAt: string | null;
+	onClick?: () => void;
 }
 
 const OVERDUE_COLOR = "#8e2d2d";
-
-function formatDuration(totalSeconds: number): string {
-	const hours = Math.floor(totalSeconds / 3600);
-	const minutes = Math.floor((totalSeconds % 3600) / 60);
-	const seconds = totalSeconds % 60;
-	console.log({ hours, minutes, seconds });
-
-	if (hours > 0) {
-		return `${hours}:${String(minutes).padStart(2, "0")}:${String(
-			seconds,
-		).padStart(2, "0")}`;
-	}
-
-	return `${minutes}:${String(seconds).padStart(2, "0")}`;
-}
 
 export default function Timer({
 	occupant,
@@ -46,6 +33,7 @@ export default function Timer({
 	startedAt,
 	expiresAt,
 	pausedAt,
+	onClick,
 }: TimerProps) {
 	const theme = useMantineTheme();
 	const { active } = useDashboardAsideContext();
@@ -93,7 +81,7 @@ export default function Timer({
 		<Paper
 			component="button"
 			type="button"
-			onClick={() => console.log("clicked")}
+			onClick={onClick}
 			withBorder
 			px="md"
 			py={4}

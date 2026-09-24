@@ -14,13 +14,28 @@ export const getCheckIns = (filters?: GetCheckInsFilters) =>
 export const getCheckIn = (id: number) =>
 	apiClient.get<CheckInShow>(`/check-ins/${id}`);
 
-export const postCheckInStudent = (payload?: any) => 
-  apiClient.post("/check-ins", payload);
+export const postCheckInStudent = (payload?: any) =>
+	apiClient.post("/check-ins", payload);
 
 export const updateCheckIn = (checkInId: number, payload?: any) =>
-	apiClient.put(`/check-ins/${checkInId}`, undefined ,{
+	apiClient.put(`/check-ins/${checkInId}`, undefined, {
 		params: payload,
 	});
+
+export const unassignBed = (checkInId: number) => {
+	const payload = {unassign_bed: true}; 
+	return apiClient.put(`/check-ins/${checkInId}`, payload);
+};
+
+export const pauseBedTimer = (checkInId: number) => {
+	const payload = {pause_timer: true}; 
+	return apiClient.put(`/check-ins/${checkInId}`, payload);
+}
+
+export const resumeBedTimer = (checkInId: number) => {
+	const payload = {resume_timer: true}; 
+	return apiClient.put(`/check-ins/${checkInId}`, payload);
+}
 
 export const putDispenseItem = (id: number, payload: any) => {
 	return apiClient.put(`/check-ins/${id}`, payload)

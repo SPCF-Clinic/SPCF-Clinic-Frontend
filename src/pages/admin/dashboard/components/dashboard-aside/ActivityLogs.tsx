@@ -44,7 +44,7 @@ export default function ActivityLogs() {
 		<Box>
 			<Stack>
 				<Text size="xl" fw={600}>
-					Activity Log
+					Activity Log 
 				</Text>
 
 				<ScrollArea

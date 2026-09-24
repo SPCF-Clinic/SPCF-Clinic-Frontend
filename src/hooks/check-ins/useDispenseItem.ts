@@ -1,9 +1,32 @@
-import { useMutation } from "@tanstack/react-query";
-import { putDispenseItem } from "@/api/check-ins";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { checkInQueries } from "@/query/check-ins";
+import { bedQueries } from "@/query/beds";
+import { dashboardQueries } from "@/query/dashboard";
+import { activityLogQueries } from "@/query/activity-logs";
 
-export const useDispenseItem = () => {
+export function useDispenseItem() {
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: ({ id, payload }: { id:  number; payload: any }) =>
-       putDispenseItem(id, payload)
+    ...checkInQueries.dispenseItem(),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: checkInQueries.lists(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: bedQueries.lists(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: dashboardQueries.dashboard().queryKey,
+      });
+
+      // Invalidates all activity log lists
+      queryClient.invalidateQueries({
+        queryKey: activityLogQueries.lists(),
+      });
+    },
   });
-};
+}

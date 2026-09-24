@@ -15,7 +15,7 @@ const Give = (studentData: any, type: ItemType) => {
           Give Medication
         </Text>
         <Text size="sm" c="dimmed">
-          {studentData.name || studentData.full_name} - {studentData.bed_id || studentData.check_in?.bed || 'No Bed'}
+          {studentData.name || studentData.full_name || studentData.current_occupant.occupant_name} - {studentData.bed_id || studentData.check_in?.bed || studentData.bed_number|| 'No Bed'}
         </Text>
       </>
     ),

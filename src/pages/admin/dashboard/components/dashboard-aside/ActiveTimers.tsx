@@ -9,6 +9,7 @@ import TimerSkeleton from "@/components/timer/TimerSkeleton";
 import { useTimerRealtime } from "@/hooks/timers/useTimerRealtime";
 import { bedQueries } from "@/query/beds";
 import classes from "@/styles/ScrollFade.module.css";
+import StatusModal from "@/pages/admin/modals/StatusModal";
 
 export default function ActiveTimers() {
 	const {
@@ -75,6 +76,9 @@ export default function ActiveTimers() {
 												expiresAt={bed.timer_expires_at}
 												occupant={bed.current_occupant}
 												pausedAt={bed.timer_paused_at}
+												onClick={() => {
+													StatusModal.ActiveTimer(bed);
+												}}
 											/>
 										))}
 									</React.Fragment>

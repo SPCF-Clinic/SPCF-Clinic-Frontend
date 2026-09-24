@@ -5,7 +5,12 @@ import {
 	getCheckIn,
 	getCheckIns,
 	updateCheckIn,
+	unassignBed,
+	resumeBedTimer,
+	pauseBedTimer,
+	putDispenseItem
 } from "@/api/check-ins";
+
 
 export const checkInQueries = {
 	all: () => ["checkIns"],
@@ -26,5 +31,26 @@ export const checkInQueries = {
 			mutationKey: [...checkInQueries.details(), id, ],
 			mutationFn: (payload: any) => updateCheckIn(id, payload),
 		}),
+	unassignBed: (id: number) => 
+		mutationOptions({
+			mutationKey: [...checkInQueries.details(), id, ],
+			mutationFn: () => unassignBed(id),
+		}),
+	pauseBedTimer: (id: number) => 
+		mutationOptions({
+			mutationKey: [...checkInQueries.details(), id, ],
+			mutationFn: () => pauseBedTimer(id),
+		}),
+	resumeBedTimer: (id: number) => 
+		mutationOptions({
+			mutationKey: [...checkInQueries.details(), id, ],
+			mutationFn: () => resumeBedTimer(id),
+		}),
+
+		dispenseItem: () => ({
+    mutationFn: ({ id, payload }: { id: number; payload: any }) =>
+      putDispenseItem(id, payload),
+  }),
+	
 };
 
