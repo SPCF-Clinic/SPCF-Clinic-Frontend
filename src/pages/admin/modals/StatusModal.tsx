@@ -3,9 +3,9 @@ import {  Text, } from '@mantine/core';
 
 import type { StudentShow } from "@/types/students";
 
-import StudentCheckInClinicModalForm from "@/pages/admin/modals/contents/StudentCheckInClinicModalForm";
+import StudentCheckInClinicModalForm from "@/pages/admin/modals/forms/StudentCheckInClinicModalForm";
 import StudentAssignBedModal from "@/pages/admin/modals/contents/StudentAssignBedModal";
-import StudentInClinicModal from "@/pages/admin/modals/contents/StudentInClinicModal";
+import StudentInClinicModal from "@/pages/admin/modals/contents/StudentInClinicModalContent";
 
 import ActiveTimerModalContent from "@/pages/admin/modals/contents/ActiveTimersModalContent";
 

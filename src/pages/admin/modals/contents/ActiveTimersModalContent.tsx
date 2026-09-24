@@ -4,7 +4,7 @@ import { useUnassignBed } from "@/hooks/check-ins/useUnassignBed";
 import { usePauseBedTimer } from "@/hooks/check-ins/usePauseBedTimer";
 import { useResumeBedTimer } from "@/hooks/check-ins/useResumeBedTimer";
 
-import ActiveTimersModalForm from "@/pages/admin/modals/contents/ActiveTimersModalForm";
+import ActiveTimersModalForm from "@/pages/admin/modals/forms/ActiveTimersModalForm";
 import MedicineModal from "@/pages/admin/modals/MedicineModal";
 import { DashboardAsideProvider } from "@/providers/DashboardAsideProvider";
 

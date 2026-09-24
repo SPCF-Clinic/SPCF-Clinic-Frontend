@@ -26,3 +26,11 @@ export const getStudentCheckIns = (
 	apiClient.get<GetCheckInsResponse>(`/students/${studentId}/check-ins`, {
 		params: filters,
 	});
+
+export const updateStudentPassword = (studentId: number, password: string) => {
+    return apiClient.put<StudentShow>(`/students/${studentId}`, { password });
+};
+
+export const archiveStudent = (studentId: number) => {
+    return apiClient.put<StudentShow>(`/students/${studentId}`, { status: "ARCHIVE" });
+};

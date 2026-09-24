@@ -2,7 +2,7 @@ import { modals } from "@mantine/modals";
 import { Text, Divider, Box } from '@mantine/core';
 
 import type { ItemType } from "@/types/items";
-import GiveMedicationModalForm from "@/pages/admin/modals/contents/GiveMedicationModalForm";
+import GiveMedicationModalForm from "@/pages/admin/modals/forms/GiveMedicationModalForm";
 
 const Give = (studentData: any, type: ItemType) => {
   modals.open({

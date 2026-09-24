@@ -1,8 +1,8 @@
 import { modals } from "@mantine/modals";
 import { Text, Divider, Flex } from '@mantine/core';
 
-import VisitLogSummary from "@/pages/admin/modals/contents/VisitLogSummary";
-import VisitDetailsSummary from "@/pages/admin/modals/contents/VisitDetailsSummary";
+import VisitLogSummary from "@/pages/admin/modals/contents/VisitLogSummaryContent";
+import VisitDetailsSummary from "@/pages/admin/modals/contents/VisitDetailsSummaryContent";
 
 const VisitSummary = (date: any, id: any, checkInId: any) => modals.open({
     centered: true,

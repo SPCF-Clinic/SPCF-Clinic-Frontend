@@ -1,8 +1,9 @@
 import { modals } from '@mantine/modals';
-import { Text, PasswordInput, Button, Stack } from '@mantine/core';
+import { Text,} from '@mantine/core';
 
 import type { StudentShow } from "@/types/students";
-import EditStudentModalForm from "./contents/EditStudentModalForm";
+import EditStudentModalForm from "./forms/EditStudentModalForm";
+import ChangePasswordForm from './forms/ChangePasswordForm';
 
 const Edit = (studentData: StudentShow) => {
 	modals.open({
@@ -28,7 +29,7 @@ export const ChangePassword = (studentData: StudentShow) => {
           Change Password
         </Text>
         <Text size="sm" c="dimmed">
-          {studentData.name}
+          {studentData.full_name}
         </Text>
       </div>
     ),
@@ -39,51 +40,25 @@ export const ChangePassword = (studentData: StudentShow) => {
         marginBottom: '16px',
       },
     },
-    children: (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          // Handle password submit logic here
-        }}
-      >
-        <Stack gap="md">
-          <PasswordInput
-            label="Password"
-            placeholder="password123"
-            required
-            radius="md"
-          />
-
-          <PasswordInput
-            label="Confirm Password"
-            placeholder="password123"
-            required
-            radius="md"
-          />
-
-          <Button
-            type="submit"
-            fullWidth
-            radius="xl"
-            size="md"
-            mt="xs"
-            styles={{
-              root: {
-                backgroundColor: '#2F4899',
-                '&:hover': {
-                  backgroundColor: '#223675',
-                },
-              },
-            }}
-          >
-            Confirm
-          </Button>
-        </Stack>
-      </form>
-    ),
+    children: <ChangePasswordForm studentId={studentData.id} />,
   });
 };
 
-const EditStudentModal = { Edit, ChangePassword };
+export const Archive = (studentData: StudentShow, onConfirm: () => void) => {
+    modals.openConfirmModal({
+        title: "Archive Student",
+        centered: true,
+        children: (
+            <Text size="sm">
+                Are you sure you want to archive <b>{studentData.full_name}</b>? This action will disable their active account status.
+            </Text>
+        ),
+        labels: { confirm: "Archive", cancel: "Cancel" },
+        confirmProps: { color: "red" },
+        onConfirm: onConfirm,
+    });
+};
+
+const EditStudentModal = { Edit, ChangePassword,Archive };
 
 export default EditStudentModal;
