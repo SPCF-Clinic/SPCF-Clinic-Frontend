@@ -39,9 +39,9 @@ export const studentQueries = {
             mutationKey: [...studentQueries.details(), id, "update-password"],
             mutationFn: (password: string) => updateStudentPassword(id, password),
         }),
-    archive: (id: number) =>
+    archive: (id: number, ) =>
         mutationOptions({
             mutationKey: [...studentQueries.details(), id, "archive"],
-            mutationFn: () => archiveStudent(id),
+            mutationFn: (payload: { status: "ARCHIVED" | "UNARCHIVED" }) => archiveStudent(id, payload),
         }),
 };

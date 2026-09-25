@@ -53,11 +53,12 @@ export const Archive = (studentData: StudentShow, onConfirm: () => void) => {
                 Are you sure you want to archive <b>{studentData.full_name}</b>? This action will disable their active account status.
             </Text>
         ),
-        labels: { confirm: "Archive", cancel: "Cancel" },
-        confirmProps: { color: "red" },
+        labels: { confirm: studentData?.status === "Archived" ? "Unarchive" : "Archive", cancel: "Cancel" },
+        confirmProps: { color: studentData?.status === "Archived" ? "blue" : "red" },
         onConfirm: onConfirm,
     });
 };
+
 
 const EditStudentModal = { Edit, ChangePassword,Archive };
 

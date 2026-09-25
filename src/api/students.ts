@@ -31,6 +31,6 @@ export const updateStudentPassword = (studentId: number, password: string) => {
     return apiClient.put<StudentShow>(`/students/${studentId}`, { password });
 };
 
-export const archiveStudent = (studentId: number) => {
-    return apiClient.put<StudentShow>(`/students/${studentId}`, { status: "ARCHIVE" });
+export const archiveStudent = (studentId: number, payload: any) => {
+    return apiClient.put<StudentShow>(`/students/${studentId}`, payload);
 };

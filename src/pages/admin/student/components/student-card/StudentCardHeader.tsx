@@ -21,6 +21,8 @@ export default function StudentCardHeader({
 }: StudentCardHeaderProps) {
     const queryClient = useQueryClient();
 
+    const isArchived = studentData?.status === "Archived";
+
     const { mutate: archiveStudent } = useMutation({
         ...studentQueries.archive(studentData.id),
         onSuccess: () => {
@@ -31,6 +33,14 @@ export default function StudentCardHeader({
         },
     });
 
+    const handleToggleArchive = () => {
+        const nextStatus = isArchived ? "UNARCHIVE" : "ARCHIVE";
+
+        EditStudentModal.Archive(studentData, () => {
+            archiveStudent({ status: nextStatus });
+        });
+    };
+
     const menuItems: MenuItemProps[] = [
         { children: "Edit information", onClick: onEdit },
         { 
@@ -40,7 +50,7 @@ export default function StudentCardHeader({
         { 
             children: studentData?.status === "Archived" ? "Unarchive" : "Archive", 
             c: "red", 
-            onClick: () => EditStudentModal.Archive(studentData, () => archiveStudent()) 
+            onClick: () => handleToggleArchive()
         },
     ];
 
