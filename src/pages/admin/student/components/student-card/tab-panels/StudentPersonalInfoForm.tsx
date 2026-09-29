@@ -15,6 +15,7 @@ import { usePersonalInfo, useUpdatePersonalInfo } from "@/hooks/students/useRegi
 import { studentQueries } from "@/query/students";
 import type { PersonalInfoField } from "@/types/student-register";
 import type { StudentShow } from "@/types/students";
+import { toSelectOptions } from "@/utils/fieldOptions";
 
 interface StudentPersonalInfoFormProps {
 	studentData: StudentShow;
@@ -31,22 +32,9 @@ function getFieldValue(studentData: StudentShow, field: PersonalInfoField) {
 	return studentData.personal_info.find((item) => item.id === field.id)?.value ?? "";
 }
 
-function getOptions(field: PersonalInfoField) {
-	return field.options.map((option) => {
-		if (typeof option === "string") {
-			return { value: option, label: option };
-		}
-
-		const optionValue = option as unknown as { id?: number | string; value?: string };
-		const value = optionValue.value ?? String(optionValue.id ?? "");
-
-		return { value, label: value };
-	});
-}
-
 function FieldInput({ field, form }: { field: PersonalInfoField; form: ReturnType<typeof useForm<FormValues>> }) {
 	const name = `personal_info[${field.id}]`;
-	const options = getOptions(field);
+	const options = toSelectOptions(field);
 
 	if (field.type.name === "Radio") {
 		return <Radio.Group label={field.name} {...form.getInputProps(name)}><Group mt="xs">{options.map((option) => <Radio key={option.value} value={option.value} label={option.label} />)}</Group></Radio.Group>;
