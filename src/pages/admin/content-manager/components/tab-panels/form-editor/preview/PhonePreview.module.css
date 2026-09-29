@@ -3,14 +3,14 @@
   padding: 8px;
   background-color: var(--mantine-color-white);
   border: 1px solid var(--mantine-color-gray-4);
-  border-radius: 28px;
+  border-radius: 32px;
   box-shadow: var(--mantine-shadow-md);
 }
 
 .screen {
   width: 375px;
   max-width: 100%;
-  height: min(600px, 62dvh);
+  height: min(780px, 84dvh);
   overflow-y: auto;
-  border-radius: 20px;
+  border-radius: 26px;
 }
