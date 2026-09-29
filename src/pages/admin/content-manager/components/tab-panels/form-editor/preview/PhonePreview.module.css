@@ -1,4 +1,13 @@
 .frame {
+  /* A column flex container so the screen below it can be given height back
+     when the modal has something above it to fit. `min-height: 0` on both is
+     what lets that shrink travel down the chain; without it each item refuses
+     to go below its own content size and the phone is pushed off the bottom
+     of the modal instead. */
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  min-height: 0;
   margin: 0 auto;
   padding: 8px;
   background-color: var(--mantine-color-white);
@@ -8,9 +17,15 @@
 }
 
 .screen {
+  /* `min(780px, 84dvh)` is the height the phone would like. `flex-shrink` and
+     `min-height: 0` let it take less when the modal is short — which is what
+     happens when the Unsaved Order notice is above it. With no notice it is
+     the same size it has always been. */
+  flex: 0 1 auto;
+  min-height: 0;
+  height: min(780px, 84dvh);
   width: 375px;
   max-width: 100%;
-  height: min(780px, 84dvh);
   overflow-y: auto;
   border-radius: 26px;
 }

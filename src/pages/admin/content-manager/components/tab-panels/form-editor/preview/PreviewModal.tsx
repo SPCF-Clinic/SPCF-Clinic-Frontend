@@ -1,16 +1,18 @@
-import { Modal } from "@mantine/core";
+import { Modal, Stack } from "@mantine/core";
 
 import type { FieldType } from "@/api/fields";
 import type { FormField } from "@/types/student-register";
 import PhonePreview from "./PhonePreview";
 import PreviewChrome from "./PreviewChrome";
 import PreviewStep from "./PreviewStep";
+import UnsavedOrderNotice from "./UnsavedOrderNotice";
 
 interface PreviewModalProps {
 	opened: boolean;
 	onClose: () => void;
 	fields: FormField[];
 	type: FieldType;
+	hasUnsavedOrder: boolean;
 }
 
 export default function PreviewModal({
@@ -18,6 +20,7 @@ export default function PreviewModal({
 	onClose,
 	fields,
 	type,
+	hasUnsavedOrder,
 }: PreviewModalProps) {
 	return (
 		<Modal.Root opened={opened} onClose={onClose} centered>
@@ -26,14 +29,25 @@ export default function PreviewModal({
 			<Modal.Content
 				p={0}
 				styles={{
-					content: { flex: "0 0 auto", background: "transparent", boxShadow: "none" },
+					content: {
+						flex: "0 0 auto",
+						background: "transparent",
+						boxShadow: "none",
+						display: "flex",
+						flexDirection: "column",
+						overflow: "hidden",
+					},
 				}}
 			>
-				<PhonePreview>
-					<PreviewChrome type={type}>
-						<PreviewStep fields={fields} type={type} />
-					</PreviewChrome>
-				</PhonePreview>
+				<Stack gap="sm" style={{ minHeight: 0 }}>
+					{hasUnsavedOrder && <UnsavedOrderNotice />}
+
+					<PhonePreview>
+						<PreviewChrome type={type}>
+							<PreviewStep fields={fields} type={type} />
+						</PreviewChrome>
+					</PhonePreview>
+				</Stack>
 			</Modal.Content>
 		</Modal.Root>
 	);

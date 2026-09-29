@@ -176,6 +176,7 @@ export default function ReorderableFields({
         onClose={() => setPreviewOpened(false)}
         fields={displayFields}
         type={type}
+        hasUnsavedOrder={isDirty}
       />
     </>
   );
