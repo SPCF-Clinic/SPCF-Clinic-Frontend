@@ -12,6 +12,7 @@ export default function ActiveTimerModalContent({ studentdata }: { studentdata: 
 
   const checkInId = studentdata.check_in_id || studentdata.id;
  
+  console.log(studentdata)
 
   const { mutate: updateCheckIn } = useUpdateCheckIn(checkInId);
   const { mutate: unassignBed } = useUnassignBed(checkInId);
@@ -21,11 +22,15 @@ export default function ActiveTimerModalContent({ studentdata }: { studentdata: 
   const isPaused = studentdata.timer_paused_at !== null;
 
   const handleAddMinutes = (newExpiresAt: string) => {
-    updateCheckIn({ timer_expires_at: newExpiresAt });
+    updateCheckIn({ timer_expires_at: newExpiresAt }, { onSuccess: () => {
+      modals.closeAll();
+    } });
   };
 
   const handleSubtractMinutes = (newExpiresAt: string) => {
-    updateCheckIn({ timer_expires_at: newExpiresAt });
+    updateCheckIn({ timer_expires_at: newExpiresAt }, { onSuccess: () => {
+      modals.closeAll();
+    } });
   };
 
   const handleTogglePause = () => {

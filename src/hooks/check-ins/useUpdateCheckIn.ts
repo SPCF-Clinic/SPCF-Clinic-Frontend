@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { checkInQueries } from "@/query/check-ins";
 import { dashboardQueries } from "@/query/dashboard";
+import { bedQueries } from "@/query/beds";
 
 export function useUpdateCheckIn(id: number) {
     const queryClient = useQueryClient();
@@ -9,7 +10,7 @@ export function useUpdateCheckIn(id: number) {
     return useMutation({
         ...checkInQueries.updateCheckIn(id),
 
-        onSuccess: (...args) => {
+        onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: checkInQueries.lists(),
             });
@@ -18,9 +19,12 @@ export function useUpdateCheckIn(id: number) {
                 queryKey: checkInQueries.detail(id).queryKey,
             });
 
-                queryClient.invalidateQueries({
-                    queryKey: dashboardQueries.dashboard().queryKey,
-                });
+            queryClient.invalidateQueries({
+                queryKey: dashboardQueries.all(),
+            });
+            queryClient.invalidateQueries({
+                queryKey: bedQueries.all(),
+            });
         },
     });
 }

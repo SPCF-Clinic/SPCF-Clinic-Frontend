@@ -46,7 +46,6 @@ export default function ActiveTimersModalForm({
   const isPaused = pausedAt !== null;
   const now = useTimerNow(active && !isPaused);
 
-  // Handlers for +5 and -5 minutes
   const handleAddFiveMinutes = () => {
     const currentNow = dayjs();
     const currentExpiry = dayjs(currentExpiresAt);
@@ -65,13 +64,16 @@ export default function ActiveTimersModalForm({
     onSubtractMinutes?.(updatedExpiration);
   };
 
-  // Live calculation logic
   const startedAtMs = dayjs(startedAt).valueOf();
   const expiresAtMs = dayjs(currentExpiresAt).valueOf();
   const effectiveNowMs = isPaused ? dayjs(pausedAt).valueOf() : now.valueOf();
 
   const remainingMs = expiresAtMs - effectiveNowMs;
   const isOverdue = remainingMs < 0;
+
+
+
+  const isFiveOrLess = remainingMs <= 300000; 
 
   const displaySeconds = isOverdue
     ? Math.floor(Math.abs(remainingMs) / 1000)
@@ -101,7 +103,7 @@ export default function ActiveTimersModalForm({
 
   return (
     <Stack align="center" gap="md" py="xs">
-      {/* Outer Ring & Center Indicator */}
+
       <Box pos="relative" style={{ width: 220, height: 220 }}>
         <RingProgress
           size={220}
@@ -156,6 +158,7 @@ export default function ActiveTimersModalForm({
           size={48}
           variant="light"
           onClick={handleSubtractFiveMinutes}
+          disabled={isFiveOrLess}
           style={{ backgroundColor: '#EEF2F6', color: PRIMARY_BLUE }}
         >
           <Text fw={700} size="md">

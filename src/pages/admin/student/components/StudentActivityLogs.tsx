@@ -15,14 +15,14 @@ interface StudentActivityLogsProps {
   userId?: number;
   studentNumber?: number;
   withBorder?: boolean;
+  height?: number | string;
 }
 
-export default function StudentActivityLogs({ date, userId, studentNumber, withBorder = false }: StudentActivityLogsProps) {
+export default function StudentActivityLogs({ date, userId, studentNumber, withBorder = false, height }: StudentActivityLogsProps) {
 
   const performedFor = studentNumber
     ? Number(studentNumber)
     : undefined;
-  console.log(performedFor, "performedFor in StudentActivityLogs")
   const {
     data: studentLogsData,
     isPending,
@@ -32,10 +32,6 @@ export default function StudentActivityLogs({ date, userId, studentNumber, withB
     hasNextPage,
     isFetchingNextPage,
   } = useStudentActivityLogs({ performed_by: userId, performed_for: performedFor, date: date });
-  const { data: studentData } = useStudentDetail();
-  const studentFullName = studentData
-    ? getStudentFullName(studentData.data.personal_info, true)
-    : undefined;
 
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
@@ -62,14 +58,14 @@ export default function StudentActivityLogs({ date, userId, studentNumber, withB
     <Paper p="lg" radius="lg" withBorder={withBorder}>
       <Stack>
         <Text fw={600} size="sm" tt="uppercase" c="primary">
-          Activity Log
+          Activity Log 
         </Text>
 
         <ScrollArea
           viewportRef={setContainer}
           offsetScrollbars
           classNames={{ viewport: classes.scrollFadeY }}
-          h={280}
+          h={height || 280}
         >
           <Stack gap="sm">
             {isPending ? (

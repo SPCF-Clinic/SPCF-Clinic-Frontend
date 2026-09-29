@@ -65,7 +65,7 @@ export default function StudentCardHeader({
                 </Text>
             </Box>
             <Group>
-                {studentData?.check_in?.status === "Not In Clinic" ? (
+                {studentData?.check_in?.status === "Not In Clinic" && studentData?.status !== "Archived" ? (
                     <Badge
                         size="lg"
                         variant="outline"

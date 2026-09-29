@@ -1,7 +1,7 @@
 import { modals } from "@mantine/modals";
 import { Text, Divider, Flex } from '@mantine/core';
 
-import VisitLogSummary from "@/pages/admin/modals/contents/VisitLogSummaryContent";
+import VisitLogSummaryContent from "@/pages/admin/modals/contents/VisitLogSummaryContent";
 import VisitDetailsSummary from "@/pages/admin/modals/contents/VisitDetailsSummaryContent";
 
 const VisitSummary = (date: any, id: any, checkInId: any) => modals.open({
@@ -19,7 +19,7 @@ const VisitSummary = (date: any, id: any, checkInId: any) => modals.open({
         <Divider size="2px" variant="solid" color="gray.3" />
         <Flex gap="md" mt="md">
             <VisitDetailsSummary id={id} checkInId={checkInId} />
-            <VisitLogSummary studentNumber={id} date={date}/>
+            <VisitLogSummaryContent studentNumber={id} date={date}/>
         </Flex>
     </>
     ),
@@ -27,7 +27,7 @@ const VisitSummary = (date: any, id: any, checkInId: any) => modals.open({
 
 const CheckOut = (studentNumber: string , date: any, id: any, checkInId: any) => modals.open({
     centered: true,
-    size: 700,  
+    size: 800,  
     title: (<>
         <Text size="xl" fw={700}>
             Check Out Student
@@ -40,7 +40,7 @@ const CheckOut = (studentNumber: string , date: any, id: any, checkInId: any) =>
         <Divider size="2px" variant="solid" color="gray.3" />
         <Flex gap="md" mt="md">
             <VisitDetailsSummary id={id} checkInId={checkInId} showCheckOut={false} checkOut={true} />
-            <VisitLogSummary studentNumber={id} date={date}/>
+            <VisitLogSummaryContent studentNumber={id} date={date} height={500}/>
         </Flex>
     </>
     ),

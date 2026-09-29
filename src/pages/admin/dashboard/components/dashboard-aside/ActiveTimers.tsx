@@ -25,6 +25,8 @@ export default function ActiveTimers() {
 		staleTime: Infinity,
 	});
 
+	console.log("bed", data)
+
 	const [container, setContainer] = useState<HTMLDivElement | null>(null);
 	const { ref, entry } = useIntersection({
 		root: container,

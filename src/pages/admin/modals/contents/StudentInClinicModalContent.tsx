@@ -26,14 +26,13 @@ export default function StudentInClinicModal({
     VisitModal.CheckOut(
       studentdata.student_number,
       dayjs(studentdata.check_in_time).format("YYYY-MM-DD"),
-      studentdata.id,
+      studentdata.user_id,
       studentdata.id
     );
   };
 
   return (
     <Stack gap="md" mt="xs">
-      {/* Student Info Card */}
       <Paper p="sm" radius="md" bg="gray.1">
         <Text fw={700} c="blue.9">
           {studentdata.name}
@@ -45,7 +44,6 @@ export default function StudentInClinicModal({
         </Text>
       </Paper>
 
-      {/* Details List */}
       <Stack gap="xs">
         <Group justify="space-between">
           <Text c="dimmed" size="sm">
@@ -96,7 +94,7 @@ export default function StudentInClinicModal({
             {studentdata.items_dispensed && studentdata.items_dispensed.length > 0 ? (
               studentdata.items_dispensed.map((item: any, index: number) => (
                 <Text key={index} fw={600} size="sm" ta="right">
-                  {`${item.item_name} (${item.quantity_dispensed} ${item.unit.toLowerCase()})`}
+                  {`${item.item_name} (${item.quantity_dispensed} ${item.unit})`}
                 </Text>
               ))
             ) : (
