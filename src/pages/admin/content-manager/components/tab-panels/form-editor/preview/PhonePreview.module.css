@@ -1,0 +1,22 @@
+.frame {
+  margin: 0 auto;
+  padding: 8px;
+  background-color: var(--mantine-color-white);
+  border: 1px solid var(--mantine-color-gray-4);
+  border-radius: 28px;
+  box-shadow: var(--mantine-shadow-md);
+}
+
+.screen {
+  width: 375px;
+  max-width: 100%;
+  height: min(600px, 62dvh);
+  overflow: hidden;
+  border-radius: 24px;
+}
+
+.card {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
