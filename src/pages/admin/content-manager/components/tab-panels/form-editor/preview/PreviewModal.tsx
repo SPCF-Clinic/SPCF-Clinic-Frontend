@@ -3,6 +3,7 @@ import { Modal } from "@mantine/core";
 import type { FieldType } from "@/api/fields";
 import type { FormField } from "@/types/student-register";
 import PhonePreview from "./PhonePreview";
+import PreviewChrome from "./PreviewChrome";
 import PreviewStep from "./PreviewStep";
 
 interface PreviewModalProps {
@@ -29,7 +30,9 @@ export default function PreviewModal({
 				}}
 			>
 				<PhonePreview>
-					<PreviewStep fields={fields} type={type} />
+					<PreviewChrome type={type}>
+						<PreviewStep fields={fields} type={type} />
+					</PreviewChrome>
 				</PhonePreview>
 			</Modal.Content>
 		</Modal.Root>
