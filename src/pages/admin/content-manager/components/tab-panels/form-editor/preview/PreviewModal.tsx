@@ -1,5 +1,6 @@
+import { Modal } from "@mantine/core";
+
 import type { FieldType } from "@/api/fields";
-import { AppModal } from "@/components/AppModal";
 import type { FormField } from "@/types/student-register";
 import PhonePreview from "./PhonePreview";
 import PreviewStep from "./PreviewStep";
@@ -18,17 +19,19 @@ export default function PreviewModal({
 	type,
 }: PreviewModalProps) {
 	return (
-		<AppModal
-			opened={opened}
-			onClose={onClose}
-			size={420}
-			contentProps={{ p: 0 }}
-			bodyProps={{ p: 0 }}
-			title="Preview"
-		>
-			<PhonePreview>
-				<PreviewStep fields={fields} type={type} />
-			</PhonePreview>
-		</AppModal>
+		<Modal.Root opened={opened} onClose={onClose} centered>
+			<Modal.Overlay />
+
+			<Modal.Content
+				p={0}
+				styles={{
+					content: { flex: "0 0 auto", background: "transparent", boxShadow: "none" },
+				}}
+			>
+				<PhonePreview>
+					<PreviewStep fields={fields} type={type} />
+				</PhonePreview>
+			</Modal.Content>
+		</Modal.Root>
 	);
 }

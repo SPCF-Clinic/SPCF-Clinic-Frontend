@@ -11,12 +11,6 @@
   width: 375px;
   max-width: 100%;
   height: min(600px, 62dvh);
-  overflow: hidden;
-  border-radius: 24px;
-}
-
-.card {
-  flex: 1;
-  min-height: 0;
   overflow-y: auto;
+  border-radius: 20px;
 }

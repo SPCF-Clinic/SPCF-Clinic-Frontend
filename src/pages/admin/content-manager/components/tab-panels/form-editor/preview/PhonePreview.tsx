@@ -20,26 +20,18 @@ export default function PhonePreview({ children }: PhonePreviewProps) {
 	return (
 		<Box className={classes.frame}>
 			<Box className={classes.screen}>
-				<BackgroundImage h="100%" src={MOB_bg}>
-					<Flex direction="column" h="100%">
-						<Flex
-							justify="center"
-							align="center"
-							pt="md"
-							style={{ flexShrink: 0 }}
-						>
-							<Image src={SPCF_1} h="100px" w="80px" fit="contain" mb={40} />
-						</Flex>
-
-						<Box
-							bg={CARD_BACKGROUND}
-							bdrs={CARD_TOP_RADIUS}
-							p={CARD_PADDING}
-							className={classes.card}
-						>
-							{children}
-						</Box>
+				<BackgroundImage src={MOB_bg} mih="100%">
+					<Flex justify="center" align="center" pt="md">
+						<Image src={SPCF_1} h="100px" w="80px" fit="contain" mb={40} />
 					</Flex>
+
+					<Box
+						bg={CARD_BACKGROUND}
+						bdrs={CARD_TOP_RADIUS}
+						p={CARD_PADDING}
+					>
+						{children}
+					</Box>
 				</BackgroundImage>
 			</Box>
 		</Box>
