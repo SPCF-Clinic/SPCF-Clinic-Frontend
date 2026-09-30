@@ -15,7 +15,7 @@ import {
   useSearchParams,
   useLocation,
 } from "react-router-dom";
-import { createStudentFormPayload } from "../utils/register.form";
+import { createStudentFormPayload } from "../utils/register-form/register.form";
 import {
   useUpdateMedicalHistory,
   useUpdatePersonalInfo,

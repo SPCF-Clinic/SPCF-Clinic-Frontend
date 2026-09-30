@@ -69,3 +69,12 @@ export interface RegisterResBody {
   code: number;
   error: boolean;
 }
+
+export interface RegisterFormValues {
+  name: string;
+  student_id: string;
+  password: string;
+  personal_info: Record<number, string | string[]>;
+  medical_history: Record<number, string | string[]>;
+}
+
