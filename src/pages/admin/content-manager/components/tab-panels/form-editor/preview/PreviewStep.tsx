@@ -1,4 +1,5 @@
 import { useForm } from "@mantine/form";
+import { useEffect, useRef } from "react";
 
 import type { FieldType } from "@/api/fields";
 import Step1 from "@/pages/student/registerPage/registerForm/Step_1";
@@ -16,9 +17,10 @@ interface PreviewFormValues {
 interface PreviewStepProps {
 	fields: FormField[];
 	type: FieldType;
+	opened: boolean;
 }
 
-export default function PreviewStep({ fields, type }: PreviewStepProps) {
+export default function PreviewStep({ fields, type, opened }: PreviewStepProps) {
 	const form = useForm<PreviewFormValues>({
 		initialValues: {
 			name: "",
@@ -28,6 +30,16 @@ export default function PreviewStep({ fields, type }: PreviewStepProps) {
 			medical_history: {},
 		},
 	});
+
+	const wasOpened = useRef(opened);
+
+	useEffect(() => {
+		if (opened && !wasOpened.current) {
+			form.reset();
+		}
+
+		wasOpened.current = opened;
+	}, [opened, form]);
 
 	return type === "Personal" ? (
 		<Step1 data={fields} form={form} />

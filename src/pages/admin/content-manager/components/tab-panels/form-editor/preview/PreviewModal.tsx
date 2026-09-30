@@ -44,7 +44,7 @@ export default function PreviewModal({
 
 					<PhonePreview>
 						<PreviewChrome type={type}>
-							<PreviewStep fields={fields} type={type} />
+							<PreviewStep fields={fields} type={type} opened={opened} />
 						</PreviewChrome>
 					</PhonePreview>
 				</Stack>
