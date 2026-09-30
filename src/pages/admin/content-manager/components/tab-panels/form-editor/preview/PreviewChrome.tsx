@@ -1,11 +1,4 @@
-import {
-	Button,
-	Group,
-	Stack,
-	Stepper,
-	Text,
-	UnstyledButton,
-} from "@mantine/core";
+import { Button, Stack, Stepper, Text } from "@mantine/core";
 
 import type { FieldType } from "@/api/fields";
 import Footer from "@/pages/student/components/Footer";
@@ -27,22 +20,9 @@ export default function PreviewChrome({ type, children }: PreviewChromeProps) {
 
 	const stepContent = (
 		<>
-			<Group justify="space-between" align="center" mt={2} mb="xs">
-				<Text fz={12} fs="italic" c="dimmed">
-					Step {active} of {STEP_COUNT}
-				</Text>
-
-				<UnstyledButton
-					style={{
-						fontSize: 12,
-						fontStyle: "italic",
-						color: "#2B4C7E",
-						fontWeight: 500,
-					}}
-				>
-					&larr; Back
-				</UnstyledButton>
-			</Group>
+			<Text fz={12} fs="italic" c="dimmed" mt={2} mb="xs">
+				Step {active} of {STEP_COUNT}
+			</Text>
 
 			{children}
 		</>
