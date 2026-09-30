@@ -9,6 +9,7 @@ import {
 } from "@mantine/core";
 import { IconPlayerPlayFilled } from "@tabler/icons-react";
 
+import { OVERDUE_COLOR } from "@/constants/colors";
 import { useDashboardAsideContext } from "@/hooks/context/useDashboardAsideContext";
 import { useTimerNow } from "@/hooks/timers/useTimerNow";
 import { dayjs } from "@/services/dayjs";
@@ -24,8 +25,6 @@ interface TimerProps {
 	pausedAt: string | null;
 	onClick?: () => void;
 }
-
-const OVERDUE_COLOR = "#8e2d2d";
 
 export default function Timer({
 	occupant,

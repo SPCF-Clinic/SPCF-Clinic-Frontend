@@ -1,13 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Stack, RingProgress, Box, Text, ActionIcon, Button, Group, useMantineTheme } from '@mantine/core';
 import { IconPlayerPlay, IconPlayerPause, IconPill } from '@tabler/icons-react';
+import { OVERDUE_COLOR } from '@/constants/colors';
 import { useDashboardAsideContext } from '@/hooks/context/useDashboardAsideContext';
 import { useTimerNow } from '@/hooks/timers/useTimerNow';
 import { dayjs } from '@/services/dayjs';
 import formatDuration from '@/utils/formatDuration';
-
-const OVERDUE_COLOR = '#8e2d2d';
-const PRIMARY_BLUE = '#2b428b';
 
 interface ActiveTimersModalFormProps {
   startedAt: string;
@@ -38,10 +36,15 @@ export default function ActiveTimersModalForm({
   const { active } = useDashboardAsideContext();
 
   const [currentExpiresAt, setCurrentExpiresAt] = useState(initialExpiresAt);
+  const [prevInitialExpiresAt, setPrevInitialExpiresAt] = useState(initialExpiresAt);
 
-  useEffect(() => {
+  // Reset the optimistic expiry when the server hands down a new one. Adjusting
+  // during render rather than in an effect avoids a second render pass with the
+  // stale value still on screen.
+  if (initialExpiresAt !== prevInitialExpiresAt) {
+    setPrevInitialExpiresAt(initialExpiresAt);
     setCurrentExpiresAt(initialExpiresAt);
-  }, [initialExpiresAt]);
+  }
 
   const isPaused = pausedAt !== null;
   const now = useTimerNow(active && !isPaused);
@@ -52,7 +55,7 @@ export default function ActiveTimersModalForm({
     const baseTime = currentExpiry.isBefore(currentNow) ? currentNow : currentExpiry;
     const updatedExpiration = baseTime.add(5, 'minute').format('YYYY-MM-DD HH:mm:ss');
 
-    setCurrentExpiresAt(updatedExpiration);
+    if (!isDisplayedOverdue) setCurrentExpiresAt(updatedExpiration);
     onAddMinutes?.(updatedExpiration);
   };
 
@@ -73,7 +76,7 @@ export default function ActiveTimersModalForm({
 
 
 
-  const isFiveOrLess = remainingMs <= 300000; 
+  const isFiveOrLess = remainingMs <= 300000;
 
   const displaySeconds = isOverdue
     ? Math.floor(Math.abs(remainingMs) / 1000)
@@ -96,7 +99,7 @@ export default function ActiveTimersModalForm({
     Math.max(0, (elapsedMs / totalDurationMs) * 100),
   );
   const progress = Math.round(rawProgress * 10) / 10;
-  const accentColor = isDisplayedOverdue ? OVERDUE_COLOR : PRIMARY_BLUE;
+  const accentColor = isDisplayedOverdue ? OVERDUE_COLOR : theme.colors.primary[9];
 
   const totalMinutes = Math.round(totalDurationMs / (1000 * 60));
   const totalDurationLabel = `${totalMinutes} min`;
@@ -121,7 +124,7 @@ export default function ActiveTimersModalForm({
             width: 148,
             height: 148,
             borderRadius: '50%',
-            backgroundColor: isPaused ? PRIMARY_BLUE : '#EEF2F6',
+            backgroundColor: isPaused ? theme.colors.primary[9] : '#EEF2F6',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -153,39 +156,46 @@ export default function ActiveTimersModalForm({
       </Box>
 
       <Group gap="md" justify="center" mt="xs">
-        <ActionIcon
-          radius="xl"
-          size={48}
-          variant="light"
-          onClick={handleSubtractFiveMinutes}
-          disabled={isFiveOrLess}
-          style={{ backgroundColor: '#EEF2F6', color: PRIMARY_BLUE }}
-        >
-          <Text fw={700} size="md">
-            -5
-          </Text>
-        </ActionIcon>
+        {!isDisplayedOverdue && (
+          <>
+            <ActionIcon
+              radius="xl"
+              size={48}
+              variant="light"
+              onClick={handleSubtractFiveMinutes}
+              disabled={isFiveOrLess}
+              style={{ backgroundColor: '#EEF2F6', color: theme.colors.primary[9] }}
+            >
+              <Text fw={700} size="md">
+                -5
+              </Text>
+            </ActionIcon>
 
-        <ActionIcon
-          radius="xl"
-          size={52}
-          variant="light"
-          onClick={onTogglePause}
-          style={{ backgroundColor: '#EEF2F6', color: PRIMARY_BLUE }}
-        >
-          {isPaused ? (
-            <IconPlayerPlay size={24} style={{ fill: PRIMARY_BLUE }} />
-          ) : (
-            <IconPlayerPause size={24} style={{ fill: PRIMARY_BLUE }} />
-          )}
-        </ActionIcon>
+            <ActionIcon
+              radius="xl"
+              size={52}
+              variant="light"
+              onClick={onTogglePause}
+              style={{ backgroundColor: '#EEF2F6', color: theme.colors.primary[9] }}
+            >
+              {isPaused ? (
+                <IconPlayerPlay size={24} style={{ fill: theme.colors.primary[9] }} />
+              ) : (
+                <IconPlayerPause size={24} style={{ fill: theme.colors.primary[9] }} />
+              )}
+            </ActionIcon>
+          </>
+        )}
 
         <ActionIcon
           radius="xl"
           size={48}
           variant="light"
           onClick={handleAddFiveMinutes}
-          style={{ backgroundColor: '#EEF2F6', color: PRIMARY_BLUE }}
+          style={{
+            backgroundColor: '#EEF2F6',
+            color: accentColor,
+          }}
         >
           <Text fw={700} size="md">
             +5
@@ -204,15 +214,17 @@ export default function ActiveTimersModalForm({
 
       {/* Bottom Actions: Give Medicine & Unassign */}
       <Group gap="sm" w="100%" mt="xs">
-        <ActionIcon
-          radius="xl"
-          size={48}
-          variant="light"
-          onClick={onGiveMedicine}
-          style={{ backgroundColor: '#EEF2F6', color: PRIMARY_BLUE }}
-        >
-          <IconPill size={22} />
-        </ActionIcon>
+        {!isDisplayedOverdue && (
+          <ActionIcon
+            radius="xl"
+            size={48}
+            variant="light"
+            onClick={onGiveMedicine}
+            style={{ backgroundColor: '#EEF2F6', color: theme.colors.primary[9] }}
+          >
+            <IconPill size={22} />
+          </ActionIcon>
+        )}
 
         <Button
           fullWidth
@@ -221,7 +233,7 @@ export default function ActiveTimersModalForm({
           onClick={onUnassign}
           style={{
             flex: 1,
-            backgroundColor: PRIMARY_BLUE,
+            backgroundColor: accentColor,
             height: '48px',
             fontSize: '16px',
             fontWeight: 700,
