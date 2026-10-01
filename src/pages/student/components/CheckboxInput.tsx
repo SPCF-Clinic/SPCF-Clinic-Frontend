@@ -1,8 +1,14 @@
 import { useState } from 'react';
 import { Box, Input, Stack, Text, UnstyledButton } from '@mantine/core';
 
-export type CheckboxOption = string | { value: string; label?: string };
-
+export type CheckboxOption =
+  | string
+  | {
+      id?: number;
+      value: string;
+      label?: string;
+    };
+    
 interface CheckboxInputProps {
   label?: string;
   description?: string | null;

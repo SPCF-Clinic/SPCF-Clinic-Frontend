@@ -20,9 +20,6 @@ export interface FormValues {
   full_name: string;
 }
 
-/**
- * Checks if the required fields for the current active step are valid.
- */
 export const isStepDisabled = (
   active: number,
   formValues: FormValues,
@@ -58,9 +55,7 @@ export const isStepDisabled = (
   return false;
 };
 
-/**
- * Formats the form state into the payload structure expected by the API.
- */
+
 export const createStudentFormPayload = (values: any, type: string) => {
   if (type === "register") {
     return {
@@ -108,9 +103,7 @@ export const createStudentFormPayload = (values: any, type: string) => {
   }
 };
 
-/**
- * Validates step-specific form fields and advances the step index.
- */
+
 export const handleStepNext = (
   active: number,
   form: UseFormReturnType<FormValues>,
@@ -134,9 +127,7 @@ export const handleStepNext = (
   setActive((current) => (current < 5 ? current + 1 : current));
 };
 
-/**
- * Extracts backend validation error messages from API responses.
- */
+
 export const extractApiErrorMessage = (error: any): string => {
   return (
     error?.response?.data?.errors?.student_id?.[0] ||

@@ -15,7 +15,7 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 
 import { useSpecificStudent } from "@/query/student-dashboard";
 import { useMedicalInfo, usePersonalInfo } from "@/hooks/students/useRegisterStudent";
-import { data_type } from "../utils/register.form";
+import { data_type } from "../utils/register-form/register.form";
 
 import TextInput1 from "../components/TextInput";
 import DateInput from "../components/DateInput";
