@@ -8,7 +8,7 @@ import {
 } from "@/utils/students/studentName";
 import { FieldRow } from "../FieldRow";
 import { StudentInfoColumn, StudentInfoLayout } from "../StudentInfoLayout";
-import StudentPersonalInfoForm from "./StudentPersonalInfoForm";
+import PersonalInfoForm from "./PersonalInfoForm";
 
 interface PersonalInformationProps {
 	isEditing?: boolean;
@@ -45,7 +45,7 @@ export default function PersonalInformation({
 
 	if (isEditing && data) {
 		return (
-			<StudentPersonalInfoForm
+			<PersonalInfoForm
 				studentData={data.data}
 				onCancel={onCancelEdit}
 			/>

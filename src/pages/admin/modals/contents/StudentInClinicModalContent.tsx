@@ -22,6 +22,7 @@ export default function StudentInClinicModal({
     }
   };
 
+  console.log("Student Data in Modal:", studentdata);
   const handleCheckOut = () => {
     VisitModal.CheckOut(
       studentdata.student_number,
@@ -94,7 +95,7 @@ export default function StudentInClinicModal({
             {studentdata.items_dispensed && studentdata.items_dispensed.length > 0 ? (
               studentdata.items_dispensed.map((item: any, index: number) => (
                 <Text key={index} fw={600} size="sm" ta="right">
-                  {`${item.item_name} (${item.quantity_dispensed} ${item.unit})`}
+                  {`${item.item_name} (${item.quantity_dispensed} ${item.unit === null ? '' : item.unit})`}
                 </Text>
               ))
             ) : (
