@@ -1,18 +1,15 @@
 import { Accordion } from "@mantine/core";
 
-import { useMedicalInfo, usePersonalInfo } from "@/query/student-register";
 import classes from "./FormEditor.module.css";
 import MedicalPanel from "./MedicalPanel";
 import PersonalInfoPanel from "./PersonalInfoPanel";
 
 export default function FormEditor() {
-	usePersonalInfo();
-	useMedicalInfo();
-
 	return (
 		<Accordion
 			multiple
 			variant="separated"
+			keepMountedMode="display-none"
 			styles={{
 				item: {
 					"--item-border-color": "#D3D3D3",

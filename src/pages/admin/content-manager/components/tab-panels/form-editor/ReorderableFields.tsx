@@ -10,6 +10,7 @@ import { useReorderFieldMutation } from "@/hooks/fields/useReorderFieldMutation"
 import { FIELD_QUERY_KEY } from "@/query/fields";
 import type { FormApiResponse } from "@/types/api";
 import type { FormField } from "@/types/student-register";
+import PreviewModal from "./preview/PreviewModal";
 import SortableFieldItem from "./SortableFieldItem";
 import { calculateReorderPayload } from "./utils";
 
@@ -31,6 +32,7 @@ export default function ReorderableFields({
   });
 
   const [pendingOrder, setPendingOrder] = useState<number[] | null>(null);
+  const [previewOpened, setPreviewOpened] = useState(false);
 
   const displayFields = useMemo(() => {
     if (!pendingOrder) return fields;
@@ -105,62 +107,77 @@ export default function ReorderableFields({
   };
 
   return (
-    <DragDropProvider onDragEnd={handleDragEnd}>
-      <Stack>
-        {displayFields.map((field, index) => (
-          <SortableFieldItem
-            fieldType={type}
-            field={field}
-            key={`${field.id}-${field.version_number}`}
-            index={index}
-            disabled={reorderMutation.isPending}
-          />
-        ))}
-
-        <Button
-          fs="italic"
-          c="gray.7"
-          variant="transparent"
-          fullWidth
-          onClick={handleAddField}
-          loading={createFieldMutation.isPending}
-        >
-          + Add Field
-        </Button>
-
-        {isDirty && (
-          <Group justify="end" align="center">
-            <Text size="sm" c="dimmed">
-              Unsaved changes
-            </Text>
-
-            <Button
-              variant="subtle"
-              color="gray"
-              size="xs"
-              onClick={() => setPendingOrder(null)}
+    <>
+      <DragDropProvider onDragEnd={handleDragEnd}>
+        <Stack>
+          {displayFields.map((field, index) => (
+            <SortableFieldItem
+              fieldType={type}
+              field={field}
+              key={`${field.id}-${field.version_number}`}
+              index={index}
               disabled={reorderMutation.isPending}
+            />
+          ))}
+
+          <Button
+            fs="italic"
+            c="gray.7"
+            variant="transparent"
+            fullWidth
+            onClick={handleAddField}
+            loading={createFieldMutation.isPending}
+          >
+            + Add Field
+          </Button>
+
+          {isDirty && (
+            <Group justify="end" align="center">
+              <Text size="sm" c="dimmed">
+                Unsaved changes
+              </Text>
+
+              <Button
+                variant="subtle"
+                color="gray"
+                size="xs"
+                onClick={() => setPendingOrder(null)}
+                disabled={reorderMutation.isPending}
+              >
+                Discard
+              </Button>
+            </Group>
+          )}
+
+          <Group grow>
+            <Button
+              variant="transparent"
+              bdrs="xl"
+              size="md"
+              onClick={() => setPreviewOpened(true)}
             >
-              Discard
+              Preview
+            </Button>
+            <Button
+              disabled={!isDirty}
+              onClick={handleSaveOrder}
+              loading={reorderMutation.isPending}
+              bdrs="xl"
+              size="md"
+            >
+              Save Order
             </Button>
           </Group>
-        )}
+        </Stack>
+      </DragDropProvider>
 
-        <Group grow>
-          <Button variant="transparent" disabled bdrs="xl" size="md">
-            Preview
-          </Button>
-          <Button
-            disabled={!isDirty}
-            onClick={handleSaveOrder}
-            loading={reorderMutation.isPending}
-            bdrs="xl"
-            size="md"
-          >
-            Save Order
-          </Button>
-        </Group>
-      </Stack>
-    </DragDropProvider>
+      <PreviewModal
+        opened={previewOpened}
+        onClose={() => setPreviewOpened(false)}
+        fields={displayFields}
+        type={type}
+        hasUnsavedOrder={isDirty}
+      />
+    </>
   );
 }

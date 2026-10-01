@@ -21,8 +21,8 @@ import {
   createStudentFormPayload,
   handleStepNext,
   extractApiErrorMessage,
-} from "../../utils/register.form";
-import type { FormValues } from "../../utils/register.form";
+} from "../../utils/register-form/register.form";
+import type { FormValues } from "../../utils/register-form/register.form";
 
 import Footer from "../../components/Footer";
 import Layout from "../../components/Layout";

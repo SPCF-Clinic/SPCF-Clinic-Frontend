@@ -1,9 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-  mutationOptions,
-  queryOptions,
-} from "@tanstack/react-query";
+import { mutationOptions, queryOptions } from "@tanstack/react-query";
 
 import {
   fetchPersonalInfoField,
@@ -17,22 +12,7 @@ import type {
   RegisterReqBody,
   RegisterResBody,
 } from "@/types/student-register";
-import { medicalHistoryFieldQueries, personalInfoFieldQueries } from "./fields";
 
-export function usePersonalInfo() {
-  return useQuery(personalInfoFieldQueries.list());
-}
-
-export function useMedicalInfo() {
-  return useQuery(medicalHistoryFieldQueries.list());
-}
-
-export function useRegisterUser() {
-  return useMutation<RegisterResBody, Error, RegisterReqBody>({
-    mutationFn: registerStudent,
-    onSuccess: ({ data }) => console.log(data),
-  });
-}
 export const studentRegisterQueries = {
   all: () => ["student-register"],
 

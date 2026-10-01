@@ -40,6 +40,13 @@ export interface FormField {
   additional_fields: AdditionalField[];
 }
 
+/**
+ * The two Health Assessment Forms. Both endpoints return the same `FormField`
+ * shape, so these are aliases of it rather than distinct structures.
+ */
+export type PersonalInfoField = FormField;
+export type MedicalHistoryField = FormField;
+
 export interface RegisterReqBody {
   student_id: string;
   password: string;
@@ -69,3 +76,12 @@ export interface RegisterResBody {
   code: number;
   error: boolean;
 }
+
+export interface RegisterFormValues {
+  name: string;
+  student_id: string;
+  password: string;
+  personal_info: Record<number, string | string[]>;
+  medical_history: Record<number, string | string[]>;
+}
+

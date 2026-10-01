@@ -3,24 +3,14 @@ import type { UseFormReturnType } from "@mantine/form";
 
 import type {
   MedicalHistoryField,
-  AdditionalField,
+  RegisterFormValues
 } from "../../../../types/student-register";
-import { data_type } from "../../utils/register.form";
 
-import TextInput1 from "../../components/TextInput";
-import DateInput from "../../components/DateInput";
-import RadioInput from "../../components/RadioInput";
-import DropdownInput from "../../components/DropdownInput";
-import CheckboxInput from "../../components/CheckboxInput";
+import DynamicFormField from "../../components/DynamicFormField";
 import SectionDivider from "../../components/Divider";
 
-interface RegisterFormValues {
-  name: string;
-  student_id: string;
-  password: string;
-  personal_info: Record<number, string>;
-  medical_history: Record<number, string | string[]>;
-}
+import { getActiveAdditionalFields } from "../../utils/register-form/getActiveAdditionalFields";
+
 
 interface Step_2Props {
   data: MedicalHistoryField[];
@@ -38,97 +28,6 @@ export default function Step_2({ data, form }: Step_2Props) {
     });
   };
 
-  const renderField = (field: MedicalHistoryField | AdditionalField) => {
-    const fieldError = form.errors[`medical_history.${field.id}`];
-    const currentValue = form.values.medical_history[field.id] ?? "";
-    const hasOptions = Array.isArray(field.options) && field.options.length > 0;
-
-    const baseType = data_type(field.type?.name);
-
-    const isDropdown =
-      baseType === "Dropdown" ||
-      (hasOptions && baseType !== "Radio" && baseType !== "Checkbox");
-
-    if (isDropdown) {
-      return (
-        <DropdownInput
-          key={field.id}
-          label={field.name}
-          withAsterisk={"is_required" in field ? field.is_required : true}
-          error={fieldError}
-          data={field.options}
-          value={currentValue as string}
-          onChange={(val) => handleValueChange(field.id, val)}
-        />
-      );
-    }
-
-    switch (baseType) {
-      case "Divider":
-        return (
-          <SectionDivider
-            key={field.id}
-            label={field.name}
-            descriptionLabel={field.description_text ?? ""}
-          />
-        );
-
-      case "Text":
-        return (
-          <TextInput1
-            key={field.id}
-            label={field.name}
-            withAsterisk={"is_required" in field ? field.is_required : false}
-            error={fieldError}
-            value={currentValue as string}
-            onChange={(val) => handleValueChange(field.id, val)}
-          />
-        );
-
-      case "Date":
-        return (
-          <DateInput
-            key={field.id}
-            label={field.name}
-            withAsterisk={"is_required" in field ? field.is_required : false}
-            error={fieldError}
-            value={currentValue as string}
-            onChange={(val) => handleValueChange(field.id, val)}
-          />
-        );
-
-      case "Radio":
-        return (
-          <RadioInput
-            key={field.id}
-            label={field.name}
-            description={field.description_text}
-            withAsterisk={"is_required" in field ? field.is_required : false}
-            error={fieldError}
-            data={field.options}
-            value={currentValue as string}
-            onChange={(val) => handleValueChange(field.id, val)}
-          />
-        );
-
-      case "Checkbox":
-        return (
-          <CheckboxInput
-            key={field.id}
-            label={field.name}
-            description={field.description_text}
-            withAsterisk={"is_required" in field ? field.is_required : false}
-            error={fieldError}
-            options={field.options}
-            data={(Array.isArray(currentValue) ? currentValue : []) as string[]}
-            onChange={(vals) => handleValueChange(field.id, vals)}
-          />
-        );
-
-      default:
-        return null;
-    }
-  };
 
   return (
     <>
@@ -139,28 +38,40 @@ export default function Step_2({ data, form }: Step_2Props) {
 
       <Stack gap="md" mt="md">
         {data.map((item) => {
-          const parentValue = form.values.medical_history[item.id];
+          const selectedValue = form.values.medical_history[item.id];
 
-          const activeAdditionalFields = item.additional_fields?.filter(
-            (subField) =>
-              subField.required_with_field_value === parentValue ||
-              !subField.required_with_field_value
+          const activeAdditionalFields = getActiveAdditionalFields(
+            item.additional_fields,
+            selectedValue
           );
 
           return (
             <Stack key={item.id} gap="md">
-              {renderField(item)}
+              <DynamicFormField
+                field={item}
+                value={form.values.medical_history[item.id] ?? ""}
+                error={form.errors[`medical_history.${item.id}`]}
+                onChange={(value) => handleValueChange(item.id, value)}
+              />
 
               {activeAdditionalFields && activeAdditionalFields.length > 0 && (
                 <Stack gap="md" pl="md">
                   {activeAdditionalFields.some(
                     (sf) => sf.name === "Vaccine Name"
                   ) && (
-                    <SectionDivider descriptionLabel="If you are uncertain about the exact date, please just indicate the year it was administered." />
-                  )}
-                  {activeAdditionalFields.map((subField) =>
-                    renderField(subField)
-                  )}
+                      <SectionDivider descriptionLabel="If you are uncertain about the exact date, please just indicate the year it was administered." />
+                    )}
+                  {activeAdditionalFields.map((subField) => (
+                    <DynamicFormField
+                      key={subField.id}
+                      field={subField}
+                      value={form.values.medical_history[subField.id] ?? ""}
+                      error={form.errors[`medical_history.${subField.id}`]}
+                      onChange={(value) =>
+                        handleValueChange(subField.id, value)
+                      }
+                    />
+                  ))}
                 </Stack>
               )}
             </Stack>

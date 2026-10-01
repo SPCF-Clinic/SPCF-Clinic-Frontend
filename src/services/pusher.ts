@@ -2,7 +2,7 @@ import Pusher from "pusher-js";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 
-Pusher.logToConsole = import.meta.env.DEV;
+Pusher.logToConsole = import.meta.env.VITE_PUSHER_LOGGER === "true";
 
 const pusherKey = import.meta.env.VITE_PUSHER_APP_KEY;
 const pusherCluster = import.meta.env.VITE_PUSHER_APP_CLUSTER;
@@ -26,8 +26,8 @@ export const pusher = new Pusher(pusherKey, {
 			return {
 				...(token
 					? {
-							Authorization: `Bearer ${token}`,
-						}
+						Authorization: `Bearer ${token}`,
+					}
 					: {}),
 				Accept: "application/json",
 			};

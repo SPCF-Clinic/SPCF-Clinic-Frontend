@@ -7,6 +7,7 @@ import { useMedicalInfo, useUpdateMedicalHistory } from "@/hooks/students/useReg
 import { studentQueries } from "@/query/students";
 import type { MedicalHistoryField } from "@/types/student-register";
 import type { StudentShow } from "@/types/students";
+import { toSelectOptions } from "@/utils/fieldOptions";
 
 interface MedicalHistoryFormProps {
 	studentData: StudentShow;
@@ -15,22 +16,13 @@ interface MedicalHistoryFormProps {
 
 type FormValues = Record<string, string | string[]>;
 
-function getOptions(field: MedicalHistoryField) {
-	return field.options.map((option) => {
-		if (typeof option === "string") return { value: option, label: option };
-		const optionValue = option as unknown as { id?: number | string; value?: string };
-		const value = optionValue.value ?? String(optionValue.id ?? "");
-		return { value, label: value };
-	});
-}
-
 function getInitialValue(studentData: StudentShow, field: MedicalHistoryField) {
 	return studentData.medical_history.find((item) => item.id === field.id)?.value ?? "";
 }
 
 function FieldInput({ field, form }: { field: MedicalHistoryField; form: ReturnType<typeof useForm<FormValues>> }) {
 	const name = `medical_history[${field.id}]`;
-	const options = getOptions(field);
+	const options = toSelectOptions(field);
 
 	if (field.type.name === "Radio") {
 		return <Radio.Group label={field.name} {...form.getInputProps(name)}><Group mt="xs">{options.map((option) => <Radio key={option.value} value={option.value} label={option.label} />)}</Group></Radio.Group>;
