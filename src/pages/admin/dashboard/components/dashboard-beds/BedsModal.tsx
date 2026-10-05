@@ -6,12 +6,17 @@ import React, { useEffect, useState } from "react";
 import { AppModal } from "@/components/AppModal";
 import QueryError from "@/components/QueryError";
 import { bedQueries } from "@/query/beds";
+import AssignBedModal from "./AssignBedModal";
 import Bed from "./Bed";
 import BedSkeleton from "./BedSkeleton";
 import ColorSwatchLegend from "./ColorSwatchLegend";
+import { useAssignBedModal } from "./useAssignBedModal";
 
 export default function BedsModal(props: ModalRootProps) {
 	const { opened } = props;
+
+	const { openAssignBed, assignBedModalProps } = useAssignBedModal();
+
 	const {
 		data,
 		isPending,
@@ -48,57 +53,70 @@ export default function BedsModal(props: ModalRootProps) {
 	}
 
 	return (
-		<AppModal
-			size="xl"
-			title="Bed Status"
-			footer={
-				<Box
-					py="sm"
-					px="md"
-					bg="var(--mantine-color-body)"
-					style={{
-						position: "sticky",
-						bottom: 0,
-						zIndex: 10,
-						borderTop: "1px solid var(--mantine-color-default-border)",
-					}}
-				>
-					<ColorSwatchLegend />
-				</Box>
-			}
-			contentProps={{ h: "60dvh", ref: setContainer }}
-			bodyProps={{ py: "md" }}
-			{...props}
-		>
-			<Grid columns={5} justify="space-between" gap="md">
-				{isPending
-					? Array.from({ length: 20 }, (_, i) => (
-							<Grid.Col span={{ base: 3, xs: 2, sm: 1 }} key={i}>
+		<>
+			<AppModal
+				size="xl"
+				title="Bed Status"
+				footer={
+					<Box
+						py="sm"
+						px="md"
+						bg="var(--mantine-color-body)"
+						style={{
+							position: "sticky",
+							bottom: 0,
+							zIndex: 10,
+							borderTop: "1px solid var(--mantine-color-default-border)",
+						}}
+					>
+						<ColorSwatchLegend />
+					</Box>
+				}
+				contentProps={{ h: "60dvh", ref: setContainer }}
+				bodyProps={{ py: "md" }}
+				{...props}
+			>
+				<Grid columns={5} justify="space-between" gap="md">
+					{isPending
+						? Array.from({ length: 20 }, (_, i) => (
+								<Grid.Col span={{ base: 3, xs: 2, sm: 1 }} key={i}>
+									<BedSkeleton />
+								</Grid.Col>
+							))
+						: data.pages.map(({ data }, i) => (
+								<React.Fragment key={data.next_cursor ?? i}>
+									{data.data.map((bed) => (
+										<Grid.Col span={{ base: 3, xs: 2, sm: 1 }} key={bed.id}>
+											<Box
+												onClick={() => {
+													if (bed.status === "Empty") {
+														openAssignBed(bed);
+													}
+												}}
+												style={{ cursor: "pointer" }}
+											>
+												<Bed {...bed} />
+											</Box>
+										</Grid.Col>
+									))}
+								</React.Fragment>
+							))}
+
+					{(hasNextPage || isFetchingNextPage) &&
+						Array.from({ length: 10 }, (_, i) => (
+							<Grid.Col
+								span={{ base: 3, xs: 2, sm: 1 }}
+								key={`skeleton-next-${i}`}
+							>
 								<BedSkeleton />
 							</Grid.Col>
-						))
-					: data.pages.map(({ data }, i) => (
-							<React.Fragment key={data.next_cursor ?? i}>
-								{data.data.map((bed) => (
-									<Grid.Col span={{ base: 3, xs: 2, sm: 1 }} key={bed.id}>
-										<Bed {...bed} />
-									</Grid.Col>
-								))}
-							</React.Fragment>
 						))}
+				</Grid>
 
-				{(hasNextPage || isFetchingNextPage) &&
-					Array.from({ length: 10 }, (_, i) => (
-						<Grid.Col
-							span={{ base: 3, xs: 2, sm: 1 }}
-							key={`skeleton-next-${i}`}
-						>
-							<BedSkeleton />
-						</Grid.Col>
-					))}
-			</Grid>
+				{hasNextPage && !isFetchingNextPage && <Box ref={ref} />}
+			</AppModal>
 
-			{hasNextPage && !isFetchingNextPage && <Box ref={ref} />}
-		</AppModal>
+			<AssignBedModal {...assignBedModalProps} />
+		</>
 	);
 }
