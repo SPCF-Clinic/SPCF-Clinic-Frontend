@@ -11,8 +11,8 @@ interface ActiveTimersModalFormProps {
   startedAt: string;
   expiresAt: string;
   pausedAt: string | null;
-  patientName?: string;
-  condition?: string;
+  occupantName?: string;
+  condition?: string | null;
   onAddMinutes?: (newExpiresAt: string) => void;
   onSubtractMinutes?: (newExpiresAt: string) => void;
   onTogglePause?: () => void;
@@ -24,7 +24,7 @@ export default function ActiveTimersModalForm({
   startedAt,
   expiresAt: initialExpiresAt,
   pausedAt,
-  patientName,
+  occupantName,
   condition,
   onAddMinutes,
   onSubtractMinutes,
@@ -205,11 +205,13 @@ export default function ActiveTimersModalForm({
 
       <Stack gap={2} align="center" mt="xs">
         <Text fw={700} size="lg" ta="center" c="black">
-          {patientName}
+          {occupantName}
         </Text>
-        <Text fs="italic" c="dimmed" size="sm" ta="center">
-          {condition}
-        </Text>
+        {condition && (
+          <Text fs="italic" c="dimmed" size="sm" ta="center">
+            {condition}
+          </Text>
+        )}
       </Stack>
 
       {/* Bottom Actions: Give Medicine & Unassign */}

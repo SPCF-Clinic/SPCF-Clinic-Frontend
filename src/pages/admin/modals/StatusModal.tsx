@@ -1,6 +1,7 @@
 import { modals } from "@mantine/modals";
 import {  Text, } from '@mantine/core';
 
+import type { BedTimerControls } from "@/types/beds";
 import type { StudentShow } from "@/types/students";
 
 import StudentCheckInClinicModalForm from "@/pages/admin/modals/forms/StudentCheckInClinicModalForm";
@@ -64,7 +65,7 @@ const StudentInClinic = (studentdata: any, onClose: () => void) => {
 };
 
 
-const ActiveTimer = (studentdata: any) =>
+const ActiveTimer = (studentdata: BedTimerControls) =>
   modals.open({
     title: (
       <Text fw={700} size="xl">

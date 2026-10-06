@@ -8,10 +8,29 @@ import ActiveTimersModalForm from "@/pages/admin/modals/forms/ActiveTimersModalF
 import MedicineModal from "@/pages/admin/modals/MedicineModal";
 import { DashboardAsideProvider } from "@/providers/DashboardAsideProvider";
 
-export default function ActiveTimerModalContent({ studentdata }: { studentdata: any }) {
+import type { BedTimerControls } from "@/types/beds";
 
-  const checkInId = studentdata.check_in_id || studentdata.id;
- 
+export default function ActiveTimerModalContent({
+  studentdata,
+}: {
+  studentdata: BedTimerControls;
+}) {
+
+  const checkInId = studentdata.check_in_id ?? studentdata.id;
+
+  if (checkInId === undefined) return null;
+
+  return <ActiveTimerControls studentdata={studentdata} checkInId={checkInId} />;
+}
+
+function ActiveTimerControls({
+  studentdata,
+  checkInId,
+}: {
+  studentdata: BedTimerControls;
+  checkInId: number;
+}) {
+
   console.log(studentdata)
 
   const { mutate: updateCheckIn } = useUpdateCheckIn(checkInId);
@@ -34,14 +53,15 @@ export default function ActiveTimerModalContent({ studentdata }: { studentdata: 
   };
 
   const handleTogglePause = () => {
+    // Pause and resume take no variables: the Check-in is bound into the hook.
     if (isPaused) {
-    resumeTimer(checkInId, {
+    resumeTimer(undefined, {
       onSuccess: () => {
         modals.closeAll();
       },
     });
   } else {
-    pauseTimer(checkInId, {
+    pauseTimer(undefined, {
       onSuccess: () => {
         modals.closeAll();
       },
@@ -67,8 +87,8 @@ export default function ActiveTimerModalContent({ studentdata }: { studentdata: 
         startedAt={studentdata.timer_started_at}
         expiresAt={studentdata.timer_expires_at}
         pausedAt={studentdata.timer_paused_at}
-        patientName={studentdata.current_occupant?.occupant_name}
-        condition={studentdata.current_occupant?.reason_for_visit}
+        occupantName={studentdata.current_occupant.occupant_name}
+        condition={studentdata.current_occupant.reason_for_visit}
         onAddMinutes={handleAddMinutes}
         onSubtractMinutes={handleSubtractMinutes}
         onTogglePause={handleTogglePause}
