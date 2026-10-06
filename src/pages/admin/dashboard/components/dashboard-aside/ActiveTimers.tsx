@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import QueryError from "@/components/QueryError";
 import Timer from "@/components/timer/Timer";
 import TimerSkeleton from "@/components/timer/TimerSkeleton";
+import { useDashboardAsideContext } from "@/hooks/context/useDashboardAsideContext";
 import { useTimerRealtime } from "@/hooks/timers/useTimerRealtime";
 import { bedQueries } from "@/query/beds";
 import classes from "@/styles/ScrollFade.module.css";
@@ -24,6 +25,8 @@ export default function ActiveTimers() {
 		...bedQueries.list({ status: "Occupied" }),
 		staleTime: Infinity,
 	});
+
+	const { active } = useDashboardAsideContext();
 
 	console.log("bed", data)
 
@@ -76,8 +79,9 @@ export default function ActiveTimers() {
 												bedNumber={bed.bed_number}
 												startedAt={bed.timer_started_at}
 												expiresAt={bed.timer_expires_at}
-												occupant={bed.current_occupant}
+												occupantName={bed.current_occupant.occupant_name}
 												pausedAt={bed.timer_paused_at}
+												active={active}
 												onClick={() => {
 													StatusModal.ActiveTimer(bed);
 												}}

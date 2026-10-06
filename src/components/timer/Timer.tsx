@@ -10,32 +10,31 @@ import {
 import { IconPlayerPlayFilled } from "@tabler/icons-react";
 
 import { OVERDUE_COLOR } from "@/constants/colors";
-import { useDashboardAsideContext } from "@/hooks/context/useDashboardAsideContext";
 import { useTimerNow } from "@/hooks/timers/useTimerNow";
 import { dayjs } from "@/services/dayjs";
-import type { CurrentOccupant } from "@/types/beds";
 import classes from "./Timer.module.css";
 import formatDuration from "@/utils/formatDuration";
 
 interface TimerProps {
-	occupant: CurrentOccupant;
+	occupantName: string;
 	bedNumber: string;
 	startedAt: string;
 	expiresAt: string;
 	pausedAt: string | null;
+	active?: boolean;
 	onClick?: () => void;
 }
 
 export default function Timer({
-	occupant,
+	occupantName,
 	bedNumber,
 	startedAt,
 	expiresAt,
 	pausedAt,
+	active = true,
 	onClick,
 }: TimerProps) {
 	const theme = useMantineTheme();
-	const { active } = useDashboardAsideContext();
 
 	const isPaused = pausedAt !== null;
 	const now = useTimerNow(active && !isPaused);
@@ -71,7 +70,6 @@ export default function Timer({
 		Math.max(0, (elapsedMs / totalDurationMs) * 100),
 	);
 	const progress = Math.round(rawProgress * 10) / 10;
-	console.log(progress);
 
 	const accentColor =
 		isDisplayedOverdue && !isPaused ? OVERDUE_COLOR : theme.colors.primary[9];
@@ -98,7 +96,7 @@ export default function Timer({
 						{bedNumber}
 					</Text>
 
-					<Text fw={600}>{occupant.occupant_name}</Text>
+					<Text fw={600}>{occupantName}</Text>
 				</Stack>
 
 				<RingProgress
