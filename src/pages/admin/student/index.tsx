@@ -3,6 +3,7 @@ import { Box, Center, Grid, Loader, Stack } from "@mantine/core";
 import { useStudentActivityLogs } from "@/hooks/students/useStudentActivityLogs";
 import { useStudentCheckIns } from "@/hooks/students/useStudentCheckIns";
 import { useStudentDetail } from "@/hooks/students/useStudentDetail";
+import { useTimerRealtime } from "@/hooks/timers/useTimerRealtime";
 import Breadcrumbs from "./components/Breadcrumbs";
 import ContactPerson from "./components/ContactPerson";
 import Illnesses from "./components/Illnesses";
@@ -15,6 +16,8 @@ export default function StudentProfile() {
   const studentQuery = useStudentDetail();
   const visitLogQuery = useStudentCheckIns();
   const studentActivityLogsQuery = useStudentActivityLogs();
+
+  useTimerRealtime();
 
   const isLoading =
     studentQuery.isLoading ||
