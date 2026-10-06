@@ -26,7 +26,7 @@ export default function StudentAssignBed({
 }: StudentInClinicFormProps) {
     const checkInId = studentData.check_in?.id;
 
-    if (checkInId === undefined) return null;
+    if (checkInId === null || checkInId === undefined) return null;
 
     return <StudentAssignBedForm studentData={studentData} checkInId={checkInId} />;
 }

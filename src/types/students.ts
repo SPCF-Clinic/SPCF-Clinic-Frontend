@@ -15,20 +15,20 @@ export interface StudentIndex {
 export interface StudentShow {
   id: number;
   status: "Active" | "Archived";
-  full_name: string;
+  full_name: string | null;
   username: string;
-  check_in: CheckIn | null;
+  check_in: CheckIn;
   personal_info: Field[];
   medical_history: Field[];
   contact_person: {
-    name: string;
-    number: string;
+    name: string | null;
+    number: string | null;
   };
-  illnesses: string[];
+  illnesses: string[] | null;
 }
 
 export interface CheckIn {
-  id: number;
+  id: number | null;
   status: "In Clinic" | "Not In Clinic";
   bed: Bed | null;
 }

@@ -7,9 +7,7 @@ export default function StudentBedTimer() {
   const { data } = useStudentDetail();
 
   const student = data?.data;
-
-  // Tests the chain directly, so TypeScript narrows `student.check_in` below.
-  if (!student?.check_in?.bed) return null;
+  if (!student?.check_in?.id || !student.check_in.bed) return null;
 
   const bed = student.check_in.bed;
   const checkInId = student.check_in.id;
