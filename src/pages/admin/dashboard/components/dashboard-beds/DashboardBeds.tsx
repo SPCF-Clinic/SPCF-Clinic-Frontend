@@ -20,6 +20,7 @@ import BedSkeleton from "./BedSkeleton";
 import BedsModal from "./BedsModal";
 import ColorSwatchLegend from "./ColorSwatchLegend";
 import { useAssignBedModal } from "./useAssignBedModal";
+import StatusModal from "@/pages/admin/modals/StatusModal";
 
 export default function DashboardBeds() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -84,7 +85,9 @@ export default function DashboardBeds() {
                             onClick={() => {
                               if (bed.status === "Empty") {
                                 openAssignBed(bed);
+                                return;
                               }
+                              StatusModal.ActiveTimer(bed);
                             }}
                             style={{ cursor: "pointer" }}
                           >

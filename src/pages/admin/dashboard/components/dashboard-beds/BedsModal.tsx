@@ -11,112 +11,115 @@ import Bed from "./Bed";
 import BedSkeleton from "./BedSkeleton";
 import ColorSwatchLegend from "./ColorSwatchLegend";
 import { useAssignBedModal } from "./useAssignBedModal";
+import StatusModal from "@/pages/admin/modals/StatusModal";
 
 export default function BedsModal(props: ModalRootProps) {
-	const { opened } = props;
+  const { opened } = props;
 
-	const { openAssignBed, assignBedModalProps } = useAssignBedModal();
+  const { openAssignBed, assignBedModalProps } = useAssignBedModal();
 
-	const {
-		data,
-		isPending,
-		error,
-		refetch,
-		hasNextPage,
-		isFetchingNextPage,
-		fetchNextPage,
-	} = useInfiniteQuery({
-		...bedQueries.list(),
-		enabled: opened,
-	});
+  const {
+    data,
+    isPending,
+    error,
+    refetch,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery({
+    ...bedQueries.list(),
+    enabled: opened,
+  });
 
-	const [container, setContainer] = useState<HTMLDivElement | null>(null);
-	const { ref, entry } = useIntersection({
-		root: container,
-		rootMargin: "200px",
-	});
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+  const { ref, entry } = useIntersection({
+    root: container,
+    rootMargin: "200px",
+  });
 
-	useEffect(() => {
-		if (opened && entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
-			fetchNextPage();
-		}
-	}, [
-		opened,
-		entry?.isIntersecting,
-		hasNextPage,
-		isFetchingNextPage,
-		fetchNextPage,
-	]);
+  useEffect(() => {
+    if (opened && entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [
+    opened,
+    entry?.isIntersecting,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  ]);
 
-	if (error) {
-		return <QueryError error={error} onRetry={refetch} />;
-	}
+  if (error) {
+    return <QueryError error={error} onRetry={refetch} />;
+  }
 
-	return (
-		<>
-			<AppModal
-				size="xl"
-				title="Bed Status"
-				footer={
-					<Box
-						py="sm"
-						px="md"
-						bg="var(--mantine-color-body)"
-						style={{
-							position: "sticky",
-							bottom: 0,
-							zIndex: 10,
-							borderTop: "1px solid var(--mantine-color-default-border)",
-						}}
-					>
-						<ColorSwatchLegend />
-					</Box>
-				}
-				contentProps={{ h: "60dvh", ref: setContainer }}
-				bodyProps={{ py: "md" }}
-				{...props}
-			>
-				<Grid columns={5} justify="space-between" gap="md">
-					{isPending
-						? Array.from({ length: 20 }, (_, i) => (
-								<Grid.Col span={{ base: 3, xs: 2, sm: 1 }} key={i}>
-									<BedSkeleton />
-								</Grid.Col>
-							))
-						: data.pages.map(({ data }, i) => (
-								<React.Fragment key={data.next_cursor ?? i}>
-									{data.data.map((bed) => (
-										<Grid.Col span={{ base: 3, xs: 2, sm: 1 }} key={bed.id}>
-											<Box
-												onClick={() => {
-													if (bed.status === "Empty") {
-														openAssignBed(bed);
-													}
-												}}
-												style={{ cursor: "pointer" }}
-											>
-												<Bed {...bed} />
-											</Box>
-										</Grid.Col>
-									))}
-								</React.Fragment>
-							))}
+  return (
+    <>
+      <AppModal
+        size="xl"
+        title="Bed Status"
+        footer={
+          <Box
+            py="sm"
+            px="md"
+            bg="var(--mantine-color-body)"
+            style={{
+              position: "sticky",
+              bottom: 0,
+              zIndex: 10,
+              borderTop: "1px solid var(--mantine-color-default-border)",
+            }}
+          >
+            <ColorSwatchLegend />
+          </Box>
+        }
+        contentProps={{ h: "60dvh", ref: setContainer }}
+        bodyProps={{ py: "md" }}
+        {...props}
+      >
+        <Grid columns={5} justify="space-between" gap="md">
+          {isPending
+            ? Array.from({ length: 20 }, (_, i) => (
+                <Grid.Col span={{ base: 3, xs: 2, sm: 1 }} key={i}>
+                  <BedSkeleton />
+                </Grid.Col>
+              ))
+            : data.pages.map(({ data }, i) => (
+                <React.Fragment key={data.next_cursor ?? i}>
+                  {data.data.map((bed) => (
+                    <Grid.Col span={{ base: 3, xs: 2, sm: 1 }} key={bed.id}>
+                      <Box
+                        onClick={() => {
+                          if (bed.status === "Empty") {
+                            openAssignBed(bed);
+                            return;
+                          }
+                          StatusModal.ActiveTimer(bed);
+                        }}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <Bed {...bed} />
+                      </Box>
+                    </Grid.Col>
+                  ))}
+                </React.Fragment>
+              ))}
 
-					{(hasNextPage || isFetchingNextPage) &&
-						Array.from({ length: 10 }, (_, i) => (
-							<Grid.Col
-								span={{ base: 3, xs: 2, sm: 1 }}
-								key={`skeleton-next-${i}`}
-							>
-								<BedSkeleton />
-							</Grid.Col>
-						))}
-				</Grid>
+          {(hasNextPage || isFetchingNextPage) &&
+            Array.from({ length: 10 }, (_, i) => (
+              <Grid.Col
+                span={{ base: 3, xs: 2, sm: 1 }}
+                key={`skeleton-next-${i}`}
+              >
+                <BedSkeleton />
+              </Grid.Col>
+            ))}
+        </Grid>
 
-				{hasNextPage && !isFetchingNextPage && <Box ref={ref} />}
-			</AppModal>
+        {hasNextPage && !isFetchingNextPage && <Box ref={ref} />}
+      </AppModal>
 
-			<AssignBedModal {...assignBedModalProps} />
-		</>
-	);
+      <AssignBedModal {...assignBedModalProps} />
+    </>
+  );
 }
