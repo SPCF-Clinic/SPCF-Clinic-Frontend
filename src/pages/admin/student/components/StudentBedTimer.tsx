@@ -8,20 +8,16 @@ export default function StudentBedTimer() {
 
   const student = data?.data;
 
-  const bed = student?.check_in?.bed;
+  // Tests the chain directly, so TypeScript narrows `student.check_in` below.
+  if (!student?.check_in?.bed) return null;
 
-  if (!student || !bed) return null;
-
+  const bed = student.check_in.bed;
+  const checkInId = student.check_in.id;
   const occupantName = getStudentFullName(student.personal_info);
 
-  // The controls dialog is opened from two places, the dashboard's Bed Timers
-  // and here, and reads one named shape either way. The Bed Assignment supplies
-  // the three timestamps and the Bed number; the Check-in supplies the
-  // identifier the controls act on, and it is absent for a student who has
-  // never been checked in.
   const openControls = () => {
     StatusModal.ActiveTimer({
-      check_in_id: student.check_in?.id ?? null,
+      check_in_id: checkInId,
       bed_number: bed.bed_number,
       timer_started_at: bed.timer_started_at,
       timer_expires_at: bed.timer_expires_at,

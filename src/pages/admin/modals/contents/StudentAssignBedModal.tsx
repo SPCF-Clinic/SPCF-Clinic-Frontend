@@ -24,14 +24,25 @@ interface StudentInClinicFormProps {
 export default function StudentAssignBed({
     studentData,
 }: StudentInClinicFormProps) {
+    const checkInId = studentData.check_in?.id;
+
+    if (checkInId === undefined) return null;
+
+    return <StudentAssignBedForm studentData={studentData} checkInId={checkInId} />;
+}
+
+function StudentAssignBedForm({
+    studentData,
+    checkInId,
+}: StudentInClinicFormProps & { checkInId: number }) {
     const queryClient = useQueryClient();
 
     console.log("Student Data:", studentData); // Debugging line to check the studentData
 
-    console.log("Student Check-in ID:", studentData.check_in?.id); // Debugging line to check the student's check-in ID
+    console.log("Student Check-in ID:", checkInId); // Debugging line to check the student's check-in ID
 
     const { data: listOfBeds } = useBeds();
-    const { mutate: updateCheckIn, isPending } = useUpdateCheckIn(studentData.check_in?.id);
+    const { mutate: updateCheckIn, isPending } = useUpdateCheckIn(checkInId);
 
     const form = useForm({
         initialValues: {

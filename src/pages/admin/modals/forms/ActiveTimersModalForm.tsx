@@ -12,7 +12,7 @@ interface ActiveTimersModalFormProps {
   expiresAt: string;
   pausedAt: string | null;
   occupantName?: string;
-  condition?: string | null;
+  reasonForVisit?: string | null;
   onAddMinutes?: (newExpiresAt: string) => void;
   onSubtractMinutes?: (newExpiresAt: string) => void;
   onTogglePause?: () => void;
@@ -25,7 +25,7 @@ export default function ActiveTimersModalForm({
   expiresAt: initialExpiresAt,
   pausedAt,
   occupantName,
-  condition,
+  reasonForVisit,
   onAddMinutes,
   onSubtractMinutes,
   onTogglePause,
@@ -207,9 +207,9 @@ export default function ActiveTimersModalForm({
         <Text fw={700} size="lg" ta="center" c="black">
           {occupantName}
         </Text>
-        {condition && (
+        {reasonForVisit && (
           <Text fs="italic" c="dimmed" size="sm" ta="center">
-            {condition}
+            {reasonForVisit}
           </Text>
         )}
       </Stack>

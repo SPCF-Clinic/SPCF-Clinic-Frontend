@@ -31,19 +31,9 @@ export interface BedTimerControls {
 	timer_started_at: string;
 	timer_expires_at: string;
 	timer_paused_at: string | null;
-	// The Check-in the controls act on. Absent from a bed record, whose own
-	// identifier is the one its controls have always used, and null for a
-	// student who has never been checked in.
-	check_in_id?: number | null;
+	// A bed record sends no check-in id and its own `id` is read as one. Never
+	// the student's own identifier, which belongs to no Check-in here.
+	check_in_id?: number;
 	id?: number;
-	current_occupant: BedTimerControlsOccupant;
-}
-
-// The Occupant the dialog reads: who holds the Bed, and why they came in. Not
-// the full CurrentOccupant, so that a caller holding less than the bed list
-// does not have to fabricate the rest.
-export interface BedTimerControlsOccupant {
-	user_id: number;
-	occupant_name: string;
-	reason_for_visit?: string | null;
+	current_occupant: CurrentOccupant;
 }

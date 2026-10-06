@@ -88,7 +88,7 @@ function ActiveTimerControls({
         expiresAt={studentdata.timer_expires_at}
         pausedAt={studentdata.timer_paused_at}
         occupantName={studentdata.current_occupant.occupant_name}
-        condition={studentdata.current_occupant.reason_for_visit}
+        reasonForVisit={studentdata.current_occupant.reason_for_visit}
         onAddMinutes={handleAddMinutes}
         onSubtractMinutes={handleSubtractMinutes}
         onTogglePause={handleTogglePause}
