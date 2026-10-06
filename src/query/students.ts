@@ -1,4 +1,5 @@
 import { mutationOptions, queryOptions } from "@tanstack/react-query";
+import type { InvalidateQueryFilters } from "@tanstack/react-query";
 
 import {
     type GetStudentCheckInsFilters,
@@ -34,6 +35,13 @@ export const studentQueries = {
             queryKey: [...studentQueries.checkIns(studentId), filters],
             queryFn: () => getStudentCheckIns(studentId, filters),
         }),
+    /** `details()` is a prefix, so this matches detail queries only and not
+     *  the Check-in lists nested beneath them. */
+    detailsOnly: (): InvalidateQueryFilters => ({
+        queryKey: studentQueries.details(),
+        predicate: (query) =>
+            query.queryKey.length === studentQueries.details().length + 1,
+    }),
     updatePassword: (id: number) =>
         mutationOptions({
             mutationKey: [...studentQueries.details(), id, "update-password"],
