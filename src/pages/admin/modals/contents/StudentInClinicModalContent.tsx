@@ -9,11 +9,13 @@ import VisitModal from "@/pages/admin/modals/VisitModal";
 interface StudentInClinicModalProps {
   studentdata: any;
   modalId?: string;
+  onAssignBed?: () => void;
 }
 
 export default function StudentInClinicModal({
   studentdata,
   modalId,
+  onAssignBed,
 }: StudentInClinicModalProps) {
   const handleGiveMedicine = () => {
     MedicineModal.Give(studentdata, "Medicine" as any);
@@ -28,7 +30,7 @@ export default function StudentInClinicModal({
       studentdata.student_number,
       dayjs(studentdata.check_in_time).format("YYYY-MM-DD"),
       studentdata.user_id,
-      studentdata.id
+      studentdata.id,
     );
   };
 
@@ -82,9 +84,20 @@ export default function StudentInClinicModal({
           <Text c="dimmed" size="sm">
             Bed
           </Text>
-          <Text fw={600} size="sm">
-            {studentdata.bed_id || "-"}
-          </Text>
+          {studentdata.bed_id ? (
+            <Text fw={600} size="sm">
+              {studentdata.bed_id}
+            </Text>
+          ) : (
+            <Button
+              variant="transparent"
+              td="underline"
+              onClick={onAssignBed}
+              px={0}
+            >
+              Assign
+            </Button>
+          )}
         </Group>
 
         <Group justify="space-between" align="flex-start">
@@ -92,10 +105,11 @@ export default function StudentInClinicModal({
             Medicine given
           </Text>
           <Stack gap={2} align="flex-end">
-            {studentdata.items_dispensed && studentdata.items_dispensed.length > 0 ? (
+            {studentdata.items_dispensed &&
+            studentdata.items_dispensed.length > 0 ? (
               studentdata.items_dispensed.map((item: any, index: number) => (
                 <Text key={index} fw={600} size="sm" ta="right">
-                  {`${item.item_name} (${item.quantity_dispensed} ${item.unit === null ? '' : item.unit})`}
+                  {`${item.item_name} (${item.quantity_dispensed} ${item.unit === null ? "" : item.unit})`}
                 </Text>
               ))
             ) : (
