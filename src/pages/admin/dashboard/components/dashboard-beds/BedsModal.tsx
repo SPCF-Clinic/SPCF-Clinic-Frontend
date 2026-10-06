@@ -7,11 +7,10 @@ import { AppModal } from "@/components/AppModal";
 import QueryError from "@/components/QueryError";
 import { bedQueries } from "@/query/beds";
 import AssignBedModal from "./AssignBedModal";
-import Bed from "./Bed";
 import BedSkeleton from "./BedSkeleton";
+import BedTile from "./BedTile";
 import ColorSwatchLegend from "./ColorSwatchLegend";
 import { useAssignBedModal } from "./useAssignBedModal";
-import StatusModal from "@/pages/admin/modals/StatusModal";
 
 export default function BedsModal(props: ModalRootProps) {
   const { opened } = props;
@@ -88,18 +87,7 @@ export default function BedsModal(props: ModalRootProps) {
                 <React.Fragment key={data.next_cursor ?? i}>
                   {data.data.map((bed) => (
                     <Grid.Col span={{ base: 3, xs: 2, sm: 1 }} key={bed.id}>
-                      <Box
-                        onClick={() => {
-                          if (bed.status === "Empty") {
-                            openAssignBed(bed);
-                            return;
-                          }
-                          StatusModal.ActiveTimer(bed);
-                        }}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <Bed {...bed} />
-                      </Box>
+                      <BedTile bed={bed} openAssignBed={openAssignBed} />
                     </Grid.Col>
                   ))}
                 </React.Fragment>

@@ -15,12 +15,11 @@ import React, { useEffect, useState } from "react";
 import QueryError from "@/components/QueryError";
 import { bedQueries } from "@/query/beds";
 import AssignBedModal from "./AssignBedModal";
-import Bed from "./Bed";
 import BedSkeleton from "./BedSkeleton";
 import BedsModal from "./BedsModal";
+import BedTile from "./BedTile";
 import ColorSwatchLegend from "./ColorSwatchLegend";
 import { useAssignBedModal } from "./useAssignBedModal";
-import StatusModal from "@/pages/admin/modals/StatusModal";
 
 export default function DashboardBeds() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -79,20 +78,12 @@ export default function DashboardBeds() {
                     {data.pages.map(({ data }, i) => (
                       <React.Fragment key={data.next_cursor ?? i}>
                         {data.data.map((bed) => (
-                          <Box
+                          <BedTile
                             key={bed.id}
+                            bed={bed}
+                            openAssignBed={openAssignBed}
                             w={140}
-                            onClick={() => {
-                              if (bed.status === "Empty") {
-                                openAssignBed(bed);
-                                return;
-                              }
-                              StatusModal.ActiveTimer(bed);
-                            }}
-                            style={{ cursor: "pointer" }}
-                          >
-                            <Bed {...bed} />
-                          </Box>
+                          />
                         ))}
                       </React.Fragment>
                     ))}

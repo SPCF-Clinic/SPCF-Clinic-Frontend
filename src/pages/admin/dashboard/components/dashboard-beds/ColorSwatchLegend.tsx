@@ -7,10 +7,12 @@ import {
   type GroupProps,
 } from "@mantine/core";
 
+import { OVERDUE_COLOR } from "@/constants/colors";
+
 const COLORS: { label: string; color: ColorSwatchProps["color"] }[] = [
   { label: "Unoccupied", color: "var(--mantine-color-gray-6)" },
   { label: "Occupied", color: "var(--mantine-color-primary-6)" },
-  { label: "Overdue", color: "var(--mantine-color-red-6)" },
+  { label: "Overdue", color: OVERDUE_COLOR },
 ];
 
 export default function ColorSwatchLegend(props: GroupProps) {

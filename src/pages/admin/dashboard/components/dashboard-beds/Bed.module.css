@@ -15,6 +15,13 @@
     border-bottom: 1px solid var(--mantine-color-primary-6);
   }
 
+  &[data-status="overdue"] {
+    --bed-color: var(--overdue-color);
+    --bed-icon-color: var(--overdue-color);
+    background-color: var(--mantine-color-red-1);
+    border-bottom: 1px solid var(--overdue-color);
+  }
+
   &[data-loading] {
     cursor: wait;
   }
