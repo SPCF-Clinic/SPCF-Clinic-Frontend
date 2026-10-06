@@ -17,7 +17,7 @@ export interface StudentShow {
   status: "Active" | "Archived";
   full_name: string;
   username: string;
-  check_in: CheckIn;
+  check_in: CheckIn | null;
   personal_info: Field[];
   medical_history: Field[];
   contact_person: {
@@ -27,7 +27,7 @@ export interface StudentShow {
   illnesses: string[];
 }
 
-interface CheckIn {
+export interface CheckIn {
   id: number;
   status: "In Clinic" | "Not In Clinic";
   bed: Bed | null;

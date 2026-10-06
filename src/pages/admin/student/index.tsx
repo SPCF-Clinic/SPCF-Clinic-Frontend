@@ -7,6 +7,7 @@ import Breadcrumbs from "./components/Breadcrumbs";
 import ContactPerson from "./components/ContactPerson";
 import Illnesses from "./components/Illnesses";
 import StudentActivityLogs from "./components/StudentActivityLogs";
+import StudentBedTimer from "./components/StudentBedTimer";
 import StudentCard from "./components/student-card/StudentCard";
 import VisitLog from "./components/visit-log/VisitLog";
 
@@ -42,7 +43,7 @@ export default function StudentProfile() {
         </Grid.Col>
         <Grid.Col span={3.5}>
           <Stack>
-            {/* Timer component here */}
+            <StudentBedTimer />
             <ContactPerson />
             <Illnesses />
             <StudentActivityLogs />
