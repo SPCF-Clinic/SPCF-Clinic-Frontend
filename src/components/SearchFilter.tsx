@@ -23,6 +23,11 @@ interface SearchFilterProps {
 	debounceMs?: number;
 	textInputProps?: TextInputProps;
 	sanitize?: (value: string) => string;
+	/** Runs right after the debounced URL update, in the same
+	 *  synchronous block, with the trimmed value that was
+	 *  committed — update other URL state here so it commits
+	 *  in the same history entry as the search. */
+	onCommit?: (value: string) => void;
 }
 
 export function SearchFilter({
@@ -33,6 +38,7 @@ export function SearchFilter({
 	debounceMs = 300,
 	textInputProps,
 	sanitize,
+	onCommit,
 }: SearchFilterProps) {
 	const [queryValue, setQueryValue] = useQueryState(queryKey, {
 		defaultValue,
@@ -48,6 +54,7 @@ export function SearchFilter({
 
 	const updateUrlParam = useDebouncedCallback((value: string) => {
 		setQueryValue(value.trim() || null);
+		onCommit?.(value.trim());
 	}, debounceMs);
 
 	const handleSearchChange: React.ChangeEventHandler<

@@ -4,33 +4,35 @@ import type { StudentIndex, StudentShow } from "@/types/students";
 import type { GetCheckInsResponse } from "./check-ins";
 
 export type GetStudentsFilters = PaginationQueryParams<{
-	student_id?: string;
+  student_id?: string;
+  sort_by?: "student_id" | "name" | "year_level" | "age" | "sex" | "status";
+  sort_order?: "asc" | "desc";
 }>;
 
 type GetStudentsResponse = PaginationResponse<StudentIndex, "students">;
 
 export const getStudents = (filters?: GetStudentsFilters) =>
-	apiClient.get<GetStudentsResponse>("/students", { params: filters });
+  apiClient.get<GetStudentsResponse>("/students", { params: filters });
 
 export const getStudent = (studentId: number) =>
-	apiClient.get<StudentShow>(`/students/${studentId}`);
+  apiClient.get<StudentShow>(`/students/${studentId}`);
 
 export type GetStudentCheckInsFilters = PaginationQueryParams<{
-	search?: string;
+  search?: string;
 }>;
 
 export const getStudentCheckIns = (
-	studentId: number,
-	filters?: GetStudentCheckInsFilters,
+  studentId: number,
+  filters?: GetStudentCheckInsFilters,
 ) =>
-	apiClient.get<GetCheckInsResponse>(`/students/${studentId}/check-ins`, {
-		params: filters,
-	});
+  apiClient.get<GetCheckInsResponse>(`/students/${studentId}/check-ins`, {
+    params: filters,
+  });
 
 export const updateStudentPassword = (studentId: number, password: string) => {
-    return apiClient.put<StudentShow>(`/students/${studentId}`, { password });
+  return apiClient.put<StudentShow>(`/students/${studentId}`, { password });
 };
 
 export const archiveStudent = (studentId: number, payload: any) => {
-    return apiClient.put<StudentShow>(`/students/${studentId}`, payload);
+  return apiClient.put<StudentShow>(`/students/${studentId}`, payload);
 };
