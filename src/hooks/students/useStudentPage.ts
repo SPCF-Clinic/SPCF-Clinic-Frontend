@@ -4,8 +4,8 @@ import { createParser, parseAsInteger, useQueryState } from "nuqs";
  *  not parse as a page number of at least 1 — a hand-edited
  *  `page=abc`, `page=0` or `page=-1` included — falls back to the
  *  default, so the request never carries a `page` the endpoint's
- *  validation would reject. Pushes history, so the back button
- *  returns to the previous page. */
+ *  validation would reject. Replaces history, so the back button
+ *  does not return to the previous page. */
 const pageParam = createParser({
   parse: (value) => {
     const page = parseAsInteger.parse(value);
@@ -14,7 +14,7 @@ const pageParam = createParser({
   serialize: (value) => String(value),
 })
   .withDefault(1)
-  .withOptions({ history: "push" });
+  .withOptions({ history: "replace" });
 
 export function useStudentPage() {
   return useQueryState("page", pageParam);

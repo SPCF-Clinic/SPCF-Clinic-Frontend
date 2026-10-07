@@ -3,10 +3,22 @@ import type { PaginationQueryParams, PaginationResponse } from "@/types/api";
 import type { StudentIndex, StudentShow } from "@/types/students";
 import type { GetCheckInsResponse } from "./check-ins";
 
+export const STUDENT_SORT_KEYS = [
+  "student_id",
+  "name",
+  "year_level",
+  "age",
+  "sex",
+  "status",
+] as const;
+
+export type StudentSortKey = (typeof STUDENT_SORT_KEYS)[number];
+export type StudentSortOrder = "asc" | "desc";
+
 export type GetStudentsFilters = PaginationQueryParams<{
   student_id?: string;
-  sort_by?: "student_id" | "name" | "year_level" | "age" | "sex" | "status";
-  sort_order?: "asc" | "desc";
+  sort_by?: StudentSortKey;
+  sort_order?: StudentSortOrder;
 }>;
 
 type GetStudentsResponse = PaginationResponse<StudentIndex, "students">;
