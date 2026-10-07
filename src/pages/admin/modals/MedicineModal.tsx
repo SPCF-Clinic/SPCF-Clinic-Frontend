@@ -5,6 +5,18 @@ import type { ItemType } from "@/types/items";
 import GiveMedicationModalForm from "@/pages/admin/modals/forms/GiveMedicationModalForm";
 
 const Give = (studentData: any, type: ItemType) => {
+  const studentName =
+    studentData?.name ??
+    studentData?.full_name ??
+    studentData?.current_occupant?.occupant_name ??
+    "Student";
+  const bedNumber =
+    studentData?.bed_id ??
+    studentData?.check_in?.bed?.bed_number ??
+    studentData?.check_in?.bed_number ??
+    studentData?.bed_number ??
+    "No Bed";
+
   modals.open({
     modalId: `medicine-modal-${studentData.id}`,
     centered: true,
@@ -15,7 +27,7 @@ const Give = (studentData: any, type: ItemType) => {
           Give Medication
         </Text>
         <Text size="sm" c="dimmed">
-          {studentData.name || studentData.full_name || studentData.current_occupant.occupant_name} - {studentData.bed_id || studentData.check_in?.bed || studentData.bed_number|| 'No Bed'}
+          {studentName} - {bedNumber}
         </Text>
       </>
     ),
