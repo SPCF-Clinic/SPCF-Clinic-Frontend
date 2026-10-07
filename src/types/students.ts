@@ -1,5 +1,7 @@
 import type { OccupiedBed } from "./beds";
 
+export type StudentStatusLabel = "Archived" | CheckIn["status"];
+
 export interface StudentIndex {
   id: number;
   username: string;
@@ -9,7 +11,7 @@ export interface StudentIndex {
   course: string | null;
   age: number;
   sex: "MALE" | "FEMALE";
-  status: string;
+  status: StudentStatusLabel | (string & {});
 }
 
 export interface StudentShow {
