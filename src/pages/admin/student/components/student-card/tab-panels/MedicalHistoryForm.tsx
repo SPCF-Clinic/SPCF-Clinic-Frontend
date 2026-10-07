@@ -16,13 +16,21 @@ interface MedicalHistoryFormProps {
 
 type FormValues = Record<string, string | string[]>;
 
-function getInitialValue(studentData: StudentShow, field: MedicalHistoryField) {
-	return studentData.medical_history.find((item) => item.id === field.id)?.value ?? "";
+function getInitialValue(studentData: StudentShow, field: MedicalHistoryField): string | string[] {
+	const value = studentData.medical_history.find((item) => item.id === field.id)?.value;
+
+	if (field.type.name === "Checkbox") {
+		return Array.isArray(value) ? value : value ? [value] : [];
+	}
+
+	return Array.isArray(value) ? value[0] ?? "" : value ?? "";
 }
 
 function FieldInput({ field, form }: { field: MedicalHistoryField; form: ReturnType<typeof useForm<FormValues>> }) {
 	const name = `medical_history[${field.id}]`;
-	const options = toSelectOptions(field);
+	const options = toSelectOptions(field).filter(
+		(option, index, allOptions) => allOptions.findIndex((candidate) => candidate.value === option.value) === index,
+	);
 
 	if (field.type.name === "Radio") {
 		return <Radio.Group label={field.name} {...form.getInputProps(name)}><Group mt="xs">{options.map((option) => <Radio key={option.value} value={option.value} label={option.label} />)}</Group></Radio.Group>;
