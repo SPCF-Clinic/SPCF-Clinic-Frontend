@@ -9,7 +9,7 @@ import QueryError from "@/components/QueryError";
 import { toast } from "@/components/toast";
 import { useDeleteItemMutation } from "@/hooks/items/useDeleteItemMutation";
 import { useItems } from "@/hooks/items/useItems";
-import { useAuthStore } from "@/stores/useAuthStore";
+import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
 import type { ItemIndex, ItemType } from "@/types/items";
 import { getStockStatus } from "@/utils/items/getStockStatus";
 import { showToastError } from "@/utils/toastError";
@@ -17,113 +17,113 @@ import DispenseItemModal from "../DispenseItemModal";
 import StockBadge from "../StockBadge";
 
 const COLUMNS: ColumnDef[] = [
-	{ title: "Name" },
-	{ title: "Category" },
-	{ title: "Unit" },
-	{ title: "Dispensed" },
-	{ title: "Stock" },
-	{ title: "Status" },
-	{ id: "actions", w: 48 },
+  { title: "Name" },
+  { title: "Category" },
+  { title: "Unit" },
+  { title: "Dispensed" },
+  { title: "Stock" },
+  { title: "Status" },
+  { id: "actions", w: 48 },
 ];
 
-interface MedicineSupplyTableProps<T extends ItemType>
-	extends GetItemsFilters<T> {
-	onEdit: (item: ItemIndex) => void;
+interface MedicineSupplyTableProps<
+  T extends ItemType,
+> extends GetItemsFilters<T> {
+  onEdit: (item: ItemIndex) => void;
 }
 
 export default function MedicineSupplyTable<T extends ItemType>({
-	onEdit,
-	...props
+  onEdit,
+  ...props
 }: MedicineSupplyTableProps<T>) {
-	const { data, isPending, error, refetch } = useItems(props);
+  const { data, isPending, error, refetch } = useItems(props);
 
-	const [opened, { open, close }] = useDisclosure(false);
-	const [dispensingItem, setDispensingItem] = useState<ItemIndex | null>(null);
+  const [opened, { open, close }] = useDisclosure(false);
+  const [dispensingItem, setDispensingItem] = useState<ItemIndex | null>(null);
 
-	const { user } = useAuthStore();
-	const isSuperAdmin = user?.role === "Super Admin";
+  const isSuperAdmin = useIsSuperAdmin();
 
-	const deleteItemMutation = useDeleteItemMutation(props.type);
+  const deleteItemMutation = useDeleteItemMutation(props.type);
 
-	const onDispense = (item: ItemIndex) => {
-		setDispensingItem(item);
-		open();
-	};
+  const onDispense = (item: ItemIndex) => {
+    setDispensingItem(item);
+    open();
+  };
 
-	const handleDeleteItem = (itemId: number) =>
-		deleteItemMutation.mutate(itemId, {
-			onSuccess: () =>
-				toast.success({ message: `${props.type} deleted successfully` }),
-			onError: (error) =>
-				showToastError(error, `Failed to delete ${props.type}`),
-		});
+  const handleDeleteItem = (itemId: number) =>
+    deleteItemMutation.mutate(itemId, {
+      onSuccess: () =>
+        toast.success({ message: `${props.type} deleted successfully` }),
+      onError: (error) =>
+        showToastError(error, `Failed to delete ${props.type}`),
+    });
 
-	if (error) {
-		return <QueryError error={error} onRetry={refetch} />;
-	}
+  if (error) {
+    return <QueryError error={error} onRetry={refetch} />;
+  }
 
-	return (
-		<>
-			<AppTable
-				columns={COLUMNS}
-				isPending={isPending}
-				data={data?.data.items}
-				skeletonRowHeight={57}
-			>
-				{data?.data.items.map((item) => (
-					<Table.Tr key={item.id}>
-						<Table.Td fw={600}>{item.name}</Table.Td>
-						<Table.Td>{item.category}</Table.Td>
-						<Table.Td>{item.unit}</Table.Td>
-						<Table.Td>{item.dispensed}</Table.Td>
-						<Table.Td>{item.quantity}</Table.Td>
-						<Table.Td>
-							<StockBadge status={getStockStatus(item)} />
-						</Table.Td>
-						<Table.Td>
-							<Center>
-								<ActionMenu
-									items={[
-										{
-											children: `Dispense ${item.type}`,
-											c: "primary",
-											fw: 500,
-											onClick: () => onDispense(item),
-										},
-										...(isSuperAdmin
-											? ([
-													{
-														children: "Edit",
-														onClick: () => onEdit(item),
-														fw: 500,
-													},
-													{
-														children: "Delete",
-														rightSection: deleteItemMutation.isPending ? (
-															<Loader size={16} color="red" />
-														) : undefined,
-														onClick: () => handleDeleteItem(item.id),
-														c: "red",
-														fw: 500,
-														closeMenuOnClick: false,
-														disabled: deleteItemMutation.isPending,
-													},
-												] as ActionMenuItem[])
-											: []),
-									]}
-								/>
-							</Center>
-						</Table.Td>
-					</Table.Tr>
-				))}
-			</AppTable>
+  return (
+    <>
+      <AppTable
+        columns={COLUMNS}
+        isPending={isPending}
+        data={data?.data.items}
+        skeletonRowHeight={57}
+      >
+        {data?.data.items.map((item) => (
+          <Table.Tr key={item.id}>
+            <Table.Td fw={600}>{item.name}</Table.Td>
+            <Table.Td>{item.category}</Table.Td>
+            <Table.Td>{item.unit}</Table.Td>
+            <Table.Td>{item.dispensed}</Table.Td>
+            <Table.Td>{item.quantity}</Table.Td>
+            <Table.Td>
+              <StockBadge status={getStockStatus(item)} />
+            </Table.Td>
+            <Table.Td>
+              <Center>
+                <ActionMenu
+                  items={[
+                    {
+                      children: `Dispense ${item.type}`,
+                      c: "primary",
+                      fw: 500,
+                      onClick: () => onDispense(item),
+                    },
+                    ...(isSuperAdmin
+                      ? ([
+                          {
+                            children: "Edit",
+                            onClick: () => onEdit(item),
+                            fw: 500,
+                          },
+                          {
+                            children: "Delete",
+                            rightSection: deleteItemMutation.isPending ? (
+                              <Loader size={16} color="red" />
+                            ) : undefined,
+                            onClick: () => handleDeleteItem(item.id),
+                            c: "red",
+                            fw: 500,
+                            closeMenuOnClick: false,
+                            disabled: deleteItemMutation.isPending,
+                          },
+                        ] as ActionMenuItem[])
+                      : []),
+                  ]}
+                />
+              </Center>
+            </Table.Td>
+          </Table.Tr>
+        ))}
+      </AppTable>
 
-			<DispenseItemModal
-				item={dispensingItem}
-				opened={opened}
-				onClose={close}
-				onExitTransitionEnd={() => setDispensingItem(null)}
-			/>
-		</>
-	);
+      <DispenseItemModal
+        item={dispensingItem}
+        opened={opened}
+        onClose={close}
+        onExitTransitionEnd={() => setDispensingItem(null)}
+      />
+    </>
+  );
 }

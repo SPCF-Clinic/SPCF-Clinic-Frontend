@@ -10,6 +10,7 @@ import { IconPill } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import ActionMenu from "@/components/ActionMenu";
+import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
 import StatusModal from "@/pages/admin/modals/StatusModal";
 import MedicineModal from "@/pages/admin/modals/MedicineModal";
 import EditStudentModal from "@/pages/admin/modals/EditStudentModal";
@@ -27,6 +28,7 @@ export default function StudentCardHeader({
   onEdit,
 }: StudentCardHeaderProps) {
   const queryClient = useQueryClient();
+  const isSuperAdmin = useIsSuperAdmin();
 
   const isArchived = studentData?.status === "Archived";
 
@@ -160,7 +162,7 @@ export default function StudentCardHeader({
           </>
         )}
 
-        <ActionMenu items={menuItems} />
+        {isSuperAdmin && <ActionMenu items={menuItems} />}
       </Group>
     </Group>
   );
