@@ -15,12 +15,13 @@ export default function ActiveTimerModalContent({
 }: {
   studentdata: BedTimerControls;
 }) {
-
   const checkInId = studentdata.check_in_id ?? studentdata.id;
 
   if (checkInId === undefined) return null;
 
-  return <ActiveTimerControls studentdata={studentdata} checkInId={checkInId} />;
+  return (
+    <ActiveTimerControls studentdata={studentdata} checkInId={checkInId} />
+  );
 }
 
 function ActiveTimerControls({
@@ -30,8 +31,7 @@ function ActiveTimerControls({
   studentdata: BedTimerControls;
   checkInId: number;
 }) {
-
-  console.log(studentdata)
+  console.log(studentdata);
 
   const { mutate: updateCheckIn } = useUpdateCheckIn(checkInId);
   const { mutate: unassignBed } = useUnassignBed(checkInId);
@@ -41,32 +41,42 @@ function ActiveTimerControls({
   const isPaused = studentdata.timer_paused_at !== null;
 
   const handleAddMinutes = (newExpiresAt: string) => {
-    updateCheckIn({ timer_expires_at: newExpiresAt }, { onSuccess: () => {
-      modals.closeAll();
-    } });
+    updateCheckIn(
+      { timer_expires_at: newExpiresAt },
+      {
+        onSuccess: () => {
+          modals.closeAll();
+        },
+      },
+    );
   };
 
   const handleSubtractMinutes = (newExpiresAt: string) => {
-    updateCheckIn({ timer_expires_at: newExpiresAt }, { onSuccess: () => {
-      modals.closeAll();
-    } });
+    updateCheckIn(
+      { timer_expires_at: newExpiresAt },
+      {
+        onSuccess: () => {
+          modals.closeAll();
+        },
+      },
+    );
   };
 
   const handleTogglePause = () => {
     // Pause and resume take no variables: the Check-in is bound into the hook.
     if (isPaused) {
-    resumeTimer(undefined, {
-      onSuccess: () => {
-        modals.closeAll();
-      },
-    });
-  } else {
-    pauseTimer(undefined, {
-      onSuccess: () => {
-        modals.closeAll();
-      },
-    });
-  }
+      resumeTimer(undefined, {
+        onSuccess: () => {
+          modals.closeAll();
+        },
+      });
+    } else {
+      pauseTimer(undefined, {
+        onSuccess: () => {
+          modals.closeAll();
+        },
+      });
+    }
   };
 
   const handleGiveMedicine = () => {
@@ -85,6 +95,7 @@ function ActiveTimerControls({
     <DashboardAsideProvider active={true}>
       <ActiveTimersModalForm
         startedAt={studentdata.timer_started_at}
+        effectiveStartedAt={studentdata.effective_started_at}
         expiresAt={studentdata.timer_expires_at}
         pausedAt={studentdata.timer_paused_at}
         occupantName={studentdata.current_occupant.occupant_name}

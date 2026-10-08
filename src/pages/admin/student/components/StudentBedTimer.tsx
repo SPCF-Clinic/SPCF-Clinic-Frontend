@@ -20,6 +20,7 @@ export default function StudentBedTimer() {
       timer_started_at: bed.timer_started_at,
       timer_expires_at: bed.timer_expires_at,
       timer_paused_at: bed.timer_paused_at,
+      effective_started_at: bed.effective_started_at,
       current_occupant: {
         user_id: student.id,
         occupant_name: occupantName,
@@ -32,6 +33,7 @@ export default function StudentBedTimer() {
       occupantName={occupantName}
       bedNumber={bed.bed_number}
       startedAt={bed.timer_started_at}
+      effectiveStartedAt={bed.effective_started_at}
       expiresAt={bed.timer_expires_at}
       pausedAt={bed.timer_paused_at}
       onClick={openControls}
