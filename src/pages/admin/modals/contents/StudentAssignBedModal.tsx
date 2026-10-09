@@ -1,123 +1,121 @@
-import { useState } from "react";
-import {
-    Button,
-    Group,
-    Radio,
-    TextInput,
-    Select,
-} from "@mantine/core";
+import { Button, Select, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { TimeInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import dayjs from "dayjs";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { studentQueries } from "@/query/students";
-import type { StudentShow } from "@/types/students";
 import { useBeds } from "@/hooks/beds/useBeds";
 import { useUpdateCheckIn } from "@/hooks/check-ins/useUpdateCheckIn";
+import { studentQueries } from "@/query/students";
+import type { StudentShow } from "@/types/students";
+import {
+  BED_TIME_LIMIT_OPTIONS,
+  formatBedTimer,
+  getAssignableBedOptions,
+  validateBedId,
+  validateBedTimer,
+} from "@/utils/checkInBedForm";
 
 interface StudentInClinicFormProps {
-    studentData: StudentShow;
+  studentData: StudentShow;
+}
+
+interface AssignBedFormValues {
+  bed_id: string | null;
+  timer_expires_at: string | null;
 }
 
 export default function StudentAssignBed({
-    studentData,
+  studentData,
 }: StudentInClinicFormProps) {
-    const checkInId = studentData.check_in?.id;
+  const checkInId = studentData.check_in?.id;
 
-    if (checkInId === null || checkInId === undefined) return null;
+  if (checkInId === null || checkInId === undefined) return null;
 
-    return <StudentAssignBedForm studentData={studentData} checkInId={checkInId} />;
+  return (
+    <StudentAssignBedForm studentData={studentData} checkInId={checkInId} />
+  );
 }
 
 function StudentAssignBedForm({
-    studentData,
-    checkInId,
+  studentData,
+  checkInId,
 }: StudentInClinicFormProps & { checkInId: number }) {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
-    console.log("Student Data:", studentData); // Debugging line to check the studentData
+  const { data: listOfBeds, isFetching } = useBeds();
+  const { mutate: updateCheckIn, isPending } = useUpdateCheckIn(checkInId);
 
-    console.log("Student Check-in ID:", checkInId); // Debugging line to check the student's check-in ID
+  const bedOptions = getAssignableBedOptions(listOfBeds?.pages[0].data.data);
+  const hasNoBeds = !isFetching && bedOptions.length === 0;
 
-    const { data: listOfBeds } = useBeds();
-    const { mutate: updateCheckIn, isPending } = useUpdateCheckIn(checkInId);
+  const form = useForm<AssignBedFormValues>({
+    initialValues: {
+      bed_id: null,
+      timer_expires_at: null,
+    },
+    validate: {
+      bed_id: validateBedId,
+      timer_expires_at: validateBedTimer,
+    },
+  });
 
-    const form = useForm({
-        initialValues: {
-            bed_id: null,
-            timer_expires_at: null,
+  const handleSubmit = (values: AssignBedFormValues) => {
+    const formattedExpiresAt =
+      values.bed_id && values.timer_expires_at
+        ? formatBedTimer(values.timer_expires_at)
+        : null;
+
+    updateCheckIn(
+      {
+        ...values,
+        bed_id: values.bed_id,
+        timer_expires_at: formattedExpiresAt,
+      },
+      {
+        onSuccess: () => {
+          modals.closeAll();
+
+          queryClient.invalidateQueries({
+            queryKey: studentQueries.detail(studentData.id).queryKey,
+          });
         },
-    });
-
-    const handleSubmit = (values: typeof form.values) => {
-        let formattedExpiresAt = null;
-
-        if (values.bed_id && values.timer_expires_at) {
-            formattedExpiresAt = dayjs()
-                .add(Number(values.timer_expires_at), "minute")
-                .format("YYYY-MM-DD HH:mm:ss");
-        }
-
-        const payload = {
-            ...values,
-            bed_id: values.bed_id,
-            timer_expires_at: formattedExpiresAt,
-        };
-
-        updateCheckIn(payload, {
-            onSuccess: () => {
-                modals.closeAll();
-
-                queryClient.invalidateQueries({
-                    queryKey: studentQueries.detail(studentData.id).queryKey,
-                });
-            },
-        });
-    };
-
-    const timeLimitOptions = Array.from({ length: 12 }, (_, index) => {
-        const minutes = (index + 1) * 5;
-
-        return {
-            value: String(minutes),
-            label: `${minutes} minutes`,
-        };
-    });
-
-    return (
-        <form onSubmit={form.onSubmit(handleSubmit)}>
-
-
-            <>
-                <Select
-                    placeholder="Choose Bed"
-                    mt="xs"
-                    data={
-                        listOfBeds?.pages[0].data.data
-                            .filter((bed) => bed.status !== "Occupied")
-                            .map((bed) => ({
-                                value: String(bed.id),
-                                label: bed.bed_number,
-                            })) ?? []
-                    }
-                    {...form.getInputProps("bed_id")}
-                />
-
-                <Select
-                    label="Set Bed Time Limit"
-                    placeholder="Choose duration"
-                    mt="sm"
-                    data={timeLimitOptions}
-                    {...form.getInputProps("timer_expires_at")}
-                />
-            </>
-
-
-            <Button type="submit" loading={isPending} mt={20} fullWidth>
-                Check in
-            </Button>
-        </form>
+      },
     );
+  };
+
+  return (
+    <form onSubmit={form.onSubmit(handleSubmit)}>
+      <Select
+        placeholder="Choose Bed"
+        mt="xs"
+        data={bedOptions}
+        disabled={hasNoBeds}
+        {...form.getInputProps("bed_id")}
+      />
+
+      <Select
+        label="Set Bed Time Limit"
+        placeholder="Choose duration"
+        mt="sm"
+        data={BED_TIME_LIMIT_OPTIONS}
+        {...form.getInputProps("timer_expires_at")}
+      />
+
+      {hasNoBeds && (
+        <Text size="sm" c="dimmed" mt="xs">
+          No beds are available right now.
+        </Text>
+      )}
+
+      <Button
+        type="submit"
+        loading={isPending}
+        disabled={hasNoBeds}
+        mt={20}
+        fullWidth
+      >
+        Check in
+      </Button>
+    </form>
+  );
 }

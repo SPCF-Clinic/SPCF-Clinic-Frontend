@@ -1,3 +1,5 @@
+import type { FormOption } from "@/types/student-register";
+
 export interface AdditionalField {
   id: number;
   name: string;
@@ -12,6 +14,19 @@ export interface DynamicFormField {
   additional_fields: AdditionalField[];
 }
 
+export interface UpdateField {
+  id: number;
+  name: string;
+  /** The student's stored answer; absent on schema-only fields. */
+  value?: string | string[] | null;
+  type?: { name: string } | null;
+  options?: FormOption[];
+  is_required?: boolean;
+  description_text?: string | null;
+  required_with_field_value?: string | null;
+  additional_fields?: UpdateField[];
+}
+
 export interface ContactPerson {
   name: string;
   number: string;
@@ -23,8 +38,8 @@ export interface StudentData {
   personal_info: DynamicFormField[];
   medical_history: DynamicFormField[];
   contact_person: ContactPerson;
-personal_info_form_version: string;
-medical_history_form_version: string;
+  personal_info_form_version: string;
+  medical_history_form_version: string;
 }
 
 export interface StudentResponse {

@@ -1,116 +1,196 @@
 import { useEffect, useMemo } from "react";
 import {
-	Button,
-	Checkbox,
-	Group,
-	Radio,
-	Select,
-	SimpleGrid,
-	TextInput,
+  Button,
+  Checkbox,
+  Group,
+  Radio,
+  Select,
+  SimpleGrid,
+  TextInput,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { useForm, type UseFormReturnType } from "@mantine/form";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { usePersonalInfo, useUpdatePersonalInfo } from "@/hooks/students/useRegisterStudent";
+import {
+  usePersonalInfo,
+  useUpdatePersonalInfo,
+} from "@/hooks/students/useRegisterStudent";
 import { studentQueries } from "@/query/students";
 import type { PersonalInfoField } from "@/types/student-register";
 import type { StudentShow } from "@/types/students";
+import { collectRequiredFieldErrors } from "@/utils/dynamicFieldValidation";
 
 interface PersonalInfoFormProps {
-	studentData: StudentShow;
-	onCancel?: () => void;
+  studentData: StudentShow;
+  onCancel?: () => void;
 }
 
 type FormValues = Record<string, string | string[]>;
 
-function getInitialValue(field: PersonalInfoField,value: string | string[]) {
-	 if (field.type.name === "Checkbox") {
+function getInitialValue(field: PersonalInfoField, value: string | string[]) {
+  if (field.type.name === "Checkbox") {
     return Array.isArray(value) ? value : value ? [value] : [];
   }
 
-  return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+  return Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
 }
 
 function getFieldValue(studentData: StudentShow, field: PersonalInfoField) {
-	return studentData.personal_info.find((item) => item.id === field.id)?.value ?? "";
+  return (
+    studentData.personal_info.find((item) => item.id === field.id)?.value ?? ""
+  );
 }
 
 function getOptions(field: PersonalInfoField) {
-	return field.options.map((option) => {
-		if (typeof option === "string") {
-			return { value: option, label: option };
-		}
+  return field.options.map((option) => {
+    if (typeof option === "string") {
+      return { value: option, label: option };
+    }
 
-		const optionValue = option as unknown as { id?: number | string; value?: string };
-		const value = optionValue.value ?? String(optionValue.id ?? "");
+    const optionValue = option as unknown as {
+      id?: number | string;
+      value?: string;
+    };
+    const value = optionValue.value ?? String(optionValue.id ?? "");
 
-		return { value, label: value };
-	});
+    return { value, label: value };
+  });
 }
 
-function FieldInput({ field, form }: { field: PersonalInfoField; form: ReturnType<typeof useForm<FormValues>> }) {
-	const name = `personal_info[${field.id}]`;
-	const options = getOptions(field);
+function FieldInput({
+  field,
+  form,
+}: {
+  field: PersonalInfoField;
+  form: UseFormReturnType<FormValues>;
+}) {
+  const name = `personal_info[${field.id}]`;
+  const options = getOptions(field);
 
-	if (field.type.name === "Radio") {
-		return <Radio.Group label={field.name} {...form.getInputProps(name)}><Group mt="xs">{options.map((option) => <Radio key={option.value} value={option.value} label={option.label} />)}</Group></Radio.Group>;
-	}
+  if (field.type.name === "Radio") {
+    return (
+      <Radio.Group label={field.name} {...form.getInputProps(name)}>
+        <Group mt="xs">
+          {options.map((option) => (
+            <Radio
+              key={option.value}
+              value={option.value}
+              label={option.label}
+            />
+          ))}
+        </Group>
+      </Radio.Group>
+    );
+  }
 
-	if (field.type.name === "Checkbox") {
-		return <Checkbox.Group label={field.name} {...form.getInputProps(name)}><Group mt="xs">{options.map((option) => <Checkbox key={option.value} value={option.value} label={option.label} />)}</Group></Checkbox.Group>;
-	}
+  if (field.type.name === "Checkbox") {
+    return (
+      <Checkbox.Group label={field.name} {...form.getInputProps(name)}>
+        <Group mt="xs">
+          {options.map((option) => (
+            <Checkbox
+              key={option.value}
+              value={option.value}
+              label={option.label}
+            />
+          ))}
+        </Group>
+      </Checkbox.Group>
+    );
+  }
 
-	if (field.type.has_options) {
-		return <Select label={field.name} data={options} searchable {...form.getInputProps(name)} />;
-	}
+  if (field.type.has_options) {
+    return (
+      <Select
+        label={field.name}
+        data={options}
+        searchable
+        {...form.getInputProps(name)}
+      />
+    );
+  }
 
-	return <TextInput label={field.name} {...form.getInputProps(name)} />;
+  return <TextInput label={field.name} {...form.getInputProps(name)} />;
 }
 
-export default function PersonalInfoForm({ studentData, onCancel }: PersonalInfoFormProps) {
-	const queryClient = useQueryClient();
-	const { data: fieldsResponse, isPending: isFieldsPending } = usePersonalInfo();
-	const { mutate: updatePersonalInfo, isPending: isUpdating } = useUpdatePersonalInfo(studentData.id);
-	const fields = useMemo(
-		() => (fieldsResponse?.data ?? []).filter((field) => field.type.name !== "Divider"),
-		[fieldsResponse],
-	);
-	const initialValues = useMemo<FormValues>(() => Object.fromEntries(
-		fields.map((field) => [`personal_info[${field.id}]`, getInitialValue(field, getFieldValue(studentData, field))]),
-	), [fields, studentData]);
-	const form = useForm<FormValues>({ initialValues });
+export default function PersonalInfoForm({
+  studentData,
+  onCancel,
+}: PersonalInfoFormProps) {
+  const queryClient = useQueryClient();
+  const { data: fieldsResponse, isPending: isFieldsPending } =
+    usePersonalInfo();
+  const { mutate: updatePersonalInfo, isPending: isUpdating } =
+    useUpdatePersonalInfo(studentData.id);
+  const fields = useMemo(
+    () =>
+      (fieldsResponse?.data ?? []).filter(
+        (field) => field.type.name !== "Divider",
+      ),
+    [fieldsResponse],
+  );
+  const initialValues = useMemo<FormValues>(
+    () =>
+      Object.fromEntries(
+        fields.map((field) => [
+          `personal_info[${field.id}]`,
+          getInitialValue(field, getFieldValue(studentData, field)),
+        ]),
+      ),
+    [fields, studentData],
+  );
+  const form = useForm<FormValues>({
+    initialValues,
+    validate: (values) =>
+      collectRequiredFieldErrors(
+        fields,
+        (field) => values[`personal_info[${field.id}]`],
+        (field) => `personal_info[${field.id}]`,
+      ),
+  });
 
-	useEffect(() => {
-		form.setValues(initialValues);
-	}, [initialValues]);
+  useEffect(() => {
+    form.setValues(initialValues);
+  }, [initialValues]);
 
-	const handleSubmit = (values: FormValues) => {
-		const payload = {
-			form_version: fieldsResponse?.form_version ?? "",
-			...values,
-		};
+  const handleSubmit = (values: FormValues) => {
+    const payload = {
+      form_version: fieldsResponse?.form_version ?? "",
+      ...values,
+    };
 
-		updatePersonalInfo(payload, {
-			onSuccess: async () => {
-				await queryClient.refetchQueries({
-					queryKey: studentQueries.detail(studentData.id).queryKey,
-				});
-				onCancel?.();
-			},
-		});
-	};
+    updatePersonalInfo(payload, {
+      onSuccess: async () => {
+        await queryClient.refetchQueries({
+          queryKey: studentQueries.detail(studentData.id).queryKey,
+        });
+        onCancel?.();
+      },
+    });
+  };
 
-	return (
-		<form onSubmit={form.onSubmit(handleSubmit)}>
-			<SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-				{fields.map((field) => <FieldInput key={field.id} field={field} form={form} />)}
-			</SimpleGrid>
-			<Group justify="flex-end" mt="xl">
-				{onCancel && <Button type="button" variant="subtle" onClick={onCancel} disabled={isUpdating}>Cancel</Button>}
-				<Button type="submit" loading={isUpdating} disabled={isFieldsPending}>
-					Update
-				</Button>
-			</Group>
-		</form>
-	);
+  return (
+    <form onSubmit={form.onSubmit(handleSubmit)}>
+      <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+        {fields.map((field) => (
+          <FieldInput key={field.id} field={field} form={form} />
+        ))}
+      </SimpleGrid>
+      <Group justify="flex-end" mt="xl">
+        {onCancel && (
+          <Button
+            type="button"
+            variant="subtle"
+            onClick={onCancel}
+            disabled={isUpdating}
+          >
+            Cancel
+          </Button>
+        )}
+        <Button type="submit" loading={isUpdating} disabled={isFieldsPending}>
+          Update
+        </Button>
+      </Group>
+    </form>
+  );
 }

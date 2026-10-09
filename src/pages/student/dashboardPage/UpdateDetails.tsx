@@ -13,8 +13,14 @@ import {
 import { useForm } from "@mantine/form";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 
+import {
+  useMedicalInfo,
+  usePersonalInfo,
+} from "@/hooks/students/useRegisterStudent";
 import { useSpecificStudent } from "@/query/student-dashboard";
-import { useMedicalInfo, usePersonalInfo } from "@/hooks/students/useRegisterStudent";
+import { collectRequiredFieldErrors } from "@/utils/dynamicFieldValidation";
+import type { FormField } from "@/types/student-register";
+import type { UpdateField } from "@/types/student-dashboard";
 import { data_type } from "../utils/register-form/register.form";
 
 import TextInput1 from "../components/TextInput";
@@ -41,6 +47,7 @@ export default function Updatedetails() {
   const type =
     rawType === "medical_history" ? "medical_history" : "personal_info";
   const isPersonal = type === "personal_info";
+  const activeKey = isPersonal ? "personal_info" : "medical_history";
 
   const { data: studentData, isLoading } = useSpecificStudent(
     Number(student_number),
@@ -48,18 +55,35 @@ export default function Updatedetails() {
   const { data: personalSchema } = usePersonalInfo();
   const { data: medicalSchema } = useMedicalInfo();
 
+  const personalSchemaFields: FormField[] = personalSchema?.data ?? [];
+  const medicalSchemaFields: FormField[] = medicalSchema?.data ?? [];
+
+  const fieldsSchema: UpdateField[] = isPersonal
+    ? personalSchemaFields.length > 0
+      ? personalSchemaFields
+      : studentData?.data?.personal_info || []
+    : medicalSchemaFields.length > 0
+      ? medicalSchemaFields
+      : studentData?.data?.medical_history || [];
+
   const form = useForm<UpdateFormValues>({
     initialValues: {
       personal_info: {},
       medical_history: {},
     },
+    validate: (values) =>
+      collectRequiredFieldErrors(
+        fieldsSchema,
+        (field) => values[activeKey][field.id],
+        (field) => `${activeKey}.${field.id}`,
+      ),
   });
 
   useEffect(() => {
     if (studentData?.data) {
       const personalMap: Record<number, string> = {};
-      const mapPersonalFields = (fields: any[]) => {
-        fields?.forEach((field: any) => {
+      const mapPersonalFields = (fields: UpdateField[]) => {
+        fields.forEach((field) => {
           personalMap[field.id] = Array.isArray(field.value)
             ? field.value.join(", ")
             : (field.value ?? "");
@@ -72,8 +96,8 @@ export default function Updatedetails() {
       mapPersonalFields(studentData.data.personal_info ?? []);
 
       const medicalMap: Record<number, string | string[]> = {};
-      const mapMedicalFields = (fields: any[]) => {
-        fields?.forEach((field: any) => {
+      const mapMedicalFields = (fields: UpdateField[]) => {
+        fields.forEach((field) => {
           medicalMap[field.id] = field.value ?? "";
 
           if (Array.isArray(field.additional_fields)) {
@@ -94,15 +118,16 @@ export default function Updatedetails() {
     fieldId: number,
     value: string | string[] | null,
   ) => {
-    const targetKey = isPersonal ? "personal_info" : "medical_history";
-    form.setFieldValue(targetKey, {
-      ...form.values[targetKey],
+    form.setFieldValue(activeKey, {
+      ...form.values[activeKey],
       [fieldId]: value ?? "",
     });
+    // The error lives on `personal_info.<id>`, and Mantine only clears the
+    // error of the path that changed — which is the whole group object here.
+    form.clearFieldError(`${activeKey}.${fieldId}`);
   };
 
-  const renderField = (field: any) => {
-    const activeKey = isPersonal ? "personal_info" : "medical_history";
+  const renderField = (field: UpdateField) => {
     const fieldError = form.errors[`${activeKey}.${field.id}`] as
       | string
       | undefined;
@@ -181,13 +206,7 @@ export default function Updatedetails() {
             withAsterisk={field.is_required ?? false}
             error={fieldError}
             options={fieldOptions}
-            data={
-              Array.isArray(currentValue)
-                ? currentValue
-                : typeof currentValue === "string"
-                  ? currentValue
-                  : []
-            }
+            data={currentValue}
             onChange={(vals) => handleValueChange(field.id, vals)}
           />
         );
@@ -225,28 +244,6 @@ export default function Updatedetails() {
     );
   };
 
-  const personalSchemaFields = Array.isArray(
-    (personalSchema as any)?.data?.data,
-  )
-    ? (personalSchema as any).data.data
-    : Array.isArray((personalSchema as any)?.data)
-      ? (personalSchema as any).data
-      : [];
-
-  const medicalSchemaFields = Array.isArray((medicalSchema as any)?.data?.data)
-    ? (medicalSchema as any).data.data
-    : Array.isArray((medicalSchema as any)?.data)
-      ? (medicalSchema as any).data
-      : [];
-
-  const fieldsSchema = isPersonal
-    ? personalSchemaFields.length > 0
-      ? personalSchemaFields
-      : studentData?.data?.personal_info || []
-    : medicalSchemaFields.length > 0
-      ? medicalSchemaFields
-      : studentData?.data?.medical_history || [];
-
   const titleText = isPersonal
     ? "Personal Information"
     : "Medical & Vaccination History";
@@ -281,12 +278,11 @@ export default function Updatedetails() {
           </Center>
         )}
         <Stack gap="md">
-          {fieldsSchema.map((item: any) => {
-            const activeKey = isPersonal ? "personal_info" : "medical_history";
+          {fieldsSchema.map((item) => {
             const parentValue = form.values[activeKey]?.[item.id];
 
             const activeAdditionalFields = item.additional_fields?.filter(
-              (subField: any) => {
+              (subField) => {
                 if (!subField.required_with_field_value) {
                   return true;
                 }
@@ -310,11 +306,11 @@ export default function Updatedetails() {
                     <Stack gap="md" pl="md">
                       {!isPersonal &&
                         activeAdditionalFields.some(
-                          (sf: any) => sf.name === "Vaccine Name",
+                          (sf) => sf.name === "Vaccine Name",
                         ) && (
                           <SectionDivider descriptionLabel="If you are uncertain about the exact date, please just indicate the year it was administered." />
                         )}
-                      {activeAdditionalFields.map((subField: any) =>
+                      {activeAdditionalFields.map((subField) =>
                         renderField(subField),
                       )}
                     </Stack>
