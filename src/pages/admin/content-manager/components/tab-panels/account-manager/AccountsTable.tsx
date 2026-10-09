@@ -6,35 +6,33 @@ import QueryError from "@/components/QueryError";
 import { useUsers } from "@/hooks/users/useUsers";
 
 const COLUMNS: ColumnDef[] = [
-	{ title: "User" },
-	{ title: "Contact No.", w: "15%" },
-	{ title: "Email", w: "25%" },
-	{ title: "Access", w: "10%" },
-	{ id: "actions", w: 48 },
+  { title: "User" },
+  { title: "Contact No.", w: "25%" },
+  { title: "Access", w: "15%" },
+  { id: "actions", w: 48 },
 ];
 
 export default function AccountsTable() {
-	const { data, isPending, error, refetch } = useUsers();
+  const { data, isPending, error, refetch } = useUsers();
 
-	if (error) {
-		return <QueryError error={error} onRetry={refetch} />;
-	}
+  if (error) {
+    return <QueryError error={error} onRetry={refetch} />;
+  }
 
-	return (
-		<AppTable columns={COLUMNS} isPending={isPending} data={data?.data.users}>
-			{data?.data.users.map((user) => (
-				<Table.Tr key={user.id}>
-					<Table.Td>{user.name ?? user.username}</Table.Td>
-					<Table.Td>{user.contact_number}</Table.Td>
-					<Table.Td>{user.email}</Table.Td>
-					<Table.Td>{user.access}</Table.Td>
-					<Table.Td>
-						<Center>
-							<ActionMenu items={[]} />
-						</Center>
-					</Table.Td>
-				</Table.Tr>
-			))}
-		</AppTable>
-	);
+  return (
+    <AppTable columns={COLUMNS} isPending={isPending} data={data?.data.users}>
+      {data?.data.users.map((user) => (
+        <Table.Tr key={user.id}>
+          <Table.Td>{user.name ?? user.username}</Table.Td>
+          <Table.Td>{user.contact_number}</Table.Td>
+          <Table.Td>{user.access}</Table.Td>
+          <Table.Td>
+            <Center>
+              <ActionMenu items={[]} />
+            </Center>
+          </Table.Td>
+        </Table.Tr>
+      ))}
+    </AppTable>
+  );
 }
