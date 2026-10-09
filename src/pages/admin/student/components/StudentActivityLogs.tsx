@@ -7,22 +7,25 @@ import ActivitySkeleton from "@/components/activities/ActivitySkeleton";
 import QueryError from "@/components/QueryError";
 import { useStudentActivityLogs } from "@/hooks/students/useStudentActivityLogs";
 import classes from "@/styles/ScrollFade.module.css";
-import { useStudentDetail } from "@/hooks/students/useStudentDetail";
-import { getStudentFullName } from "@/utils/students/studentName";
 
 interface StudentActivityLogsProps {
   date?: string;
   userId?: number;
-  studentNumber?: number;
+  /** The student's **user id** — scopes the log through `performed_for`.
+   *  Required so the panel can never fall back to every log in the system. */
+  studentNumber: number;
   withBorder?: boolean;
   height?: number | string;
 }
 
-export default function StudentActivityLogs({ date, userId, studentNumber, withBorder = false, height }: StudentActivityLogsProps) {
-
-  const performedFor = studentNumber
-    ? Number(studentNumber)
-    : undefined;
+export default function StudentActivityLogs({
+  date,
+  userId,
+  studentNumber,
+  withBorder = false,
+  height,
+}: StudentActivityLogsProps) {
+  const performedFor = Number(studentNumber);
   const {
     data: studentLogsData,
     isPending,
@@ -31,7 +34,11 @@ export default function StudentActivityLogs({ date, userId, studentNumber, withB
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useStudentActivityLogs({ performed_by: userId, performed_for: performedFor, date: date });
+  } = useStudentActivityLogs({
+    performed_by: userId,
+    performed_for: performedFor,
+    date: date,
+  });
 
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
@@ -58,7 +65,7 @@ export default function StudentActivityLogs({ date, userId, studentNumber, withB
     <Paper p="lg" radius="lg" withBorder={withBorder}>
       <Stack>
         <Text fw={600} size="sm" tt="uppercase" c="primary">
-          Activity Log 
+          Activity Log
         </Text>
 
         <ScrollArea

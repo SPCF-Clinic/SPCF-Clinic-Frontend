@@ -1,6 +1,5 @@
 import { Box, Center, Grid, Loader, Stack } from "@mantine/core";
 
-import { useStudentActivityLogs } from "@/hooks/students/useStudentActivityLogs";
 import { useStudentCheckIns } from "@/hooks/students/useStudentCheckIns";
 import { useStudentDetail } from "@/hooks/students/useStudentDetail";
 import { useTimerRealtime } from "@/hooks/timers/useTimerRealtime";
@@ -15,16 +14,12 @@ import VisitLog from "./components/visit-log/VisitLog";
 export default function StudentProfile() {
   const studentQuery = useStudentDetail();
   const visitLogQuery = useStudentCheckIns();
-  const studentActivityLogsQuery = useStudentActivityLogs();
 
   useTimerRealtime();
 
-  const isLoading =
-    studentQuery.isLoading ||
-    visitLogQuery.isLoading ||
-    studentActivityLogsQuery.isLoading;
+  const isLoading = studentQuery.isLoading || visitLogQuery.isLoading;
 
-  if (isLoading) {
+  if (isLoading || !studentQuery.data) {
     return (
       <Center flex={1}>
         <Loader />
@@ -49,7 +44,7 @@ export default function StudentProfile() {
             <StudentBedTimer />
             <ContactPerson />
             <Illnesses />
-            <StudentActivityLogs />
+            <StudentActivityLogs studentNumber={studentQuery.data.data.id} />
           </Stack>
         </Grid.Col>
       </Grid>
