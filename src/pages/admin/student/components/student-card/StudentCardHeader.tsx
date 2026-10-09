@@ -7,14 +7,13 @@ import {
   ActionIcon,
 } from "@mantine/core";
 import { IconPill } from "@tabler/icons-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import ActionMenu from "@/components/ActionMenu";
+import { useArchiveUserMutation } from "@/hooks/users/useArchiveUserMutation";
 import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
 import StatusModal from "@/pages/admin/modals/StatusModal";
 import MedicineModal from "@/pages/admin/modals/MedicineModal";
 import EditStudentModal from "@/pages/admin/modals/EditStudentModal";
-import { studentQueries } from "@/query/students";
 
 interface StudentCardHeaderProps {
   fullName: string;
@@ -27,20 +26,11 @@ export default function StudentCardHeader({
   studentData,
   onEdit,
 }: StudentCardHeaderProps) {
-  const queryClient = useQueryClient();
   const isSuperAdmin = useIsSuperAdmin();
 
   const isArchived = studentData?.status === "Archived";
 
-  const { mutate: archiveStudent } = useMutation({
-    ...studentQueries.archive(studentData.id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: studentQueries.lists() });
-      queryClient.invalidateQueries({
-        queryKey: studentQueries.detail(studentData.id).queryKey,
-      });
-    },
-  });
+  const { mutate: archiveStudent } = useArchiveUserMutation(studentData.id);
 
   const handleToggleArchive = () => {
     const nextStatus = isArchived ? "UNARCHIVE" : "ARCHIVE";

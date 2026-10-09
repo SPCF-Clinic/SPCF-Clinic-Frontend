@@ -1,9 +1,8 @@
 import { type MenuItemProps } from "@mantine/core";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import ActionMenu from "@/components/ActionMenu";
+import { useArchiveUserMutation } from "@/hooks/users/useArchiveUserMutation";
 import EditStudentModal from "@/pages/admin/modals/EditStudentModal";
-import { studentQueries } from "@/query/students";
 
 interface StudentActionMenuProps {
   student: {
@@ -17,15 +16,9 @@ interface StudentActionMenuProps {
 }
 
 export default function StudentActionMenu({ student }: StudentActionMenuProps) {
-  const queryClient = useQueryClient();
   const isArchived = student.status === "Archived";
 
-  const { mutate: archiveStudent } = useMutation({
-    ...studentQueries.archive(student.id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: studentQueries.lists() });
-    },
-  });
+  const { mutate: archiveStudent } = useArchiveUserMutation(student.id);
 
   const menuItems: MenuItemProps[] = [
     {

@@ -1,37 +1,28 @@
-import { PasswordInput, Button, Stack } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { modals } from '@mantine/modals';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { PasswordInput, Button, Stack } from "@mantine/core";
+import { useForm } from "@mantine/form";
 
-import { studentQueries } from '@/query/students';
+import { useUpdatePasswordMutation } from "@/hooks/users/useUpdatePasswordMutation";
 
 interface ChangePasswordFormProps {
-  studentId: number;
+  userId: number;
 }
 
-export default function ChangePasswordForm({ studentId }: ChangePasswordFormProps) {
-  const queryClient = useQueryClient();
-
-  const { mutate: updatePassword, isPending } = useMutation({
-    ...studentQueries.updatePassword(studentId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: studentQueries.detail(studentId).queryKey,
-      });
-      modals.closeAll();
-    },
-  });
+export default function ChangePasswordForm({
+  userId,
+}: ChangePasswordFormProps) {
+  const { mutate: updatePassword, isPending } =
+    useUpdatePasswordMutation(userId);
 
   const form = useForm({
     initialValues: {
-      password: '',
-      confirm_password: '',
+      password: "",
+      confirm_password: "",
     },
     validate: {
       password: (value) =>
-        value.length < 8 ? 'Password must be at least 6 characters' : null,
+        value.length < 8 ? "Password must be at least 6 characters" : null,
       confirm_password: (value, values) =>
-        value !== values.password ? 'Passwords do not match' : null,
+        value !== values.password ? "Passwords do not match" : null,
     },
   });
 
@@ -47,7 +38,7 @@ export default function ChangePasswordForm({ studentId }: ChangePasswordFormProp
           placeholder="password123"
           required
           radius="md"
-          {...form.getInputProps('password')}
+          {...form.getInputProps("password")}
         />
 
         <PasswordInput
@@ -55,7 +46,7 @@ export default function ChangePasswordForm({ studentId }: ChangePasswordFormProp
           placeholder="password123"
           required
           radius="md"
-          {...form.getInputProps('confirm_password')}
+          {...form.getInputProps("confirm_password")}
         />
 
         <Button
@@ -67,9 +58,9 @@ export default function ChangePasswordForm({ studentId }: ChangePasswordFormProp
           loading={isPending}
           styles={{
             root: {
-              backgroundColor: '#2F4899',
-              '&:hover': {
-                backgroundColor: '#223675',
+              backgroundColor: "#2F4899",
+              "&:hover": {
+                backgroundColor: "#223675",
               },
             },
           }}
