@@ -1,7 +1,10 @@
 import { PasswordInput, Button, Stack } from "@mantine/core";
+import { modals } from "@mantine/modals";
 import { useForm } from "@mantine/form";
 
+import { toast } from "@/components/toast";
 import { useUpdatePasswordMutation } from "@/hooks/users/useUpdatePasswordMutation";
+import { showToastError } from "@/utils/toastError";
 
 interface ChangePasswordFormProps {
   userId: number;
@@ -20,14 +23,22 @@ export default function ChangePasswordForm({
     },
     validate: {
       password: (value) =>
-        value.length < 8 ? "Password must be at least 6 characters" : null,
+        value.length < 8 ? "Password must be at least 8 characters" : null,
       confirm_password: (value, values) =>
         value !== values.password ? "Passwords do not match" : null,
     },
   });
 
   const handleSubmit = (values: typeof form.values) => {
-    updatePassword(values.password);
+    updatePassword(values.password, {
+      onSuccess: () => {
+        modals.closeAll();
+        toast.success({ message: "Password updated" });
+      },
+      onError: (error) => {
+        showToastError(error, "Failed to update password");
+      },
+    });
   };
 
   return (
