@@ -1,5 +1,4 @@
 import ActionMenu, { type ActionMenuItem } from "@/components/ActionMenu";
-import { useArchiveUserMutation } from "@/hooks/users/useArchiveUserMutation";
 import EditStudentModal from "@/pages/admin/modals/EditStudentModal";
 import type { StudentIndex } from "@/types/students";
 
@@ -9,8 +8,6 @@ interface StudentActionMenuProps {
 
 export default function StudentActionMenu({ student }: StudentActionMenuProps) {
   const isArchived = student.status === "Archived";
-
-  const { mutate: archiveStudent } = useArchiveUserMutation(student.id);
 
   const modalTarget = {
     id: student.id,
@@ -32,10 +29,7 @@ export default function StudentActionMenu({ student }: StudentActionMenuProps) {
       c: "red",
       onClick: (e) => {
         e.stopPropagation();
-        const nextStatus = isArchived ? "UNARCHIVE" : "ARCHIVE";
-        EditStudentModal.Archive(modalTarget, () => {
-          archiveStudent({ status: nextStatus });
-        });
+        EditStudentModal.Archive(modalTarget);
       },
     },
   ];

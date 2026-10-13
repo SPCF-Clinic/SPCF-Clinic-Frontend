@@ -2,7 +2,6 @@ import { Badge, Box, Group, Text, ActionIcon } from "@mantine/core";
 import { IconPill } from "@tabler/icons-react";
 
 import ActionMenu, { type ActionMenuItem } from "@/components/ActionMenu";
-import { useArchiveUserMutation } from "@/hooks/users/useArchiveUserMutation";
 import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
 import StatusModal from "@/pages/admin/modals/StatusModal";
 import MedicineModal from "@/pages/admin/modals/MedicineModal";
@@ -23,14 +22,8 @@ export default function StudentCardHeader({
 
   const isArchived = studentData?.status === "Archived";
 
-  const { mutate: archiveStudent } = useArchiveUserMutation(studentData.id);
-
   const handleToggleArchive = () => {
-    const nextStatus = isArchived ? "UNARCHIVE" : "ARCHIVE";
-
-    EditStudentModal.Archive(studentData, () => {
-      archiveStudent({ status: nextStatus });
-    });
+    EditStudentModal.Archive(studentData);
   };
 
   const menuItems: ActionMenuItem[] = [

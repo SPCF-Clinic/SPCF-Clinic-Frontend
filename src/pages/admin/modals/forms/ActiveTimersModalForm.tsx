@@ -16,6 +16,11 @@ import { useTimerNow } from "@/hooks/timers/useTimerNow";
 import { dayjs } from "@/services/dayjs";
 import formatDuration from "@/utils/formatDuration";
 
+export type ActiveTimerPendingAction =
+  | "adjustTime"
+  | "togglePause"
+  | "unassign";
+
 interface ActiveTimersModalFormProps {
   startedAt: string;
   effectiveStartedAt?: string | null;
@@ -28,6 +33,8 @@ interface ActiveTimersModalFormProps {
   onTogglePause?: () => void;
   onGiveMedicine?: () => void;
   onUnassign?: () => void;
+  /** Which mutation is currently in flight, if any. */
+  pendingAction?: ActiveTimerPendingAction | null;
 }
 
 export default function ActiveTimersModalForm({
@@ -42,6 +49,7 @@ export default function ActiveTimersModalForm({
   onTogglePause,
   onGiveMedicine,
   onUnassign,
+  pendingAction = null,
 }: ActiveTimersModalFormProps) {
   const theme = useMantineTheme();
   const { active } = useDashboardAsideContext();
@@ -57,6 +65,10 @@ export default function ActiveTimersModalForm({
 
   const isPaused = pausedAt !== null;
   const now = useTimerNow(active && !isPaused);
+
+  // ±5 and pause update their own view immediately, so they get no spinner —
+  // only a guard against firing a second write while one is in flight.
+  const isBusy = pendingAction !== null;
 
   const handleAddFiveMinutes = () => {
     const effectiveNow = isPaused ? dayjs(pausedAt) : dayjs();
@@ -181,7 +193,7 @@ export default function ActiveTimersModalForm({
               size={48}
               variant="light"
               onClick={handleSubtractFiveMinutes}
-              disabled={isFiveOrLess}
+              disabled={isFiveOrLess || isBusy}
               style={{
                 backgroundColor: "#EEF2F6",
                 color: theme.colors.primary[9],
@@ -197,6 +209,7 @@ export default function ActiveTimersModalForm({
               size={52}
               variant="light"
               onClick={onTogglePause}
+              disabled={isBusy}
               style={{
                 backgroundColor: "#EEF2F6",
                 color: theme.colors.primary[9],
@@ -222,6 +235,7 @@ export default function ActiveTimersModalForm({
           size={48}
           variant="light"
           onClick={handleAddFiveMinutes}
+          disabled={isBusy}
           style={{
             backgroundColor: "#EEF2F6",
             color: accentColor,
@@ -252,6 +266,7 @@ export default function ActiveTimersModalForm({
             size={48}
             variant="light"
             onClick={onGiveMedicine}
+            disabled={isBusy}
             style={{
               backgroundColor: "#EEF2F6",
               color: theme.colors.primary[9],
@@ -266,6 +281,7 @@ export default function ActiveTimersModalForm({
           radius="xl"
           size="md"
           onClick={onUnassign}
+          loading={pendingAction === "unassign"}
           style={{
             flex: 1,
             backgroundColor: accentColor,

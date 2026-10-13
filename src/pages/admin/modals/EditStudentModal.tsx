@@ -3,9 +3,11 @@ import { Text } from "@mantine/core";
 
 import type { StudentShow } from "@/types/students";
 import AccountModal from "./AccountModal";
+import ArchiveStudentModalContent from "./contents/ArchiveStudentModalContent";
 import EditStudentModalForm from "./forms/EditStudentModalForm";
 
 interface ArchiveTarget {
+  id: number;
   full_name: string | null;
   status: string;
 }
@@ -33,24 +35,21 @@ export const ChangePassword = (studentData: ChangePasswordTarget) =>
     username: studentData.username,
   });
 
-export const Archive = (studentData: ArchiveTarget, onConfirm: () => void) => {
-  modals.openConfirmModal({
+export const Archive = (studentData: ArchiveTarget) => {
+  const modalId = `archive-student-${studentData.id}`;
+
+  modals.open({
+    modalId,
     title: "Archive Student",
     centered: true,
     children: (
-      <Text size="sm">
-        Are you sure you want to archive <b>{studentData.full_name}</b>? This
-        action will disable their active account status.
-      </Text>
+      <ArchiveStudentModalContent
+        modalId={modalId}
+        studentId={studentData.id}
+        fullName={studentData.full_name}
+        status={studentData.status}
+      />
     ),
-    labels: {
-      confirm: studentData?.status === "Archived" ? "Unarchive" : "Archive",
-      cancel: "Cancel",
-    },
-    confirmProps: {
-      color: studentData?.status === "Archived" ? "blue" : "red",
-    },
-    onConfirm: onConfirm,
   });
 };
 

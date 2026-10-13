@@ -4,7 +4,9 @@ import { useUnassignBed } from "@/hooks/check-ins/useUnassignBed";
 import { usePauseBedTimer } from "@/hooks/check-ins/usePauseBedTimer";
 import { useResumeBedTimer } from "@/hooks/check-ins/useResumeBedTimer";
 
-import ActiveTimersModalForm from "@/pages/admin/modals/forms/ActiveTimersModalForm";
+import ActiveTimersModalForm, {
+  type ActiveTimerPendingAction,
+} from "@/pages/admin/modals/forms/ActiveTimersModalForm";
 import MedicineModal from "@/pages/admin/modals/MedicineModal";
 import { DashboardAsideProvider } from "@/providers/DashboardAsideProvider";
 
@@ -31,27 +33,27 @@ function ActiveTimerControls({
   studentdata: BedTimerControls;
   checkInId: number;
 }) {
-  console.log(studentdata);
-
-  const { mutate: updateCheckIn } = useUpdateCheckIn(checkInId);
-  const { mutate: unassignBed } = useUnassignBed(checkInId);
-  const { mutate: pauseTimer } = usePauseBedTimer(checkInId);
-  const { mutate: resumeTimer } = useResumeBedTimer(checkInId);
+  const { mutate: updateCheckIn, isPending: isUpdatingCheckIn } =
+    useUpdateCheckIn(checkInId);
+  const { mutate: unassignBed, isPending: isUnassigning } =
+    useUnassignBed(checkInId);
+  const { mutate: pauseTimer, isPending: isPausing } =
+    usePauseBedTimer(checkInId);
+  const { mutate: resumeTimer, isPending: isResuming } =
+    useResumeBedTimer(checkInId);
 
   const isPaused = studentdata.timer_paused_at !== null;
 
-  const handleAddMinutes = (newExpiresAt: string) => {
-    updateCheckIn(
-      { timer_expires_at: newExpiresAt },
-      {
-        onSuccess: () => {
-          modals.closeAll();
-        },
-      },
-    );
-  };
+  // ±5 share one mutation, so they collapse to a single "adjustTime" state.
+  const pendingAction: ActiveTimerPendingAction | null = isUpdatingCheckIn
+    ? "adjustTime"
+    : isUnassigning
+      ? "unassign"
+      : isPausing || isResuming
+        ? "togglePause"
+        : null;
 
-  const handleSubtractMinutes = (newExpiresAt: string) => {
+  const handleChangeMinutes = (newExpiresAt: string) => {
     updateCheckIn(
       { timer_expires_at: newExpiresAt },
       {
@@ -100,11 +102,12 @@ function ActiveTimerControls({
         pausedAt={studentdata.timer_paused_at}
         occupantName={studentdata.current_occupant.occupant_name}
         reasonForVisit={studentdata.current_occupant.reason_for_visit}
-        onAddMinutes={handleAddMinutes}
-        onSubtractMinutes={handleSubtractMinutes}
+        onAddMinutes={handleChangeMinutes}
+        onSubtractMinutes={handleChangeMinutes}
         onTogglePause={handleTogglePause}
         onGiveMedicine={handleGiveMedicine}
         onUnassign={handleUnassign}
+        pendingAction={pendingAction}
       />
     </DashboardAsideProvider>
   );
