@@ -5,6 +5,17 @@ import type { StudentShow } from "@/types/students";
 import AccountModal from "./AccountModal";
 import EditStudentModalForm from "./forms/EditStudentModalForm";
 
+interface ArchiveTarget {
+  full_name: string | null;
+  status: string;
+}
+
+interface ChangePasswordTarget {
+  id: number;
+  full_name: string | null;
+  username: string;
+}
+
 const Edit = (studentData: StudentShow) => {
   modals.open({
     modalId: `edit-student-${studentData.id}`,
@@ -15,14 +26,14 @@ const Edit = (studentData: StudentShow) => {
   });
 };
 
-export const ChangePassword = (studentData: StudentShow) =>
+export const ChangePassword = (studentData: ChangePasswordTarget) =>
   AccountModal.ChangePassword({
     id: studentData.id,
     name: studentData.full_name,
     username: studentData.username,
   });
 
-export const Archive = (studentData: StudentShow, onConfirm: () => void) => {
+export const Archive = (studentData: ArchiveTarget, onConfirm: () => void) => {
   modals.openConfirmModal({
     title: "Archive Student",
     centered: true,

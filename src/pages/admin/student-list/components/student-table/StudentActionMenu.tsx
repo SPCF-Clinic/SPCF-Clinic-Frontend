@@ -1,18 +1,10 @@
-import { type MenuItemProps } from "@mantine/core";
-
-import ActionMenu from "@/components/ActionMenu";
+import ActionMenu, { type ActionMenuItem } from "@/components/ActionMenu";
 import { useArchiveUserMutation } from "@/hooks/users/useArchiveUserMutation";
 import EditStudentModal from "@/pages/admin/modals/EditStudentModal";
+import type { StudentIndex } from "@/types/students";
 
 interface StudentActionMenuProps {
-  student: {
-    id: number;
-    status: string;
-    name: string;
-    username: string;
-    age: number;
-    sex: string;
-  };
+  student: StudentIndex;
 }
 
 export default function StudentActionMenu({ student }: StudentActionMenuProps) {
@@ -20,12 +12,19 @@ export default function StudentActionMenu({ student }: StudentActionMenuProps) {
 
   const { mutate: archiveStudent } = useArchiveUserMutation(student.id);
 
-  const menuItems: MenuItemProps[] = [
+  const modalTarget = {
+    id: student.id,
+    full_name: student.name,
+    username: student.username,
+    status: student.status,
+  };
+
+  const menuItems: ActionMenuItem[] = [
     {
       children: "Change password",
       onClick: (e) => {
         e.stopPropagation();
-        EditStudentModal.ChangePassword(student);
+        EditStudentModal.ChangePassword(modalTarget);
       },
     },
     {
@@ -34,7 +33,7 @@ export default function StudentActionMenu({ student }: StudentActionMenuProps) {
       onClick: (e) => {
         e.stopPropagation();
         const nextStatus = isArchived ? "UNARCHIVE" : "ARCHIVE";
-        EditStudentModal.Archive(student, () => {
+        EditStudentModal.Archive(modalTarget, () => {
           archiveStudent({ status: nextStatus });
         });
       },
