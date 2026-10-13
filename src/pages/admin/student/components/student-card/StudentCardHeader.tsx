@@ -1,14 +1,7 @@
-import {
-  Badge,
-  Box,
-  Group,
-  type MenuItemProps,
-  Text,
-  ActionIcon,
-} from "@mantine/core";
+import { Badge, Box, Group, Text, ActionIcon } from "@mantine/core";
 import { IconPill } from "@tabler/icons-react";
 
-import ActionMenu from "@/components/ActionMenu";
+import ActionMenu, { type ActionMenuItem } from "@/components/ActionMenu";
 import { useArchiveUserMutation } from "@/hooks/users/useArchiveUserMutation";
 import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
 import StatusModal from "@/pages/admin/modals/StatusModal";
@@ -40,7 +33,7 @@ export default function StudentCardHeader({
     });
   };
 
-  const menuItems: MenuItemProps[] = [
+  const menuItems: ActionMenuItem[] = [
     { children: "Edit information", onClick: onEdit },
     {
       children: "Change password",
@@ -88,10 +81,6 @@ export default function StudentCardHeader({
             fw={400}
             fz="sm"
             tt="none"
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              StatusModal.StudentCheckIn(studentData);
-            }}
           >
             ARCHIVED
           </Badge>
