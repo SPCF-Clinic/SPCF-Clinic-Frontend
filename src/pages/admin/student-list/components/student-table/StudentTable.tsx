@@ -8,6 +8,7 @@ import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
 import type { StudentSortKey } from "@/api/students";
 import { useStudentSort } from "@/hooks/students/useStudentSort";
 import { useStudents } from "@/hooks/students/useStudents";
+import { preventNavigationOnHighlight } from "@/utils/preventNavigationOnHighlight";
 import SexIcon from "./SexIcon";
 import StatusBadge from "./StatusBadge";
 import StudentActionMenu from "./StudentActionMenu";
@@ -63,14 +64,9 @@ export default function StudentTable() {
         <Table.Tr
           style={{ cursor: "pointer" }}
           key={student.id}
-          onClick={() => {
-            const selection = window.getSelection()?.toString();
-            if (selection && selection.length > 0) {
-              return;
-            }
-
-            navigate(`/admin/students/${student.id}`);
-          }}
+          onClick={preventNavigationOnHighlight(() =>
+            navigate(`/admin/students/${student.id}`),
+          )}
         >
           <Table.Td fw={600}>{student.username}</Table.Td>
           <Table.Td>{student.name}</Table.Td>

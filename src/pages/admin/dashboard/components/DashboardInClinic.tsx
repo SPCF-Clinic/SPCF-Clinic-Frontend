@@ -8,6 +8,7 @@ import { dayjs } from "@/services/dayjs";
 import classes from "@/styles/OutlineTableRow.module.css";
 import StatusModal from "../../modals/StatusModal";
 import { useSingleCheckInDetails } from "@/hooks/check-ins/useSingleCheckInDetails";
+import { preventNavigationOnHighlight } from "@/utils/preventNavigationOnHighlight";
 
 export default function DashboardInClinic() {
   return (
@@ -73,7 +74,9 @@ function ClinicTable() {
         <Table.Tr
           className={classes.tr}
           key={student.student_id}
-          onClick={() => handleClickRow(student.id)}
+          onClick={preventNavigationOnHighlight(() =>
+            handleClickRow(student.id),
+          )}
         >
           <Table.Td fw={600}>{student.student_id}</Table.Td>
           <Table.Td>{student.name}</Table.Td>
