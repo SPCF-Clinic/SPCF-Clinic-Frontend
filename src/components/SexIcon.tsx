@@ -7,8 +7,10 @@ import {
 
 import type { StudentIndex } from "@/types/students";
 
+type Sex = StudentIndex["sex"];
+
 const genderIcon: Record<
-  StudentIndex["sex"],
+  Sex,
   React.ForwardRefExoticComponent<
     IconProps & React.RefAttributes<SVGSVGElement>
   >
@@ -17,7 +19,9 @@ const genderIcon: Record<
   FEMALE: IconGenderFemale,
 };
 
-export default function SexIcon({ sex }: { sex: StudentIndex["sex"] }) {
+export default function SexIcon({ sex }: { sex: Sex | null | undefined }) {
+  if (!sex) return null;
+
   const IconComponent = genderIcon[sex];
   const color = sex === "FEMALE" ? "red" : "primary";
 

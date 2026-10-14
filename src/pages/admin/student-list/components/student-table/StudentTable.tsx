@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 import { AppTable, type ColumnDef } from "@/components/AppTable";
 import QueryError from "@/components/QueryError";
+import SexIcon from "@/components/SexIcon";
 import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
 import type { StudentSortKey } from "@/api/students";
 import { useStudentSort } from "@/hooks/students/useStudentSort";
 import { useStudents } from "@/hooks/students/useStudents";
 import { preventNavigationOnHighlight } from "@/utils/preventNavigationOnHighlight";
-import SexIcon from "./SexIcon";
 import StatusBadge from "./StatusBadge";
 import StudentActionMenu from "./StudentActionMenu";
 
