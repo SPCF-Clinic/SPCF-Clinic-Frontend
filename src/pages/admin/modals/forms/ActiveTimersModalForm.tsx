@@ -7,6 +7,7 @@ import {
   ActionIcon,
   Button,
   Group,
+  Loader,
   useMantineTheme,
 } from "@mantine/core";
 import { IconPlayerPlay, IconPlayerPause, IconPill } from "@tabler/icons-react";
@@ -18,7 +19,8 @@ import formatDuration from "@/utils/formatDuration";
 
 export type ActiveTimerPendingAction =
   | "adjustTime"
-  | "togglePause"
+  | "pauseTimer"
+  | "resumeTimer"
   | "unassign";
 
 interface ActiveTimersModalFormProps {
@@ -54,6 +56,14 @@ export default function ActiveTimersModalForm({
   const theme = useMantineTheme();
   const { active } = useDashboardAsideContext();
 
+  const circleStyle = (disabled: boolean, color: string) => ({
+    backgroundColor: disabled ? theme.colors.gray[0] : "#EEF2F6",
+    color: disabled ? theme.colors.gray[6] : color,
+    border: `1px solid ${disabled ? theme.colors.gray[4] : "transparent"}`,
+    borderStyle: disabled ? "dashed" : "solid",
+    cursor: disabled ? "not-allowed" : "pointer",
+  });
+
   const [currentExpiresAt, setCurrentExpiresAt] = useState(initialExpiresAt);
   const [prevInitialExpiresAt, setPrevInitialExpiresAt] =
     useState(initialExpiresAt);
@@ -63,12 +73,13 @@ export default function ActiveTimersModalForm({
     setCurrentExpiresAt(initialExpiresAt);
   }
 
+  const isResumePending = pendingAction === "resumeTimer";
   const isPaused = pausedAt !== null;
   const now = useTimerNow(active && !isPaused);
 
-  // ±5 and pause update their own view immediately, so they get no spinner —
-  // only a guard against firing a second write while one is in flight.
   const isBusy = pendingAction !== null;
+
+  const iconColor = isBusy ? theme.colors.gray[6] : theme.colors.primary[9];
 
   const handleAddFiveMinutes = () => {
     const effectiveNow = isPaused ? dayjs(pausedAt) : dayjs();
@@ -194,10 +205,10 @@ export default function ActiveTimersModalForm({
               variant="light"
               onClick={handleSubtractFiveMinutes}
               disabled={isFiveOrLess || isBusy}
-              style={{
-                backgroundColor: "#EEF2F6",
-                color: theme.colors.primary[9],
-              }}
+              style={circleStyle(
+                isFiveOrLess || isBusy,
+                theme.colors.primary[9],
+              )}
             >
               <Text fw={700} size="md">
                 -5
@@ -210,21 +221,14 @@ export default function ActiveTimersModalForm({
               variant="light"
               onClick={onTogglePause}
               disabled={isBusy}
-              style={{
-                backgroundColor: "#EEF2F6",
-                color: theme.colors.primary[9],
-              }}
+              style={circleStyle(isBusy, theme.colors.primary[9])}
             >
-              {isPaused ? (
-                <IconPlayerPlay
-                  size={24}
-                  style={{ fill: theme.colors.primary[9] }}
-                />
+              {isResumePending ? (
+                <Loader size={20} color={theme.colors.primary[9]} />
+              ) : isPaused ? (
+                <IconPlayerPlay size={24} style={{ fill: iconColor }} />
               ) : (
-                <IconPlayerPause
-                  size={24}
-                  style={{ fill: theme.colors.primary[9] }}
-                />
+                <IconPlayerPause size={24} style={{ fill: iconColor }} />
               )}
             </ActionIcon>
           </>
@@ -236,10 +240,7 @@ export default function ActiveTimersModalForm({
           variant="light"
           onClick={handleAddFiveMinutes}
           disabled={isBusy}
-          style={{
-            backgroundColor: "#EEF2F6",
-            color: accentColor,
-          }}
+          style={circleStyle(isBusy, accentColor)}
         >
           <Text fw={700} size="md">
             +5
@@ -267,10 +268,7 @@ export default function ActiveTimersModalForm({
             variant="light"
             onClick={onGiveMedicine}
             disabled={isBusy}
-            style={{
-              backgroundColor: "#EEF2F6",
-              color: theme.colors.primary[9],
-            }}
+            style={circleStyle(isBusy, theme.colors.primary[9])}
           >
             <IconPill size={22} />
           </ActionIcon>
