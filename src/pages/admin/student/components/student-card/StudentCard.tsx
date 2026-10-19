@@ -3,7 +3,6 @@ import { useState } from "react";
 
 import QueryError from "@/components/QueryError";
 import { useStudentDetail } from "@/hooks/students/useStudentDetail";
-import { getStudentFullName } from "@/utils/students/studentName";
 import StudentCardHeader from "./StudentCardHeader";
 import StudentCardTabs from "./StudentCardTabs";
 
@@ -17,7 +16,7 @@ export default function StudentCard() {
     return <QueryError error={error} onRetry={refetch} />;
   }
 
-  const fullName = getStudentFullName(data.data.personal_info);
+  const fullName = data.data.full_name ?? "";
 
   return (
     <Card radius="lg" p="lg" withBorder>

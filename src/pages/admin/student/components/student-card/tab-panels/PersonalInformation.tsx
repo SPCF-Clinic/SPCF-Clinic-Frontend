@@ -2,10 +2,7 @@ import { useMemo } from "react";
 
 import { useStudentDetail } from "@/hooks/students/useStudentDetail";
 import type { DisplayField } from "@/types/students";
-import {
-	getPersonalInfoWithoutName,
-	getStudentFullName,
-} from "@/utils/students/studentName";
+import { getPersonalInfoWithoutName } from "@/utils/students/studentName";
 import { FieldRow } from "../FieldRow";
 import { StudentInfoColumn, StudentInfoLayout } from "../StudentInfoLayout";
 import PersonalInfoForm from "./PersonalInfoForm";
@@ -30,7 +27,7 @@ export default function PersonalInformation({
 			(a, b) => a.form_order - b.form_order,
 		);
 
-		const fullName = getStudentFullName(personalInfo);
+		const fullName = data.data.full_name ?? "";
 
 		return [
 			{

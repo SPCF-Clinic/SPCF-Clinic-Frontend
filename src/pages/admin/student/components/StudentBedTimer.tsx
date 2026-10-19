@@ -1,7 +1,6 @@
 import Timer from "@/components/timer/Timer";
 import { useStudentDetail } from "@/hooks/students/useStudentDetail";
 import StatusModal from "@/pages/admin/modals/StatusModal";
-import { getStudentFullName } from "@/utils/students/studentName";
 
 export default function StudentBedTimer() {
   const { data } = useStudentDetail();
@@ -11,7 +10,7 @@ export default function StudentBedTimer() {
 
   const bed = student.check_in.bed;
   const checkInId = student.check_in.id;
-  const occupantName = getStudentFullName(student.personal_info);
+  const occupantName = student.full_name ?? "";
 
   const openControls = () => {
     StatusModal.ActiveTimer({
