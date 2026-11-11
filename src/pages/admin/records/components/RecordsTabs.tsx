@@ -4,8 +4,9 @@ import { parseAsStringLiteral, useQueryState } from "nuqs";
 import classes from "@/styles/Tabs.module.css";
 import ActivityLog from "./tab-panels/activity-log/ActivityLog";
 import VisitHistory from "./tab-panels/visit-history/VisitHistory";
+import Summary from "./tab-panels/summary/Summary"
 
-const TAB_VALUES = ["visit", "activity"] as const;
+const TAB_VALUES = ["visit", "activity", "summary"] as const;
 type TabValue = (typeof TAB_VALUES)[number];
 
 export default function RecordsTabs() {
@@ -28,6 +29,9 @@ export default function RecordsTabs() {
 				<Tabs.Tab value="activity" tt="uppercase" fw={600}>
 					Activity Log
 				</Tabs.Tab>
+				<Tabs.Tab value="summary" tt="uppercase" fw={600}>
+					Summary
+				</Tabs.Tab>
 			</Tabs.List>
 
 			<Card>
@@ -36,6 +40,9 @@ export default function RecordsTabs() {
 				</Tabs.Panel>
 				<Tabs.Panel value="activity">
 					<ActivityLog />
+				</Tabs.Panel>
+				<Tabs.Panel value="summary">
+					<Summary/>
 				</Tabs.Panel>
 			</Card>
 		</Tabs>

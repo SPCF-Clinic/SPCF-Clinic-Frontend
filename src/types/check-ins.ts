@@ -37,3 +37,42 @@ export interface CheckInShow {
   bed_id: number | null;
   items_dispensed: ItemsDispensed[];
 }
+
+export interface CheckInReportPayload {
+  date_from: string;
+  date_to: string;
+}
+
+export interface DistributionItem {
+  label: string;
+  count: number;
+  percentage: number;
+}
+
+export interface CheckInPeriod {
+  from: string;
+  to: string;
+}
+
+export interface CheckInDistributions {
+  reason_for_visit: DistributionItem[];
+  gender: DistributionItem[];
+  religion: DistributionItem[];
+  nationality: DistributionItem[];
+  education_level: DistributionItem[];
+  age_group: DistributionItem[];
+}
+
+export interface CheckInReportResponse {
+  period: CheckInPeriod;
+  total_check_ins: number;
+  distributions: CheckInDistributions;
+  unavailable: string[];
+}
+
+// export interface CheckInReportResponse {
+//   message: string;
+//   data: CheckInReportData;
+//   code: number;
+//   error: boolean;
+// }
