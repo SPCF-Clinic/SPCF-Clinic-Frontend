@@ -62,6 +62,7 @@ export function DateRangeFilter() {
 
   return (
     <DatePickerInput
+      className={value.every((v) => v) ? undefined : "no-print"}
       type="range"
       allowSingleDateInRange
       valueFormat="MMM D, YYYY"
