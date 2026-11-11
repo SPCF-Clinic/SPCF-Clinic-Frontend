@@ -17,7 +17,7 @@ export default function SummaryChart({ data }: SummaryChartProps) {
     },
     {
       key: "year_level",
-      title: "Education Level Distribution",
+      title: "Year Level Distribution",
       type: "bar",
     },
     {
