@@ -1,4 +1,5 @@
 import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/charts/styles.css";
@@ -23,11 +24,7 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <NuqsAdapter>
         <StrictMode>
-          <MantineProvider
-            defaultColorScheme="light"
-            theme={theme}
-            cssVariablesResolver={resolver}
-          >
+          <MantineProvider defaultColorScheme="light" theme={theme} cssVariablesResolver={resolver}>
             <ModalsProvider>
               <Notifications />
               <ReactQueryDevtools />

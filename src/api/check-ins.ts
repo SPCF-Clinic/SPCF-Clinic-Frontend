@@ -1,9 +1,16 @@
 import { apiClient } from "@/services/axios";
 import type { PaginationQueryParams, PaginationResponse } from "@/types/api";
-import type { CheckInIndex, CheckInShow, CheckInReportResponse, CheckInReportPayload } from "@/types/check-ins";
+import type {
+  CheckInIndex,
+  CheckInShow,
+  CheckInReportResponse,
+  CheckInReportPayload,
+} from "@/types/check-ins";
 
 export type GetCheckInsFilters = PaginationQueryParams<{
   search?: string;
+  date_from?: string;
+  date_to?: string;
 }>;
 
 export type GetCheckInsResponse = PaginationResponse<CheckInIndex, "check_ins">;
@@ -49,9 +56,8 @@ export interface AssignBedPayload {
 export const assignBed = (checkInId: number, payload: AssignBedPayload) =>
   apiClient.put(`/check-ins/${checkInId}`, payload);
 
-
-
 export const getCheckInReport = (payload: CheckInReportPayload) => {
-     return apiClient.get<CheckInReportResponse>(`check-ins/report`, {params: payload});
-
+  return apiClient.get<CheckInReportResponse>(`check-ins/report`, {
+    params: payload,
+  });
 };
