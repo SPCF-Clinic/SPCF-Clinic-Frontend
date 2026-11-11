@@ -23,12 +23,10 @@ export default function StudentList() {
         </Text>
         <Group justify="space-between">
           <SearchFilter
-            numeric
             queryKey="student_id"
             textInputProps={{
-              placeholder: "Search Student Number",
+              placeholder: "Search Student",
               loading: isFetching,
-              inputMode: "numeric",
             }}
             onCommit={() => {
               if (page !== 1) setPage(1);
@@ -38,11 +36,7 @@ export default function StudentList() {
         </Group>
         <StudentTable />
         {totalPages > 1 && (
-          <StudentPager
-            page={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
+          <StudentPager page={page} totalPages={totalPages} onPageChange={setPage} />
         )}
       </Stack>
     </Paper>
