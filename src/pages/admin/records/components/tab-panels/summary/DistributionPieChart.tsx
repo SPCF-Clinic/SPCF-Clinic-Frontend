@@ -16,12 +16,14 @@ export default function DistributionPieChart({
   title,
   data,
 }: DistributionPieChartProps) {
+    const getChartColor = (index: number, total: number) => {
+  const hue = (index * 360) / total;
+  return `hsl(${hue}, 65%, 55%)`;
+};
   const chartData = data.map((item, index) => ({
     name: `${item.label} (${item.count})`,
     value: item.count,
-    color: `var(--mantine-color-${
-      [ "blue","pink", "green", "orange", "violet", "cyan"][index % 6]
-    }-6)`,
+    color:getChartColor(index, data.length),
   }));
 
     const chartHeight = Math.max(300, data.length * 25 + 200);
