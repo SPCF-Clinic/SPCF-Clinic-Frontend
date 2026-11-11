@@ -6,7 +6,10 @@ import { dayjs } from "@/services/dayjs";
 const PRESETS = [
   {
     label: "Today",
-    value: (): [string, string] => [dayjs().format("YYYY-MM-DD"), dayjs().format("YYYY-MM-DD")],
+    value: (): [string, string] => [
+      dayjs().format("YYYY-MM-DD"),
+      dayjs().format("YYYY-MM-DD"),
+    ],
   },
   {
     label: "Yesterday",
@@ -45,7 +48,11 @@ const PRESETS = [
   },
 ];
 
-export function DateRangeFilter() {
+export function DateRangeFilter({
+  onCommit,
+}: {
+  onCommit?: (value: [string | null, string | null]) => void;
+}) {
   const [date_from, setDateFrom] = useQueryState("date_from", {
     defaultValue: "",
   });
@@ -53,11 +60,15 @@ export function DateRangeFilter() {
     defaultValue: "",
   });
 
-  const value: [string | null, string | null] = [date_from || null, date_to || null];
+  const value: [string | null, string | null] = [
+    date_from || null,
+    date_to || null,
+  ];
 
   const handleChange = ([from, to]: [string | null, string | null]) => {
     setDateFrom(from ?? null);
     setDateTo(to ?? null);
+    onCommit?.([from ?? null, to ?? null]);
   };
 
   return (

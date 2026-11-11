@@ -5,7 +5,7 @@ import {
   type StudentSortKey,
   type StudentSortOrder,
 } from "@/api/students";
-import { useStudentPage } from "./useStudentPage";
+import { useAppPage } from "../useAppPage";
 
 const SORT_ORDERS = ["asc", "desc"] as const;
 
@@ -25,7 +25,7 @@ export function useStudentSort() {
       history: "replace",
     }),
   });
-  const [page, setPage] = useStudentPage();
+  const [page, setPage] = useAppPage();
 
   const sort =
     sort_by !== null && sort_order !== null

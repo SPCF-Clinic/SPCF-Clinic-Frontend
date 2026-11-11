@@ -16,6 +16,6 @@ const pageParam = createParser({
   .withDefault(1)
   .withOptions({ history: "replace" });
 
-export function useStudentPage() {
+export function useAppPage() {
   return useQueryState("page", pageParam);
 }
