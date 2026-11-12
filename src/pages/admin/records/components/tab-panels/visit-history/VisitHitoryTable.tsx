@@ -3,9 +3,8 @@ import { Table } from "@mantine/core";
 import { AppTable, type ColumnDef } from "@/components/AppTable";
 import QueryError from "@/components/QueryError";
 import SexIcon from "@/components/SexIcon";
-import { useCheckIns } from "@/hooks/check-ins/useCheckIns";
 import { dayjs } from "@/services/dayjs";
-import type { CheckInStudent } from "@/types/check-ins";
+import type { CheckInIndex, CheckInStudent } from "@/types/check-ins";
 
 const COLUMNS: ColumnDef[] = [
   { title: "Timestamp", w: "15%" },
@@ -24,24 +23,28 @@ const getStudentLevel = (student: CheckInStudent) => {
   }
 };
 
-export default function VisitHistoryTable() {
-  const { data, isPending, error, refetch } = useCheckIns();
+interface VisitHistoryTableProps {
+  checkIns?: CheckInIndex[];
+  isPending?: boolean;
+  error?: unknown;
+  onRetry?: () => void;
+}
 
+export default function VisitHistoryTable({
+  checkIns,
+  isPending,
+  error,
+  onRetry,
+}: VisitHistoryTableProps) {
   if (error) {
-    return <QueryError error={error} onRetry={refetch} />;
+    return <QueryError error={error} onRetry={onRetry} />;
   }
 
   return (
-    <AppTable
-      columns={COLUMNS}
-      isPending={isPending}
-      data={data?.data.check_ins}
-    >
-      {data?.data.check_ins.map((checkIn) => (
+    <AppTable columns={COLUMNS} isPending={isPending} data={checkIns}>
+      {checkIns?.map((checkIn) => (
         <Table.Tr key={checkIn.id}>
-          <Table.Td c="dimmed">
-            {dayjs(checkIn.check_in_time).format("MM-D-YYYY LT")}
-          </Table.Td>
+          <Table.Td c="dimmed">{dayjs(checkIn.check_in_time).format("MM-D-YYYY LT")}</Table.Td>
           <Table.Td>{checkIn.user.name}</Table.Td>
           <Table.Td>{checkIn.user.age}</Table.Td>
           <Table.Td>

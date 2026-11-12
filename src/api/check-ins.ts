@@ -1,5 +1,5 @@
 import { apiClient } from "@/services/axios";
-import type { PaginationQueryParams, PaginationResponse } from "@/types/api";
+import type { PaginationMeta, PaginationQueryParams } from "@/types/api";
 import type {
   CheckInIndex,
   CheckInShow,
@@ -13,16 +13,19 @@ export type GetCheckInsFilters = PaginationQueryParams<{
   date_to?: string;
 }>;
 
-export type GetCheckInsResponse = PaginationResponse<CheckInIndex, "check_ins">;
+/** Omitting `per_page` makes the endpoint return every filtered check-in
+ *  unpaginated, in which case `pagination` is null. */
+export type GetCheckInsResponse = {
+  check_ins: CheckInIndex[];
+  pagination: PaginationMeta | null;
+};
 
 export const getCheckIns = (filters?: GetCheckInsFilters) =>
   apiClient.get<GetCheckInsResponse>("/check-ins", { params: filters });
 
-export const getCheckIn = (id: number) =>
-  apiClient.get<CheckInShow>(`/check-ins/${id}`);
+export const getCheckIn = (id: number) => apiClient.get<CheckInShow>(`/check-ins/${id}`);
 
-export const postCheckInStudent = (payload?: any) =>
-  apiClient.post("/check-ins", payload);
+export const postCheckInStudent = (payload?: any) => apiClient.post("/check-ins", payload);
 
 export const updateCheckIn = (checkInId: number, payload?: any) =>
   apiClient.put(`/check-ins/${checkInId}`, undefined, {

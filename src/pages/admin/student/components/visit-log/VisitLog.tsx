@@ -5,17 +5,17 @@ import { useStudentCheckIns } from "@/hooks/students/useStudentCheckIns";
 import VisitLogTable from "./VisitLogTable";
 
 export default function VisitLog() {
-	const { data, isFetching } = useStudentCheckIns();
+  const { data, isFetching } = useStudentCheckIns();
 
-	return (
-		<Paper radius="lg" p="lg" withBorder>
-			<Stack>
-				<Text size="sm" fw={600} c="primary" tt="uppercase">
-					Visit Log {data ? `(${data.data.pagination.total})` : ""}
-				</Text>
-				<SearchFilter textInputProps={{ loading: isFetching }} />
-				<VisitLogTable />
-			</Stack>
-		</Paper>
-	);
+  return (
+    <Paper radius="lg" p="lg" withBorder>
+      <Stack>
+        <Text size="sm" fw={600} c="primary" tt="uppercase">
+          Visit Log {data ? `(${data.data.pagination?.total ?? data.data.check_ins.length})` : ""}
+        </Text>
+        <SearchFilter textInputProps={{ loading: isFetching }} />
+        <VisitLogTable />
+      </Stack>
+    </Paper>
+  );
 }
