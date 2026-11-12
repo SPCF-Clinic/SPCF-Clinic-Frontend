@@ -75,6 +75,8 @@ export default function VisitHistory() {
           loading={isPreparingPrint}
           printOptions={{
             contentRef,
+            documentTitle: () =>
+              `Visit History${filters.search ? ` (${filters.search})` : ""}${filters.date_from || filters.date_to ? ` (${filters.date_from} - ${filters.date_to})` : ""}`,
             onBeforePrint: fetchAllForPrint,
             onAfterPrint: () => setPrintCheckIns(undefined),
             onPrintError: (location, printError) => {
