@@ -40,10 +40,7 @@ export default function VisitHistory() {
   const fetchAllForPrint = async () => {
     setIsPreparingPrint(true);
     try {
-      const result = await queryClient.fetchQuery({
-        ...checkInQueries.list(filters),
-        retry: 0,
-      });
+      const result = await queryClient.fetchQuery(checkInQueries.list(filters));
       flushSync(() => setPrintCheckIns(result.data.check_ins));
     } finally {
       setIsPreparingPrint(false);
@@ -68,7 +65,10 @@ export default function VisitHistory() {
       </Group>
       <Group justify="space-between">
         <Group>
-          <SearchFilter textInputProps={{ loading: isFetching }} onCommit={handleCommit} />
+          <SearchFilter
+            textInputProps={{ loading: isFetching }}
+            onCommit={handleCommit}
+          />
           <DateRangeFilter onCommit={handleCommit} />
         </Group>
         <PrintButton
@@ -94,7 +94,9 @@ export default function VisitHistory() {
           onRetry={refetch}
         />
       </div>
-      {totalPages > 1 && <AppPager page={page} totalPages={totalPages} onPageChange={setPage} />}
+      {totalPages > 1 && (
+        <AppPager page={page} totalPages={totalPages} onPageChange={setPage} />
+      )}
       <Stack className="print-only">
         <VisitHistoryTable checkIns={printCheckIns} />
       </Stack>

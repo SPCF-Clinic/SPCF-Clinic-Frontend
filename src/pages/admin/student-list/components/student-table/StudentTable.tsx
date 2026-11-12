@@ -1,14 +1,16 @@
 import { Center, Table } from "@mantine/core";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-import { AppTable, type ColumnDef } from "@/components/AppTable";
+import {
+  AppTable,
+  type ColumnDef,
+  type TableSort,
+} from "@/components/AppTable";
 import QueryError from "@/components/QueryError";
 import SexIcon from "@/components/SexIcon";
 import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
 import type { StudentSortKey } from "@/api/students";
-import { useStudentSort } from "@/hooks/students/useStudentSort";
-import { useStudents } from "@/hooks/students/useStudents";
+import type { StudentIndex } from "@/types/students";
 import { preventNavigationOnHighlight } from "@/utils/preventNavigationOnHighlight";
 import StatusBadge from "./StatusBadge";
 import StudentActionMenu from "./StudentActionMenu";
@@ -19,54 +21,75 @@ const BASE_COLUMNS: ColumnDef<StudentSortKey>[] = [
   { title: "Grade Level/Year", w: "15%", sortKey: "year_level" },
   { title: "Age", w: "10%", sortKey: "age" },
   { title: "Sex", w: "5%", sortKey: "sex" },
-  { title: "Status", w: "15%", sortKey: "status" },
+  { title: "Status", w: "20%", sortKey: "status" },
 ];
 
-export default function StudentTable() {
-  const navigate = useNavigate();
+const ACTIONS_COLUMN: ColumnDef<StudentSortKey> = { id: "actions", w: 48 };
+
+interface StudentTableProps {
+  students?: StudentIndex[];
+  isPending?: boolean;
+  isFetching?: boolean;
+  error?: unknown;
+  onRetry?: () => void;
+  /** The current sort and its change handler. Omit it for the print
+   *  snapshot: headers then render statically and rows lose their
+   *  interactive affordances. */
+  sort?: TableSort<StudentSortKey>;
+  onRowClick?: (student: StudentIndex) => void;
+  /** Shows the per-row action menu to super admins. Screen only. */
+  showActions?: boolean;
+}
+
+export default function StudentTable({
+  students,
+  isPending,
+  isFetching,
+  error,
+  onRetry,
+  sort,
+  onRowClick,
+  showActions = false,
+}: StudentTableProps) {
   const isSuperAdmin = useIsSuperAdmin();
 
-  const { data, isPending, error, refetch, isFetching } = useStudents();
-  const { sort, setSort } = useStudentSort();
-
-  const sortKey = sort ? `${sort.by}:${sort.order}` : "";
+  const sortKey = sort ? `${sort.key}:${sort.order}` : "";
   const [settledSortKey, setSettledSortKey] = useState(sortKey);
   if (!isFetching && settledSortKey !== sortKey) {
     setSettledSortKey(sortKey);
   }
-  const isSortLoading = isFetching && sortKey !== settledSortKey;
+  const isSortLoading = Boolean(isFetching) && sortKey !== settledSortKey;
 
-  const columns: ColumnDef<StudentSortKey>[] = isSuperAdmin
-    ? [...BASE_COLUMNS, { id: "actions", w: 48 }]
-    : BASE_COLUMNS;
+  const columns =
+    showActions && isSuperAdmin
+      ? [...BASE_COLUMNS, ACTIONS_COLUMN]
+      : BASE_COLUMNS;
 
   if (error) {
-    return <QueryError error={error} onRetry={refetch} />;
+    return <QueryError error={error} onRetry={onRetry} />;
   }
 
   return (
     <AppTable
       columns={columns}
       isPending={isPending}
-      data={data?.data.students}
-      highlightOnHover
+      data={students}
+      highlightOnHover={onRowClick !== undefined}
       style={{
         opacity: isSortLoading ? 0.45 : 1,
         transition: "opacity 150ms",
       }}
-      sort={{
-        key: sort?.by ?? null,
-        order: sort?.order ?? null,
-        onSortChange: setSort,
-      }}
+      sort={sort}
     >
-      {data?.data.students.map((student) => (
+      {students?.map((student) => (
         <Table.Tr
-          style={{ cursor: "pointer" }}
+          style={onRowClick ? { cursor: "pointer" } : undefined}
           key={student.id}
-          onClick={preventNavigationOnHighlight(() =>
-            navigate(`/admin/students/${student.id}`),
-          )}
+          onClick={
+            onRowClick
+              ? preventNavigationOnHighlight(() => onRowClick(student))
+              : undefined
+          }
         >
           <Table.Td fw={600}>{student.username}</Table.Td>
           <Table.Td>{student.name}</Table.Td>
@@ -80,7 +103,7 @@ export default function StudentTable() {
           <Table.Td>
             <StatusBadge status={student.status} />
           </Table.Td>
-          {isSuperAdmin && (
+          {showActions && isSuperAdmin && (
             <Table.Td>
               <Center>
                 <StudentActionMenu student={student} />

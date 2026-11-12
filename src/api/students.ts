@@ -1,5 +1,5 @@
 import { apiClient } from "@/services/axios";
-import type { PaginationQueryParams, PaginationResponse } from "@/types/api";
+import type { PaginationMeta, PaginationQueryParams } from "@/types/api";
 import type { StudentIndex, StudentShow } from "@/types/students";
 import type { GetCheckInsResponse } from "./check-ins";
 
@@ -21,7 +21,10 @@ export type GetStudentsFilters = PaginationQueryParams<{
   sort_order?: StudentSortOrder;
 }>;
 
-type GetStudentsResponse = PaginationResponse<StudentIndex, "students">;
+export type GetStudentsResponse = {
+  students: StudentIndex[];
+  pagination: PaginationMeta | null;
+};
 
 export const getStudents = (filters?: GetStudentsFilters) =>
   apiClient.get<GetStudentsResponse>("/students", { params: filters });
