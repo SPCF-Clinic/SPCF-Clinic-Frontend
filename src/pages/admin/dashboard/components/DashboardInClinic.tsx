@@ -73,7 +73,7 @@ function ClinicTable() {
       {data?.data.currently_in_clinic.map((student) => (
         <Table.Tr
           className={classes.tr}
-          key={student.student_id}
+          key={student.id}
           onClick={preventNavigationOnHighlight(() =>
             handleClickRow(student.id),
           )}
